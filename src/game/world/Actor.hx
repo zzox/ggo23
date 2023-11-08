@@ -32,10 +32,10 @@ class Actor {
     var currentPath:Null<Array<IntVec2>>;
 
     // TODO: use state management instead
-    var moving:Bool = false;
+    public var moving:Bool = false;
 
     // TEMP: this needs to be a diff value that we take the inverse of.
-    var speed:Float = 0.25;
+    var speed:Float = 0.5;
 
     public function new (x:Int, y:Int, world:World) {
         this.x = x;
@@ -49,10 +49,10 @@ class Actor {
     public function update (delta:Float) {
         // handleGeneration(delta);
         if (moving) {
+            handleCurrentMove(delta);
+
             if (currentMove == null) {
                 startNextMove();
-            } else {
-                handleCurrentMove(delta);
             }
         }
     }
