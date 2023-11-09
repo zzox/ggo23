@@ -18,7 +18,7 @@ class Main {
             new WorldScene(),
             PixelPerfect,
             'depths',
-            new IntVec2(320, 180),
+            new IntVec2(640, 360),
             (e) -> {
                 sendErrorLogs(e);
                 throw e;

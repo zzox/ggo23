@@ -1,6 +1,7 @@
 package game.scenes;
 
 import core.Group;
+import core.Input.MouseButton;
 import core.Scene;
 import core.Sprite;
 import core.Types;
@@ -32,15 +33,24 @@ class WorldScene extends Scene {
 
         sortGroupByY(gridTiles);
 
-        world.playerActor.move(30, 12);
-
         player = new PlayerSprite(world.playerActor);
         addSprite(player);
         camera.startFollow(player);
+        camera.followLerp.set(0.25, 0.25);
     }
 
     override function update (delta:Float) {
         handleCamera();
+
+        // diff of 2 here for the tile distance from the top.
+        final tilePos = getTilePos(world.grid, game.mouse.position.x, game.mouse.position.y - 2);
+        final clicked = game.mouse.justPressed(MouseButton.Left);
+        if (tilePos != null) {
+            // highlight tile
+            if (clicked && !world.playerActor.moving) {
+                world.playerActor.move(tilePos.x, tilePos.y);
+            }
+        }
 
         world.update(delta);
         super.update(delta);
@@ -51,26 +61,24 @@ class WorldScene extends Scene {
     }
 
     function handleCamera () {
-        if (game.keys.pressed(KeyCode.Left)) {
-            camera.scroll.x -= 1.0;
+        if (game.keys.justPressed(KeyCode.Equals)) {
+            camera.scale.set(2.0, 2.0);
         }
 
-        if (game.keys.pressed(KeyCode.Right)) {
-            camera.scroll.x += 1.0;
-        }
-
-        if (game.keys.pressed(KeyCode.Up)) {
-            camera.scroll.y -= 1.0;
-        }
-
-        if (game.keys.pressed(KeyCode.Down)) {
-            camera.scroll.y += 1.0;
+        if (game.keys.justPressed(KeyCode.HyphenMinus)) {
+            camera.scale.set(1.0, 1.0);
         }
     }
 }
 
 function translateWorldPos (x:Float, y:Float):Vec2 {
     return new Vec2((x * 8) + (y * 8), (y * 4) + (x * -4));
+}
+
+function getTilePos (grid:Grid, xPos:Float, yPos:Float) {
+    final x = (xPos - 8) / 16;
+    final y = (yPos - 4) / 8;
+    return getGridItem(grid, Math.round(x - y), Math.round(x + y));
 }
 
 class TileSprite extends Sprite {
@@ -84,8 +92,8 @@ class TileSprite extends Sprite {
     override function render (g2, camera) {
         final index = tileIndex;
         super.render(g2, camera);
-        tileIndex = 4;
-        super.render(g2, camera);
+        // tileIndex = 4;
+        // super.render(g2, camera);
         tileIndex = index;
     }
 }
@@ -106,8 +114,7 @@ class PlayerSprite extends Sprite {
 
     override function update (delta:Float) {
         final pos = translateWorldPos(actorState.x, actorState.y);
-
-        setPosition(pos.x, pos.y);
+        setPosition(Math.round(pos.x), Math.round(pos.y));
 
         if (actorState.moving) {
             animation.play('walk-down');
@@ -117,4 +124,14 @@ class PlayerSprite extends Sprite {
 
         super.update(delta);
     }
+
+    // is this needed?
+    // override function render (g2, cam) {
+    //     final px = x;
+    //     final py = y;
+
+    //     setPosition(Math.round(x), Math.round(y));
+    //     super.render(g2, cam);
+    //     setPosition(px, py);
+    // }
 }

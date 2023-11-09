@@ -35,7 +35,7 @@ class Actor {
     public var moving:Bool = false;
 
     // TEMP: this needs to be a diff value that we take the inverse of.
-    var speed:Float = 0.5;
+    var speed:Float = 0.166;
 
     public function new (x:Int, y:Int, world:World) {
         this.x = x;
