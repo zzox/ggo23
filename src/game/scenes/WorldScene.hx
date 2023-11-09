@@ -5,6 +5,7 @@ import core.Input.MouseButton;
 import core.Scene;
 import core.Sprite;
 import core.Types;
+import game.scenes.UiScene;
 import game.util.Utils;
 import game.world.Actor;
 import game.world.World;
@@ -15,6 +16,8 @@ class WorldScene extends Scene {
     var world:World;
     var gridTiles:Group;
     var player:PlayerSprite;
+
+    var uiScene:UiScene;
 
     override function create () {
         world = new World(new IntVec2(50, 50));
@@ -37,6 +40,9 @@ class WorldScene extends Scene {
         addSprite(player);
         camera.startFollow(player);
         camera.followLerp.set(0.25, 0.25);
+
+        uiScene = new UiScene();
+        game.addScene(uiScene);
     }
 
     override function update (delta:Float) {
