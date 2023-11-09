@@ -34,6 +34,7 @@ class World {
 
         playerActor = new Actor(2, 2, this);
         actors.push(playerActor);
+        this.size = size;
     }
 
     public function update (delta) {
