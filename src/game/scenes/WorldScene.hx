@@ -42,7 +42,7 @@ class WorldScene extends Scene {
         player = new ActorSprite(world.playerActor);
         gridObjects.addChild(player);
         camera.startFollow(player);
-        camera.followLerp.set(0.1, 0.1);
+        camera.followLerp.set(0.25, 0.25);
 
         uiScene = new UiScene();
         game.addScene(uiScene);
@@ -77,7 +77,7 @@ class WorldScene extends Scene {
         if (tilePos != null) {
             // highlight tile
             final clicked = game.mouse.justPressed(MouseButton.Left);
-            if (clicked && !world.playerActor.moving) {
+            if (clicked && world.playerActor.state != Moving) {
                 world.playerActor.move(tilePos.x, tilePos.y);
             }
 

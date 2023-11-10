@@ -6,6 +6,13 @@ import game.util.Utils;
 import game.world.Grid;
 import game.world.World;
 
+enum ActorState {
+    Wait;
+    Moving;
+    PreAttack;
+    Attack;
+}
+
 typedef Move = {
     var from:IntVec2;
     var to:IntVec2;
@@ -29,11 +36,12 @@ class Actor {
 
     var world:World;
 
+    var preAttackTime:Float = 0.0;
+    var attackTime:Float = 0.0;
     var currentMove:Null<Move>;
     var currentPath:Null<Array<IntVec2>>;
 
-    // TODO: use state management instead
-    public var moving:Bool = false;
+    public var state:ActorState = Wait;
 
     // TEMP: this needs to be a diff value that we take the inverse of.
     var speed:Float = 0.166;
@@ -48,12 +56,21 @@ class Actor {
     }
 
     public function update (delta:Float) {
-        // handleGeneration(delta);
-        if (moving) {
+        if (state == Moving) {
             handleCurrentMove(delta);
 
             if (currentMove == null) {
                 startNextMove();
+            }
+        } else if (state == PreAttack) {
+            preAttackTime -= delta;
+            if (preAttackTime < 0.0) {
+                attack();
+            }
+        } else if (state == Attack) {
+            attackTime -= delta;
+            if (attackTime < 0.0) {
+                finishAttack();
             }
         }
     }
@@ -101,8 +118,19 @@ class Actor {
         }
     }
 
+    function attack () {
+        // do attack
+        trace('attack');
+        // attack time
+        // attackDir
+    }
+
+    function finishAttack () {
+        state = Wait;
+    }
+
     public function move (toX:Int, toY:Int) {
-        moving = true;
+        state = Moving;
 
         currentPath = pathfind(makeIntGrid(world.grid), getPosition(), new IntVec2(toX, toY), Diagonal, true);
 
@@ -114,7 +142,7 @@ class Actor {
     }
 
     function endMove () {
-        moving = false;
+        state = Wait;
     }
 
     function getPosition ():IntVec2 {

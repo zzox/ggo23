@@ -23,7 +23,7 @@ class ActorSprite extends WorldItemSprite {
         final pos = translateWorldPos(actorState.x, actorState.y);
         setPosition(Math.round(pos.x), Math.round(pos.y));
 
-        if (actorState.moving) {
+        if (actorState.state == Moving) {
             animation.play('walk');
         } else {
             animation.play('still');
