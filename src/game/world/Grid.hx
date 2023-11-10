@@ -15,6 +15,17 @@ typedef GridItem = {
 
 typedef Grid = Array<Array<GridItem>>;
 
+enum GridDir {
+    North;
+    South;
+    East;
+    West;
+    NorthEast;
+    NorthWest;
+    SouthEast;
+    SouthWest;
+}
+
 function makeGrid (size:IntVec2, callback:(Int, Int) -> GridItem):Grid {
     final grid = [];
 
@@ -49,7 +60,6 @@ function makeIntGrid (grid:Grid):IntGrid {
 
 function getGridItem (grid:Grid, x:Int, y:Int):Null<GridItem> {
     if (x < 0 || y < 0 || x >= grid.length || y >= grid[0].length) {
-        trace('cannot get grid item, out of bounds at ${x}, ${y}');
         return null;
     }
 

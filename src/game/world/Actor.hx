@@ -21,6 +21,13 @@ typedef Move = {
     var time:Float;
 }
 
+// TODO: attack type, spell or strike
+typedef Attack = {
+    var dir:GridDir;
+    var time:Float;
+    var elapsed:Float;
+}
+
 function calcMovePosition (move:Move, percentMoved:Float):Vec2 {
     return new Vec2(
         move.from.x + (move.to.x - move.from.x) * percentMoved,
@@ -41,6 +48,7 @@ class Actor {
     var attackTime:Float = 0.0;
     var currentMove:Null<Move>;
     var currentPath:Null<Array<IntVec2>>;
+    public var currentAttack:Null<Attack>;
 
     public var actorType:ActorType;
     public var state:ActorState = Wait;
@@ -71,8 +79,8 @@ class Actor {
                 attack();
             }
         } else if (state == Attack) {
-            attackTime -= delta;
-            if (attackTime < 0.0) {
+            currentAttack.elapsed += delta;
+            if (currentAttack.elapsed > currentAttack.time) {
                 finishAttack();
             }
         }
@@ -121,15 +129,40 @@ class Actor {
         }
     }
 
+    public function tryAttack (dir:GridDir) {
+        // TODO: bring in from config
+        currentAttack = {
+            dir: dir,
+            time: actorData[actorType].attackTime,
+            elapsed: 0
+        }
+
+        state = PreAttack;
+        preAttackTime = actorData[actorType].preAttackTime;
+    }
+
     function attack () {
-        // do attack
+        state = Attack;
         trace('attack');
-        // attack time
-        // attackDir
+
+        final diff = getDiffFromDir(currentAttack.dir);
+        final pos = getPosition();
+
+        // TODO: only hit people within ~.75 units distance away
+        final gridItem = getGridItem(world.grid, pos.x + diff.x, pos.y + diff.y);
+        if (gridItem != null && gridItem.actor != null) {
+            gridItem.actor.damage(10);
+        }
+    }
+
+    function damage (amount:Int) {
+        // TODO: set target depending on intelligence?
+        trace('took damage!', amount);
     }
 
     function finishAttack () {
         state = Wait;
+        currentAttack = null;
     }
 
     public function move (toX:Int, toY:Int) {

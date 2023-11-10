@@ -20,6 +20,7 @@ class World {
     public var elements:Array<Element> = [];
 
     public var playerActor:Actor;
+    public var ratTest:Actor;
 
     var onAddElement:ElementAdd;
     var onRemoveElement:ElementAdd;
@@ -30,7 +31,10 @@ class World {
         });
 
         playerActor = new Actor(2, 2, this, PlayerActor);
+        ratTest = new Actor(12, 12, this, Rat);
+
         actors.push(playerActor);
+        actors.push(ratTest);
         this.size = size;
 
         this.onAddElement = onAddElement;

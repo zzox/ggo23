@@ -5,6 +5,7 @@ enum ActorType {
     Rat;
 }
 
+// Data for visuals _and_ state
 typedef ActorData = {
     var preAttackTime:Float;
     var attackTime:Float;

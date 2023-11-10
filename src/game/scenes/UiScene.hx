@@ -2,10 +2,7 @@ package game.scenes;
 
 import core.Scene;
 import core.Sprite;
-import core.Types;
 import game.ui.UiText;
-import kha.Assets;
-import kha.graphics2.Graphics;
 
 class UiScene extends Scene {
     public var exText:Sprite;

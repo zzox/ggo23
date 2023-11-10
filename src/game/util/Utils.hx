@@ -25,3 +25,44 @@ function isDiagonal (pos1:IntVec2, pos2:IntVec2) {
 
     return false;
 }
+
+function getVisDiffFromDir (dir:GridDir) {
+    return switch (dir) {
+        case North: new IntVec2(-8, -8);
+        case East: new IntVec2(8, -8);
+        case South: new IntVec2(8, 8);
+        case West: new IntVec2(-8, 8);
+        case NorthEast: new IntVec2(0, -8);
+        case NorthWest: new IntVec2(-16, 0);
+        case SouthEast: new IntVec2(16, 0);
+        case SouthWest: new IntVec2(0, 8);
+        default: throw 'Bad dir!';
+    }
+}
+
+function getDiffFromDir (dir:GridDir) {
+    return switch (dir) {
+        case North: new IntVec2(0, -1);
+        case East: new IntVec2(1, 0);
+        case South: new IntVec2(0, 1);
+        case West: new IntVec2(-1, 0);
+        case NorthEast: new IntVec2(1, -1);
+        case NorthWest: new IntVec2(-1, -1);
+        case SouthEast: new IntVec2(1, 1);
+        case SouthWest: new IntVec2(-1, 1);
+        default: throw 'Bad dir!';
+    }
+}
+
+// WRONG
+// function getDirFromDiff (x:Int, y:Int):GridDir {
+//     if (x == 1 && y == -1) return North;
+//     if (x == 1 && y == 1) return East;
+//     if (x == -1 && y == 1) return South;
+//     if (x == -1 && y == -1) return West;
+//     if (x == 1 && y == 0) return NorthEast;
+//     if (x == 0 && y == -1) return NorthWest;
+//     if (x == 0 && y == 1) return SouthEast;
+//     if (x == -1 && y == 0) return SouthWest;
+//     throw 'Dir not found';
+// }

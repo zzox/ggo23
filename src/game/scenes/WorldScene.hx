@@ -23,6 +23,8 @@ class WorldScene extends Scene {
 
     var uiScene:UiScene;
 
+    var ratTest:ActorSprite;
+
     override function create () {
         world = new World(new IntVec2(50, 50), handleAddElement, handleRemoveElement);
 
@@ -40,6 +42,9 @@ class WorldScene extends Scene {
         addSprite(gridObjects);
 
         player = new ActorSprite(world.playerActor);
+        final rat = new ActorSprite(world.ratTest);
+        gridObjects.addChild(rat);
+
         gridObjects.addChild(player);
         camera.startFollow(player);
         camera.followLerp.set(0.25, 0.25);
@@ -55,6 +60,10 @@ class WorldScene extends Scene {
 
         handleCamera();
         handleInput();
+
+        if (Math.random() < 0.01 && world.ratTest.state == Wait) {
+            world.ratTest.tryAttack(South);
+        }
 
         world.update(delta);
         super.update(delta);
