@@ -1,12 +1,9 @@
 package game.objects;
 
-import core.Camera;
-import core.Sprite;
 import core.Types;
 import game.util.Utils;
 import game.world.Actor;
 import kha.Assets;
-import kha.graphics2.Graphics;
 
 class ActorSprite extends WorldItemSprite {
     var actorState:Actor;

@@ -1,6 +1,5 @@
 package game.objects;
 
-import core.Sprite;
 import core.Types;
 import game.util.Utils;
 import game.world.Element;

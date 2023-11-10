@@ -16,6 +16,7 @@ import kha.input.KeyCode;
 class WorldScene extends Scene {
     var world:World;
     var gridTiles:Group;
+    var gridObjects:Group;
     var player:ActorSprite;
     var tileSprites:Array<TileSprite> = [];
     var elementSprites:Array<ElementSprite> = [];
@@ -32,16 +33,16 @@ class WorldScene extends Scene {
             }
         }
         gridTiles = new Group(cast tileSprites.copy());
-
-        // addSprite(new TileSprite(16, 16, 0));
         addSprite(gridTiles);
-
         sortGroupByY(gridTiles);
 
+        gridObjects = new Group();
+        addSprite(gridObjects);
+
         player = new ActorSprite(world.playerActor);
-        addSprite(player);
+        gridObjects.addChild(player);
         camera.startFollow(player);
-        camera.followLerp.set(0.25, 0.25);
+        camera.followLerp.set(0.1, 0.1);
 
         uiScene = new UiScene();
         game.addScene(uiScene);
@@ -57,6 +58,8 @@ class WorldScene extends Scene {
 
         world.update(delta);
         super.update(delta);
+
+        sortGroupByY(gridObjects);
 
         if (game.keys.justPressed(KeyCode.R)) {
             game.switchScene(new WorldScene());
@@ -101,14 +104,14 @@ class WorldScene extends Scene {
         // TODO: use pool for these.
         final elementSprite = new ElementSprite(element);
         elementSprites.push(elementSprite);
-        addSprite(elementSprite);
+        gridObjects.addChild(elementSprite);
     }
 
     function handleRemoveElement (element:Element) {
         trace('r', element);
         for (e in elementSprites) {
             if (e.elementState == element) {
-                // gridObjects.removeItem(a);
+                gridObjects.removeChild(e);
                 elementSprites.remove(e);
                 e.elementState = null;
                 e.destroy();
