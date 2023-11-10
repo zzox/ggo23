@@ -1,6 +1,7 @@
 package game.world;
 
 import core.Types;
+import game.data.ActorData;
 import game.util.Pathfinding;
 import game.util.Utils;
 import game.world.Grid;
@@ -41,18 +42,20 @@ class Actor {
     var currentMove:Null<Move>;
     var currentPath:Null<Array<IntVec2>>;
 
+    public var actorType:ActorType;
     public var state:ActorState = Wait;
 
     // TEMP: this needs to be a diff value that we take the inverse of.
     var speed:Float = 0.166;
 
-    public function new (x:Int, y:Int, world:World) {
+    public function new (x:Int, y:Int, world:World, type:ActorType) {
         this.x = x;
         this.y = y;
 
         id = getId();
 
         this.world = world;
+        this.actorType = type;
     }
 
     public function update (delta:Float) {

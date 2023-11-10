@@ -1,6 +1,7 @@
 package game.objects;
 
 import core.Types;
+import game.data.ActorData;
 import game.util.Utils;
 import game.world.Actor;
 import kha.Assets;
@@ -11,12 +12,15 @@ class ActorSprite extends WorldItemSprite {
     var prevX:Float;
 
     public function new (actor:Actor) {
+        final data = actorData[actor.actorType];
         final pos = translateWorldPos(actor.x, actor.y);
-        super(new Vec2(pos.x, pos.y), Assets.images.wizard_2, new IntVec2(16, 32), 0xff5b6ee1);
+        super(new Vec2(pos.x, pos.y), Assets.images.actors, new IntVec2(16, 32), data.color);
         this.actorState = actor;
 
-        animation.add('still', [0]);
-        animation.add('walk', [0, 1], 0.2);
+        animation.add('still', [data.moveAnims[0]]);
+        animation.add('walk', data.moveAnims.copy(), 0.2);
+        animation.add('preattack', [data.preAttackAnim]);
+        animation.add('attack', [data.attackAnim]);
     }
 
     override function update (delta:Float) {

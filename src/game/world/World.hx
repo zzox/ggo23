@@ -29,7 +29,7 @@ class World {
             return { x: x, y: y, tile: Tile, object: null, actor: null, element: null };
         });
 
-        playerActor = new Actor(2, 2, this);
+        playerActor = new Actor(2, 2, this, PlayerActor);
         actors.push(playerActor);
         this.size = size;
 
