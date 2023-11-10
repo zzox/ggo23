@@ -1,4 +1,4 @@
-package game.actors;
+package game.objects;
 
 import core.Camera;
 import core.Sprite;
@@ -8,20 +8,18 @@ import game.world.Actor;
 import kha.Assets;
 import kha.graphics2.Graphics;
 
-class ActorSprite extends Sprite {
+class ActorSprite extends WorldItemSprite {
     var actorState:Actor;
 
-    var yOffset:Int = 16;
+    var prevX:Float;
 
     public function new (actor:Actor) {
         final pos = translateWorldPos(actor.x, actor.y);
-        super(new Vec2(pos.x, pos.y), Assets.images.wizard_2, new IntVec2(16, 32));
+        super(new Vec2(pos.x, pos.y), Assets.images.wizard_2, new IntVec2(16, 32), 0xff5b6ee1);
         this.actorState = actor;
 
         animation.add('still', [0]);
         animation.add('walk', [0, 1], 0.2);
-
-        color = 0xff5b6ee1;
     }
 
     override function update (delta:Float) {
@@ -34,25 +32,16 @@ class ActorSprite extends Sprite {
             animation.play('still');
         }
 
+        if (flipX && prevX > x) {
+            flipX = false;
+        }
+
+        if (!flipX && prevX < x) {
+            flipX = true;
+        }
+
+        prevX = x;
+
         super.update(delta);
-    }
-
-    override function render (g2:Graphics, cam:Camera) {
-        // is this needed?
-        // final px = x;
-        // final py = y;
-
-        // setPosition(Math.round(x), Math.round(y));
-        // super.render(g2, cam);
-        // setPosition(px, py);
-
-        // for (c in _children) {
-        //     c.setPosition(x, y - yOffset);
-        // }
-
-        final oldY = y;
-        y -= yOffset;
-        super.render(g2, cam);
-        y = oldY;
     }
 }

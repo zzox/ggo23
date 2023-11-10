@@ -2,7 +2,7 @@ package game.util;
 
 import core.Group;
 import core.Types;
-import game.world.World;
+import game.world.Grid;
 
 function translateWorldPos (x:Float, y:Float):Vec2 {
     return new Vec2((x * 8) + (y * 8), (y * 4) + (x * -4));

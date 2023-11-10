@@ -3,6 +3,7 @@ package game.world;
 import core.Types;
 import game.util.Pathfinding;
 import game.util.Utils;
+import game.world.Grid;
 import game.world.World;
 
 typedef Move = {
