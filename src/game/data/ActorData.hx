@@ -10,6 +10,7 @@ typedef ActorData = {
     var preAttackTime:Float;
     var attackTime:Float;
     var color:Int;
+    // TODO: use a single index for anims and go from there.
     var moveAnims:Array<Int>;
     var preAttackAnim:Int;
     var attackAnim:Int;

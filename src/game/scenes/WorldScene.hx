@@ -30,8 +30,10 @@ class WorldScene extends Scene {
 
         for (outer in world.grid) {
             for (item in outer) {
-                final gridTile = new TileSprite(item.x, item.y, Math.random() < 0.1 ? 1 : 0);
-                tileSprites.push(gridTile);
+                if (item.tile != null) {
+                    final gridTile = new TileSprite(item.x, item.y, Math.random() < 0.1 ? 1 : 0);
+                    tileSprites.push(gridTile);
+                }
             }
         }
         gridTiles = new Group(cast tileSprites.copy());
@@ -79,14 +81,14 @@ class WorldScene extends Scene {
         final tilePos = getTilePos(world.grid, game.mouse.position.x, game.mouse.position.y);
 
         if (tilePos != null) {
-            // TODO: inline getTileAt method?
-            tileSprites[tilePos.x * world.size.y + tilePos.y].focused = true;
-        }
+            final tile = getTileSpriteAt(tilePos.x, tilePos.y);
+            if (tile != null) {
+                tile.focused = true;
+            }
 
-        if (tilePos != null) {
             // highlight tile
             final clicked = game.mouse.justPressed(MouseButton.Left);
-            if (clicked && world.playerActor.state != Moving) {
+            if (clicked && world.playerActor.state != Moving && tilePos.tile != null) {
                 world.playerActor.move(tilePos.x, tilePos.y);
             }
 
@@ -117,7 +119,6 @@ class WorldScene extends Scene {
     }
 
     function handleRemoveElement (element:Element) {
-        trace('r', element);
         for (e in elementSprites) {
             if (e.elementState == element) {
                 gridObjects.removeChild(e);
@@ -127,5 +128,19 @@ class WorldScene extends Scene {
                 return;
             }
         }
+    }
+
+    function getTileSpriteAt (x:Int, y:Int):Null<TileSprite> {
+        // ATTN: find a better way than to have linear-time access, especially if
+        // this gets used more often.
+        for (ts in tileSprites) {
+            if (ts.pos.x == x && ts.pos.y == y) {
+                return ts;
+            }
+        }
+
+        return null;
+
+        // return tileSprites[x * world.size.y + y];
     }
 }

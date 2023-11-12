@@ -10,12 +10,14 @@ import kha.graphics2.Graphics;
 
 class TileSprite extends Sprite {
     public var focused:Bool = false;
+    public var pos:IntVec2;
 
     public function new (x:Int, y:Int, index:Int) {
-        final pos = translateWorldPos(x, y);
-        super(pos.clone(), Assets.images.grid_tiles, new IntVec2(16, 16));
+        final worldPos = translateWorldPos(x, y);
+        super(worldPos.clone(), Assets.images.grid_tiles, new IntVec2(16, 16));
 
         tileIndex = index;
+        pos = new IntVec2(x, y);
     }
 
     override function render (g2, camera) {

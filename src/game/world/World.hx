@@ -1,6 +1,7 @@
 package game.world;
 
 import core.Types;
+import game.data.RoomData;
 import game.world.Element;
 import game.world.Grid;
 
@@ -26,12 +27,13 @@ class World {
     var onRemoveElement:ElementAdd;
 
     public function new (size:IntVec2, onAddElement:ElementAdd, onRemoveElement:ElementAdd) {
-        grid = makeGrid(size, (x, y) -> {
-            return { x: x, y: y, tile: Tile, object: null, actor: null, element: null };
-        });
+        // grid = makeGrid(size, (x, y) -> {
+        //     return { x: x, y: y, tile: Tile, object: null, actor: null, element: null };
+        // });
+        grid = createMap(makeRoom(mainRoom1).rows);
 
         playerActor = new Actor(2, 2, this, PlayerActor);
-        ratTest = new Actor(12, 12, this, Rat);
+        ratTest = new Actor(8, 8, this, Rat);
 
         actors.push(playerActor);
         actors.push(ratTest);
