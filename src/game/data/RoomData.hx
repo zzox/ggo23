@@ -13,7 +13,7 @@ final mainRoom1 = "
  xxxxxxxxx
  xxxxxxxxx
  xxxxxxxxx
-     2
+  2
 ";
 
 enum TileType {
@@ -26,13 +26,9 @@ enum TileType {
     WestExit;
 }
 
-typedef RawRoom = {
-    var width:Int;
-    var height:Int;
-    var rows:Array<Array<Null<TileType>>>;
-}
+typedef PreGrid = Array<Array<Null<TileType>>>;
 
-function makeRoom (roomString:String):RawRoom {
+function makeRoom (roomString:String):Grid {
     var width = 0;
     var height = 0;
 
@@ -71,33 +67,42 @@ function makeRoom (roomString:String):RawRoom {
         rowItems.push(rowItem);
     }
 
-    return {
-        width: width,
-        height: height,
-        rows: rowItems
-    }
+    return makeMap(rowsToColumns(width, height, rowItems));
 }
 
-function createRoomItems () {
-
-}
-
-function createMap (rows:Array<Array<Null<TileType>>>):Array<Array<GridItem>> {
-    trace(rows);
-
+function rowsToColumns (width:Int, height:Int, rows:PreGrid):PreGrid {
     final items = [];
-    for (x in 0...12) {
+    for (x in 0...width) {
         final column = [];
-        for (y in 0...12) {
+        for (y in 0...height) {
             if (rows[y] != null) {
-                column.push(
-                    rows[y][x] == null ?
-                        { x: x, y: y, tile: null, object: null, actor: null, element: null } :
-                        { x: x, y: y, tile: Tile, object: null, actor: null, element: null }
-                );
+                column.push(rows[y][x]);
             }
         }
         items.push(column);
     }
     return items;
+}
+
+function makeMap (rows:PreGrid):Grid {
+    trace(rows);
+
+    final items = [];
+    for (x in 0...rows.length) {
+        final column = [];
+        for (y in 0...rows[x].length) {
+            // TODO: switch for tiletype
+            column.push(
+                rows[x][y] == null ?
+                    { x: x, y: y, tile: null, object: null, actor: null, element: null } :
+                    { x: x, y: y, tile: Tile, object: null, actor: null, element: null }
+            );
+        }
+        items.push(column);
+    }
+    return items;
+}
+
+function createRoomItems () {
+
 }

@@ -4,7 +4,7 @@ idea for "scaling up attacks", basiaclly a roguelike but gridbased. done some gr
 
 ## day 7
 
-moved over some gridbased stuff from `convenience`. got grid generation and actor movement started. dove deep into smooth camera scrolling and _almost_ got it working. it looks better but not the best
+moved over some grid based stuff from `convenience`. got grid generation and actor movement started. dove deep into smooth camera scrolling and _almost_ got it working. it looks better but not the best
 
 ## day 8
 

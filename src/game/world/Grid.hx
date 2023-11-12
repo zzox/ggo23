@@ -42,7 +42,8 @@ function makeGrid (size:IntVec2, callback:(Int, Int) -> GridItem):Grid {
     return grid;
 }
 
-function twoDMap <T>(grid:Grid, callback:(GridItem, Int, Int) -> T):Array<Array<T>> {
+// map a two dimensional array to a new array of the same or different type.
+function twoDMap <T, TT>(grid:Array<Array<T>>, callback:(T, Int, Int) -> TT):Array<Array<TT>> {
     final items = [];
     for (x in 0...grid.length) {
         final column = [];
