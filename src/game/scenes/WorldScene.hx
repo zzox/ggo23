@@ -48,8 +48,8 @@ class WorldScene extends Scene {
         gridObjects.addChild(rat);
 
         gridObjects.addChild(player);
-        camera.startFollow(player);
-        camera.followLerp.set(0.25, 0.25);
+        // camera.startFollow(player);
+        // camera.followLerp.set(0.25, 0.25);
 
         uiScene = new UiScene();
         game.addScene(uiScene);
@@ -107,6 +107,24 @@ class WorldScene extends Scene {
 
         if (game.keys.justPressed(KeyCode.HyphenMinus)) {
             camera.scale.set(1.0, 1.0);
+        }
+
+        // DEBUG camera; won't work if camera follow is set
+        final speedup = game.keys.pressed(KeyCode.Shift) ? 4.0 : 1.0;
+        if (game.keys.pressed(KeyCode.Left)) {
+            camera.scroll.x -= speedup * 2 / camera.scale.x;
+        }
+
+        if (game.keys.pressed(KeyCode.Right)) {
+            camera.scroll.x += speedup * 2 / camera.scale.x;
+        }
+
+        if (game.keys.pressed(KeyCode.Up)) {
+            camera.scroll.y -= speedup * 2 / camera.scale.x;
+        }
+
+        if (game.keys.pressed(KeyCode.Down)) {
+            camera.scroll.y += speedup * 2 / camera.scale.x;
         }
     }
 

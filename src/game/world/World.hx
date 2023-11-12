@@ -30,7 +30,8 @@ class World {
         // grid = makeGrid(size, (x, y) -> {
         //     return { x: x, y: y, tile: Tile, object: null, actor: null, element: null };
         // });
-        grid = makeRoom(mainRoom1);
+        // grid = makeMap(makeRoom(mainRoom1).preGrid);
+        grid = generate(50, 50);
 
         playerActor = new Actor(2, 2, this, PlayerActor);
         ratTest = new Actor(8, 8, this, Rat);
