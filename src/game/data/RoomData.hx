@@ -1,32 +1,34 @@
 package game.data;
 
-import core.Types.Rect;
+import core.Types;
 import core.Util;
+import game.util.Pathfinding;
 import game.world.Grid;
 import game.world.World;
 import js.html.Console;
 
 final mainRoom1 = "
-     0
+     X
  xxxxxxxxx
  xxSxxxxxx
  xxxxxxxxx
  xxxxxxxxx
-3xxxxxxxxx1
+XxxxxxxxxxX
  xxxxxxxxx
  xxxxxxxxx
  xxxxxxxxx
-  2
+  X
 ";
 
 enum TileType {
     Ground;
     PlayerSpawn;
     EnemySpawn;
-    NorthExit;
-    EastExit;
-    SouthExit;
-    WestExit;
+    // NorthExit;
+    // EastExit;
+    // SouthExit;
+    // WestExit;
+    Exit;
     Hallway;
 }
 
@@ -66,10 +68,7 @@ function makeRoom (roomString:String):PreRoom {
                 case 'x': Ground;
                 case 'S': PlayerSpawn;
                 case 'E': EnemySpawn;
-                case '0': NorthExit;
-                case '1': EastExit;
-                case '2': SouthExit;
-                case '3': WestExit;
+                case 'X': Exit;
                 default: null;
             }
             rowItem.push(item);
@@ -115,7 +114,7 @@ function makeMap (rows:PreGrid):Grid {
         for (y in 0...rows[x].length) {
             // TODO: switch for tiletype
             column.push(
-                rows[x][y] == null ?
+                rows[x][y] == null /*|| rows[x][y] == Exit*/ ?
                     { x: x, y: y, tile: null, object: null, actor: null, element: null } :
                     { x: x, y: y, tile: Tile, object: null, actor: null, element: null }
             );
@@ -125,20 +124,55 @@ function makeMap (rows:PreGrid):Grid {
     return items;
 }
 
-typedef PlacedRooms = {
-    var pos:Rect;
+function getRandomItem <T>(list:Array<T>):T {
+    return list[Math.floor(Math.random() * list.length)];
+}
+
+// ATTN:
+function getAdjacentItems <T>(grid:Array<Array<T>>, x:Int, y:Int) {
+    final items = [];
+
+    final item1 = grid[x + 1] != null ? grid[x + 1][y] : null;
+    final item2 = grid[x] != null ? grid[x][y + 1] : null;
+    final item3 = grid[x - 1] != null ? grid[x - 1][y] : null;
+    final item4 = grid[x] != null ? grid[x][y - 1] : null;
+    final item5 = grid[x + 1] != null ? grid[x + 1][y + 1] : null;
+    final item6 = grid[x - 1] != null ? grid[x - 1][y + 1] : null;
+    final item7 = grid[x + 1] != null ? grid[x + 1][y - 1] : null;
+    final item8 = grid[x - 1] != null ? grid[x - 1][y - 1] : null;
+
+    if (item1 != null) items.push(item1);
+    if (item2 != null) items.push(item2);
+    if (item3 != null) items.push(item3);
+    if (item4 != null) items.push(item4);
+    if (item5 != null) items.push(item5);
+    if (item6 != null) items.push(item6);
+    if (item7 != null) items.push(item7);
+    if (item8 != null) items.push(item8);
+
+    return items;
+}
+
+typedef PlacedRoom = {
+    var rect:Rect;
     var connected:Bool;
+    var exits:Array<IntVec2>;
+    var isStart:Bool;
 }
 
 // TODO: time this
 function generate (width:Int, height:Int):Grid {
     Console.time('generation');
+    var numPaths:Int = 0;
 
-    final roomsPlaced:Array<Rect> = [];
+    final PLACE_ATTEMPTS:Int = 200;
+
+    final roomsPlaced:Array<PlacedRoom> = [];
+
+    var initialConnected:Bool = true;
 
     final pregrid = makeEmptyPregrid(width, height);
-
-    for (_ in 0...20) {
+    for (_ in 0...PLACE_ATTEMPTS) {
         // MD: room types
         final room = makeRoom(mainRoom1);
 
@@ -148,7 +182,7 @@ function generate (width:Int, height:Int):Grid {
 
         var roomCollided = false;
         for (r in roomsPlaced) {
-            if (rectOverlap(randomX, randomY, room.width, room.height, r.x, r.y, r.width, r.height)) {
+            if (rectOverlap(randomX, randomY, room.width, room.height, r.rect.x, r.rect.y, r.rect.width, r.rect.height)) {
                 roomCollided = true;
                 trace('collided');
                 break;
@@ -156,26 +190,120 @@ function generate (width:Int, height:Int):Grid {
         }
 
         if (!roomCollided) {
-            copyPreGrid(pregrid, room.preGrid, randomX, randomY);
+            // TODO: don't place grid here, wait until the end.
+            copyPregrid(pregrid, room.preGrid, randomX, randomY);
             // pad the rooms after placement
+
+            final exits = [];
+            twoDMap(room.preGrid, (item:Null<TileType>, x:Int, y:Int) -> {
+                if (item == Exit) {
+                    exits.push(new IntVec2(randomX + x, randomY + y));
+                }
+            });
+
             final padding = 1;
-            roomsPlaced.push({ x: randomX - padding, y: randomY - padding, height: room.height + padding, width: room.width + padding });
+            roomsPlaced.push({
+                exits: exits,
+                rect: {
+                    x: randomX - padding,
+                    y: randomY - padding,
+                    height: room.height + padding,
+                    width: room.width + padding
+                },
+                connected: initialConnected,
+                isStart: initialConnected
+            });
+
+            initialConnected = false;
         }
     }
 
+    final intGrid = twoDMap(pregrid, (type:Null<TileType>, x:Int, y:Int) -> {
+        if (type != null) {
+            return 0;
+        }
+
+        final adjacentItems = getAdjacentItems(pregrid, x, y);
+        final isRoomAdjacent = Lambda.fold(adjacentItems, (item:Null<TileType>, res:Bool) -> {
+            if (item == Ground) {
+                return true;
+            }
+            return res;
+        }, false);
+
+        return isRoomAdjacent ? 0 : 1;
+    });
+
     // 2. connect rooms
         // a. pathfind between each exit
-            // (manhattan, only opposites)
-        // b. if pathfind hits anything besides hallways, we don't
+            // i. manhattan, only opposites
+            // ii. don't try this if the distance is too far (customizable?)
 
-    // 3. clean up
+    final hallways = [];
+    for (room in roomsPlaced) {
+        // try to connect.
+        // diminishing chance based on distance and chance passed in.
+
+        for (otherRoom in roomsPlaced) {
+            if (otherRoom != room) {
+
+                final distance = distanceBetween(
+                    new Vec2(room.rect.x + room.rect.width / 2, room.rect.y + room.rect.height / 2),
+                    new Vec2(otherRoom.rect.x + otherRoom.rect.width / 2, otherRoom.rect.y + otherRoom.rect.height / 2)
+                );
+
+                trace(room.exits.length);
+
+                // final it = Math.pow(((width + height) / 2), 2) / 2;
+                // trace(it, distance);
+
+                // TODO: figure out better method to determine pathing
+                if (distance < 50 && ((room.connected && Math.random() < 0.25) || (!room.connected && Math.random() < 0.5))) {
+                    final roomExit = getRandomItem(room.exits);
+                    final otherRoomExit = getRandomItem(otherRoom.exits);
+
+                    if (roomExit != null && otherRoomExit != null) {
+                        final path = pathfind(intGrid, roomExit, otherRoomExit, Manhattan);
+                        numPaths++;
+
+                        if (path != null && path.length > 0 && (!room.connected || path.length < 10)) {
+                            hallways.push(path);
+                            room.exits.remove(roomExit);
+                            otherRoom.exits.remove(otherRoomExit);
+
+                            // only mark as connected if one of the two are connected.
+                            // TODO: do the same to hallways.
+                            if (room.connected || otherRoom.connected) {
+                                room.connected = true;
+                                otherRoom.connected = true;
+                            }
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // go through rooms and remove exits that werent placed
+
+    trace(hallways.length);
+
+    for (hallway in hallways) {
+        for (pos in hallway) {
+            pregrid[pos.x][pos.y] = Hallway;
+        }
+    }
+
+    // 3. clean up, place everything
         // a. if an exit has no hallway neighbors, remove it.
         // b. if a room hasn't been touched, remove it
-    Console.timeEnd('it');
+    trace('num paths tried', numPaths);
+    Console.timeEnd('generation');
     return makeMap(pregrid);
 }
 
-function copyPreGrid (toGrid:PreGrid, fromGrid:PreGrid, fromX:Int, fromY:Int) {
+function copyPregrid (toGrid:PreGrid, fromGrid:PreGrid, fromX:Int, fromY:Int) {
     for (x in 0...fromGrid.length) {
         final column = fromGrid[x];
         for (y in 0...column.length) {
