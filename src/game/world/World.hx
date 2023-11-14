@@ -21,7 +21,6 @@ class World {
     public var elements:Array<Element> = [];
 
     public var playerActor:Actor;
-    public var ratTest:Actor;
 
     var onAddElement:ElementAdd;
     var onRemoveElement:ElementAdd;
@@ -35,10 +34,13 @@ class World {
         grid = generatedWorld.grid;
 
         playerActor = new Actor(generatedWorld.playerPos.x, generatedWorld.playerPos.y, this, PlayerActor);
-        ratTest = new Actor(8, 8, this, Rat);
-
         actors.push(playerActor);
-        actors.push(ratTest);
+
+        for (enemySpawner in generatedWorld.spawners) {
+            // MD: enemy type from randomness in level config.
+            final rat = new Actor(enemySpawner.x, enemySpawner.y, this, Rat);
+            actors.push(rat);
+        }
 
         this.size = size;
 
@@ -47,7 +49,9 @@ class World {
     }
 
     public function update (delta) {
-        for (actor in actors) actor.update(delta);
+        for (actor in actors) {
+            actor.update(delta);
+        }
         for (element in elements) {
             element.update(delta);
             if (element.time < 0.0) {

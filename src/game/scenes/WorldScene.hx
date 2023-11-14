@@ -44,8 +44,12 @@ class WorldScene extends Scene {
         addSprite(gridObjects);
 
         player = new ActorSprite(world.playerActor);
-        final rat = new ActorSprite(world.ratTest);
-        gridObjects.addChild(rat);
+
+        for (actor in world.actors) {
+            if (actor != world.playerActor) {
+                gridObjects.addChild(new ActorSprite(actor));
+            }
+        }
 
         gridObjects.addChild(player);
         // camera.startFollow(player);
@@ -62,10 +66,6 @@ class WorldScene extends Scene {
 
         handleCamera();
         handleInput();
-
-        if (Math.random() < 0.01 && world.ratTest.state == Wait) {
-            world.ratTest.tryAttack(South);
-        }
 
         world.update(delta);
         super.update(delta);

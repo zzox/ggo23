@@ -10,12 +10,12 @@ import js.html.Console;
 final mainRoom1 = "
      X
  xxxxxxxxx
- xxSxxxxxx
+ xxPxxxxxx
  xxxxxxxxx
  xxxxxxxxx
 XxxxxxxxxxX
  xxxxxxxxx
- xxxxxxxxx
+ xxxxxxExx
  xxxxxxxxx
   X
 ";
@@ -66,7 +66,7 @@ function makeRoom (roomString:String):PreRoom {
             final item = switch (row.charAt(i)) {
                 case ' ': null;
                 case 'x': Ground;
-                case 'S': PlayerSpawn;
+                case 'P': PlayerSpawn;
                 case 'E': EnemySpawn;
                 case 'X': Exit;
                 default: null;
@@ -204,7 +204,7 @@ function generate (width:Int, height:Int):GeneratedWorld {
                     exits.push(new IntVec2(randomX + x, randomY + y));
                 } else if (item == PlayerSpawn) {
                     pSpawn = new IntVec2(x + randomX, y + randomY);
-                } else if (item == EnemySpawn) {
+                } else if (item == EnemySpawn && !initialConnected) {
                     enemySpawners.push(new IntVec2(x + randomX, y + randomY));
                 }
             });
@@ -221,6 +221,7 @@ function generate (width:Int, height:Int):GeneratedWorld {
                 connected: initialConnected,
             });
 
+            // make this the starting point if this is the first room to be placed.
             if (initialConnected) {
                 playerPos = pSpawn;
             }
@@ -267,7 +268,7 @@ function generate (width:Int, height:Int):GeneratedWorld {
                 // trace(it, distance);
 
                 // TODO: figure out better method to determine pathing
-                if (distance < 50 && ((room.connected && Math.random() < 0.05) || (!room.connected && Math.random() < 0.25))) {
+                if (distance < 50 && ((room.connected && Math.random() < 0.1) || (!room.connected && Math.random() < 0.5))) {
                     final roomExit = getRandomItem(room.exits);
                     final otherRoomExit = getRandomItem(otherRoom.exits);
 
@@ -309,12 +310,12 @@ function generate (width:Int, height:Int):GeneratedWorld {
     // 3. clean up, place everything
         // a. if an exit has no hallway neighbors, remove it.
         // b. if a room hasn't been touched, remove it
-    trace('num paths tried', numPaths);
+    trace('num paths tried', numPaths, enemySpawners.length);
     Console.timeEnd('generation');
     return {
         grid: makeMap(pregrid),
         playerPos: playerPos,
-        spawners: []
+        spawners: enemySpawners
     };
 }
 
