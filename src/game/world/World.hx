@@ -31,13 +31,15 @@ class World {
         //     return { x: x, y: y, tile: Tile, object: null, actor: null, element: null };
         // });
         // grid = makeMap(makeRoom(mainRoom1).preGrid);
-        grid = generate(50, 50);
+        final generatedWorld = generate(size.x, size.y);
+        grid = generatedWorld.grid;
 
-        playerActor = new Actor(2, 2, this, PlayerActor);
+        playerActor = new Actor(generatedWorld.playerPos.x, generatedWorld.playerPos.y, this, PlayerActor);
         ratTest = new Actor(8, 8, this, Rat);
 
         actors.push(playerActor);
         actors.push(ratTest);
+
         this.size = size;
 
         this.onAddElement = onAddElement;

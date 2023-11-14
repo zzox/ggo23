@@ -106,15 +106,13 @@ function makeEmptyPregrid<T>(width:Int, height:Int):Array<Array<T>> {
 }
 
 function makeMap (rows:PreGrid):Grid {
-    trace(rows);
-
     final items = [];
     for (x in 0...rows.length) {
         final column = [];
         for (y in 0...rows[x].length) {
             // TODO: switch for tiletype
             column.push(
-                rows[x][y] == null /*|| rows[x][y] == Exit*/ ?
+                rows[x][y] == null || rows[x][y] == Exit ?
                     { x: x, y: y, tile: null, object: null, actor: null, element: null } :
                     { x: x, y: y, tile: Tile, object: null, actor: null, element: null }
             );
@@ -157,19 +155,24 @@ typedef PlacedRoom = {
     var rect:Rect;
     var connected:Bool;
     var exits:Array<IntVec2>;
-    var isStart:Bool;
+}
+
+typedef GeneratedWorld = {
+    var grid:Grid;
+    var playerPos:IntVec2;
+    var spawners:Array<IntVec2>;
 }
 
 // TODO: time this
-function generate (width:Int, height:Int):Grid {
+function generate (width:Int, height:Int):GeneratedWorld {
     Console.time('generation');
-    var numPaths:Int = 0;
 
     final PLACE_ATTEMPTS:Int = 200;
-
+    var numPaths:Int = 0;
     final roomsPlaced:Array<PlacedRoom> = [];
-
     var initialConnected:Bool = true;
+    var playerPos:Null<IntVec2> = null;
+    final enemySpawners:Array<IntVec2> = [];
 
     final pregrid = makeEmptyPregrid(width, height);
     for (_ in 0...PLACE_ATTEMPTS) {
@@ -194,10 +197,15 @@ function generate (width:Int, height:Int):Grid {
             copyPregrid(pregrid, room.preGrid, randomX, randomY);
             // pad the rooms after placement
 
+            var pSpawn:Null<IntVec2> = null;
             final exits = [];
             twoDMap(room.preGrid, (item:Null<TileType>, x:Int, y:Int) -> {
                 if (item == Exit) {
                     exits.push(new IntVec2(randomX + x, randomY + y));
+                } else if (item == PlayerSpawn) {
+                    pSpawn = new IntVec2(x + randomX, y + randomY);
+                } else if (item == EnemySpawn) {
+                    enemySpawners.push(new IntVec2(x + randomX, y + randomY));
                 }
             });
 
@@ -211,8 +219,11 @@ function generate (width:Int, height:Int):Grid {
                     width: room.width + padding
                 },
                 connected: initialConnected,
-                isStart: initialConnected
             });
+
+            if (initialConnected) {
+                playerPos = pSpawn;
+            }
 
             initialConnected = false;
         }
@@ -252,13 +263,11 @@ function generate (width:Int, height:Int):Grid {
                     new Vec2(otherRoom.rect.x + otherRoom.rect.width / 2, otherRoom.rect.y + otherRoom.rect.height / 2)
                 );
 
-                trace(room.exits.length);
-
                 // final it = Math.pow(((width + height) / 2), 2) / 2;
                 // trace(it, distance);
 
                 // TODO: figure out better method to determine pathing
-                if (distance < 50 && ((room.connected && Math.random() < 0.25) || (!room.connected && Math.random() < 0.5))) {
+                if (distance < 50 && ((room.connected && Math.random() < 0.05) || (!room.connected && Math.random() < 0.25))) {
                     final roomExit = getRandomItem(room.exits);
                     final otherRoomExit = getRandomItem(otherRoom.exits);
 
@@ -267,6 +276,8 @@ function generate (width:Int, height:Int):Grid {
                         numPaths++;
 
                         if (path != null && path.length > 0 && (!room.connected || path.length < 10)) {
+                            // add the first tile to the start of the path
+                            path.unshift(roomExit);
                             hallways.push(path);
                             room.exits.remove(roomExit);
                             otherRoom.exits.remove(otherRoomExit);
@@ -300,7 +311,11 @@ function generate (width:Int, height:Int):Grid {
         // b. if a room hasn't been touched, remove it
     trace('num paths tried', numPaths);
     Console.timeEnd('generation');
-    return makeMap(pregrid);
+    return {
+        grid: makeMap(pregrid),
+        playerPos: playerPos,
+        spawners: []
+    };
 }
 
 function copyPregrid (toGrid:PreGrid, fromGrid:PreGrid, fromX:Int, fromY:Int) {

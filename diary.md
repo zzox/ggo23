@@ -22,7 +22,7 @@ flew and traveled all day. worked on adding elements and code restructuring a bi
 
 hung out with folks, listened to Brian Eno, walked the dog and coded. A lot on code restructure and getting the game in a good place to iterate. This early stage is a challenge because of how "wide" I am going, accounting for many things from the beginning.
 
-Stumpted for a while on simple math.
+Stumped for a while on simple math.
 
 Definitely going to be a challenge to get this done.
 
@@ -31,3 +31,11 @@ Just starting on dungeon generation.
 ## day 11
 
 wedding, no coding today! good day.
+
+## day 12
+
+long travel day. got a little bit of work done, started looking into dungeon generation. going to be more of a challenge than i thought.
+
+## day 13
+
+back to work. room generation took a bit of time. finally got some stuff working, but it's going to be a challenging process for this entire game.
