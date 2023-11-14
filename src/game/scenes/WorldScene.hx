@@ -88,8 +88,8 @@ class WorldScene extends Scene {
 
             // highlight tile
             final clicked = game.mouse.justPressed(MouseButton.Left);
-            if (clicked && world.playerActor.state != Moving && tilePos.tile != null) {
-                world.playerActor.move(tilePos.x, tilePos.y);
+            if (clicked && tilePos.tile != null) {
+                world.playerActor.queueMove(QMove, new IntVec2(tilePos.x, tilePos.y));
             }
 
             final rightClicked = game.mouse.justPressed(MouseButton.Right);

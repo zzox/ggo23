@@ -29,6 +29,16 @@ typedef Attack = {
     var elapsed:Float;
 }
 
+enum QueuedMoveType {
+    QAttack;
+    QMove;
+}
+
+typedef QueuedMove = {
+    var moveType:QueuedMoveType;
+    var pos:IntVec2;
+}
+
 function calcMovePosition (move:Move, percentMoved:Float):Vec2 {
     return new Vec2(
         move.from.x + (move.to.x - move.from.x) * percentMoved,
@@ -51,6 +61,7 @@ class Actor {
     var currentPath:Null<Array<IntVec2>>;
     public var currentAttack:Null<Attack>;
     public var isManaged:Bool;
+    var queuedMove:Null<QueuedMove> = null;
 
     public var actorType:ActorType;
     public var state:ActorState = Wait;
@@ -73,7 +84,7 @@ class Actor {
         if (state == Moving) {
             handleCurrentMove(delta);
 
-            if (currentMove == null) {
+            if (currentMove == null && queuedMove == null) {
                 startNextMove();
             }
         } else if (state == PreAttack) {
@@ -86,6 +97,16 @@ class Actor {
             if (currentAttack.elapsed > currentAttack.time) {
                 finishAttack();
             }
+        }
+
+        if (queuedMove != null) {
+            switch (queuedMove.moveType) {
+                case QMove:
+                    move(queuedMove.pos.x, queuedMove.pos.y);
+                case QAttack:
+                    tryAttack(South);
+            }
+            queuedMove = null;
         }
     }
 
@@ -117,6 +138,13 @@ class Actor {
 
     function decide () {
 
+    }
+
+    public function queueMove (type:QueuedMoveType, pos:IntVec2) {
+        queuedMove = {
+            moveType: type,
+            pos: pos
+        }
     }
 
     function handleCurrentMove (delta:Float) {
@@ -200,8 +228,6 @@ class Actor {
     }
 
     public function move (toX:Int, toY:Int) {
-        state = Moving;
-
         currentPath = pathfind(makeIntGrid(world.grid), getPosition(), new IntVec2(toX, toY), Diagonal, true);
 
         if (currentPath == null) {
@@ -209,6 +235,7 @@ class Actor {
             trace('Could not find path.');
             state = Wait;
         } else {
+            state = Moving;
             startNextMove();
         }
     }
