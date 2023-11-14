@@ -1,6 +1,7 @@
 package game.world;
 
 import core.Types;
+import core.Util.distanceBetween;
 import game.data.ActorData;
 import game.util.Pathfinding;
 import game.util.Utils;
@@ -49,6 +50,7 @@ class Actor {
     var currentMove:Null<Move>;
     var currentPath:Null<Array<IntVec2>>;
     public var currentAttack:Null<Attack>;
+    public var isManaged:Bool;
 
     public var actorType:ActorType;
     public var state:ActorState = Wait;
@@ -64,6 +66,7 @@ class Actor {
 
         this.world = world;
         this.actorType = type;
+        isManaged = type != PlayerActor;
     }
 
     public function update (delta:Float) {
@@ -84,6 +87,36 @@ class Actor {
                 finishAttack();
             }
         }
+    }
+
+    public function manage () {
+        if (state == Wait) {
+            final myPosition = getPosition();
+            // TODO: eventual `targetPosition`
+            final playerPosition = world.playerActor.getNearestPosition();
+            final distance = distanceBetween(myPosition.toVec2(), playerPosition.toVec2());
+
+            // attack distance
+            if (distance <= Math.sqrt(2)) {
+                // attack
+                final diffX = playerPosition.x - myPosition.x;
+                final diffY = playerPosition.y - myPosition.y;
+                final dir = getDirFromDiff(diffX, diffY);
+                if (dir != null) {
+                    tryAttack(dir);
+                } else {
+                    trace('missed', distance, diffX, diffY);
+                }
+            // approach distance
+            } else if (distance < 10.0) {
+                final nearestPos = world.playerActor.getNearestPosition();
+                move(nearestPos.x, nearestPos.y);
+            }
+        }
+    }
+
+    function decide () {
+
     }
 
     function handleCurrentMove (delta:Float) {
@@ -172,7 +205,9 @@ class Actor {
         currentPath = pathfind(makeIntGrid(world.grid), getPosition(), new IntVec2(toX, toY), Diagonal, true);
 
         if (currentPath == null) {
-            throw 'Could not find path.';
+            // throw 'Could not find path.';
+            trace('Could not find path.');
+            state = Wait;
         } else {
             startNextMove();
         }
@@ -189,6 +224,10 @@ class Actor {
         }
 
         return new IntVec2(Std.int(x), Std.int(y));
+    }
+
+    public function getNearestPosition ():IntVec2 {
+        return new IntVec2(Math.round(x), Math.round(y));
     }
 
     static function getId ():Int {

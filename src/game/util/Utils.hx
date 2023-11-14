@@ -54,15 +54,14 @@ function getDiffFromDir (dir:GridDir) {
     }
 }
 
-// WRONG
-// function getDirFromDiff (x:Int, y:Int):GridDir {
-//     if (x == 1 && y == -1) return North;
-//     if (x == 1 && y == 1) return East;
-//     if (x == -1 && y == 1) return South;
-//     if (x == -1 && y == -1) return West;
-//     if (x == 1 && y == 0) return NorthEast;
-//     if (x == 0 && y == -1) return NorthWest;
-//     if (x == 0 && y == 1) return SouthEast;
-//     if (x == -1 && y == 0) return SouthWest;
-//     throw 'Dir not found';
-// }
+function getDirFromDiff (x:Int, y:Int):GridDir {
+    if (x == 0 && y == -1) return North;
+    if (x == 1 && y == 0) return East;
+    if (x == 0 && y == 1) return South;
+    if (x == -1 && y == 0) return West;
+    if (x == 1 && y == -1) return NorthEast;
+    if (x == -1 && y == -1) return NorthWest;
+    if (x == 1 && y == 1) return SouthEast;
+    if (x == -1 && y == 1) return SouthWest;
+    return null;
+}

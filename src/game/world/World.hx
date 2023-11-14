@@ -50,9 +50,9 @@ class World {
 
     public function update (delta) {
         for (actor in actors) {
-            // if (actor.isManaged) {
-            //     actor.manage();
-            // }
+            if (actor.isManaged) {
+                actor.manage();
+            }
             actor.update(delta);
         }
         for (element in elements) {
