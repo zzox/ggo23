@@ -39,7 +39,7 @@ class World {
         for (enemySpawner in generatedWorld.spawners) {
             // MD: enemy type from randomness in level config.
             final rat = new Actor(enemySpawner.x, enemySpawner.y, this, Rat);
-            actors.push(rat);
+            addActor(rat);
         }
 
         this.size = size;
@@ -50,6 +50,9 @@ class World {
 
     public function update (delta) {
         for (actor in actors) {
+            // if (actor.isManaged) {
+            //     actor.manage();
+            // }
             actor.update(delta);
         }
         for (element in elements) {
@@ -57,6 +60,15 @@ class World {
             if (element.time < 0.0) {
                 removeElement(element);
             }
+        }
+    }
+
+    function addActor (actor:Actor) {
+        final pos = actor.getPosition();
+        final gridItem = getGridItem(grid, pos.x, pos.y);
+        if (gridItem != null) {
+            gridItem.actor = actor;
+            actors.push(actor);
         }
     }
 

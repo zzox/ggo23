@@ -112,6 +112,7 @@ class Actor {
                 // TODO: do something about this.
                 trace('actor in the way!!');
                 currentPath.unshift(nextPos);
+                endMove();
             } else {
                 final curPos = getPosition();
                 currentMove = {
@@ -178,10 +179,11 @@ class Actor {
     }
 
     function endMove () {
+        currentPath = null;
         state = Wait;
     }
 
-    function getPosition ():IntVec2 {
+    public function getPosition ():IntVec2 {
         if (x % 1.0 != 0.0 || y % 1.0 != 0.0) {
             throw 'Not integer, position off.';
         }
