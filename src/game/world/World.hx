@@ -14,6 +14,8 @@ class Object {}
 typedef ElementAdd = (e:Element) -> Void;
 
 class World {
+    static inline final MELEE_DISTANCE:Float = 0.75;
+
     public var grid:Grid;
     public var size:IntVec2;
     public var actors:Array<Actor> = [];
@@ -34,7 +36,7 @@ class World {
         grid = generatedWorld.grid;
 
         playerActor = new Actor(generatedWorld.playerPos.x, generatedWorld.playerPos.y, this, PlayerActor);
-        actors.push(playerActor);
+        addActor(playerActor);
 
         for (enemySpawner in generatedWorld.spawners) {
             // MD: enemy type from randomness in level config.
@@ -48,7 +50,7 @@ class World {
         this.onRemoveElement = onRemoveElement;
     }
 
-    public function update (delta) {
+    public function update (delta:Float) {
         for (actor in actors) {
             if (actor.isManaged) {
                 actor.manage();
@@ -59,6 +61,19 @@ class World {
             element.update(delta);
             if (element.time < 0.0) {
                 removeElement(element);
+            }
+        }
+    }
+
+    public function meleeAttack (x:Int, y:Int, fromActor:Actor) {
+        for (actor in actors) {
+            if (
+                actor != fromActor &&
+                Math.abs(actor.x - x) < MELEE_DISTANCE &&
+                Math.abs(actor.y - y) < MELEE_DISTANCE
+            ) {
+                actor.damage(fromActor);
+                trace(fromActor.x, fromActor.y, actor.x, actor.y);
             }
         }
     }

@@ -1,7 +1,7 @@
 package game.world;
 
 import core.Types;
-import core.Util.distanceBetween;
+import core.Util;
 import game.data.ActorData;
 import game.util.Pathfinding;
 import game.util.Utils;
@@ -99,7 +99,7 @@ class Actor {
             }
         }
 
-        if (queuedMove != null) {
+        if (queuedMove != null && currentMove == null) {
             switch (queuedMove.moveType) {
                 case QMove:
                     move(queuedMove.pos.x, queuedMove.pos.y);
@@ -210,16 +210,12 @@ class Actor {
         final diff = getDiffFromDir(currentAttack.dir);
         final pos = getPosition();
 
-        // TODO: only hit people within ~.75 units distance away
-        final gridItem = getGridItem(world.grid, pos.x + diff.x, pos.y + diff.y);
-        if (gridItem != null && gridItem.actor != null) {
-            gridItem.actor.damage(10);
-        }
+        world.meleeAttack(pos.x + diff.x, pos.y + diff.y, this);
     }
 
-    function damage (amount:Int) {
+    public function damage (fromActor:Actor) {
         // TODO: set target depending on intelligence?
-        trace('took damage!', amount);
+        trace('took damage!', fromActor.actorType);
     }
 
     function finishAttack () {

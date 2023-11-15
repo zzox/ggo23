@@ -8,7 +8,7 @@ import game.world.World;
 import js.html.Console;
 
 final mainRoom1 = "
-     X
+        X
  xxxxxxxxx
  xxPxxxxxx
  xxxxxxxxx
@@ -24,10 +24,6 @@ enum TileType {
     Ground;
     PlayerSpawn;
     EnemySpawn;
-    // NorthExit;
-    // EastExit;
-    // SouthExit;
-    // WestExit;
     Exit;
     Hallway;
 }
@@ -122,8 +118,20 @@ function makeMap (rows:PreGrid):Grid {
     return items;
 }
 
-function getRandomItem <T>(list:Array<T>):T {
-    return list[Math.floor(Math.random() * list.length)];
+function getClosestExit (room:Rect, exits:Array<IntVec2>):Null<IntVec2> {
+    final roomPos = new Vec2(room.x + room.width / 2, room.y + room.height / 2);
+
+    var exit:Null<IntVec2> = null;
+    var exitDist:Float = 0.0;
+    for (e in exits) {
+        final distance = distanceBetween(roomPos, e.toVec2());
+        if (exit == null || distance < exitDist) {
+            exit = e;
+            exitDist = distance;
+        }
+    }
+
+    return exit;
 }
 
 // ATTN:
@@ -152,6 +160,7 @@ function getAdjacentItems <T>(grid:Array<Array<T>>, x:Int, y:Int) {
 }
 
 typedef PlacedRoom = {
+    var id:Int;
     var rect:Rect;
     var connected:Bool;
     var exits:Array<IntVec2>;
@@ -167,8 +176,12 @@ typedef GeneratedWorld = {
 function generate (width:Int, height:Int):GeneratedWorld {
     Console.time('generation');
 
-    final PLACE_ATTEMPTS:Int = 200;
+    final PLACE_ATTEMPTS:Int = 100;
+    final maxPlacedRooms:Int = 10;
+    final roomPadding:Int = 4;
     var numPaths:Int = 0;
+
+    var roomId:Int = 0;
     final roomsPlaced:Array<PlacedRoom> = [];
     var initialConnected:Bool = true;
     var playerPos:Null<IntVec2> = null;
@@ -209,14 +222,14 @@ function generate (width:Int, height:Int):GeneratedWorld {
                 }
             });
 
-            final padding = 1;
             roomsPlaced.push({
+                id: roomId++,
                 exits: exits,
                 rect: {
-                    x: randomX - padding,
-                    y: randomY - padding,
-                    height: room.height + padding,
-                    width: room.width + padding
+                    x: randomX - roomPadding,
+                    y: randomY - roomPadding,
+                    height: room.height + roomPadding * 2,
+                    width: room.width + roomPadding * 2
                 },
                 connected: initialConnected,
             });
@@ -227,6 +240,10 @@ function generate (width:Int, height:Int):GeneratedWorld {
             }
 
             initialConnected = false;
+
+            if (roomsPlaced.length == maxPlacedRooms) {
+                break;
+            }
         }
     }
 
@@ -251,14 +268,25 @@ function generate (width:Int, height:Int):GeneratedWorld {
             // i. manhattan, only opposites
             // ii. don't try this if the distance is too far (customizable?)
 
+    // start with the closest rooms
+    final otherRooms = roomsPlaced.copy();
+    otherRooms.sort((room1:PlacedRoom, room2:PlacedRoom) -> {
+        final roomZeroPos = new Vec2(roomsPlaced[0].rect.x + roomsPlaced[0].rect.width / 2, roomsPlaced[0].rect.y + roomsPlaced[0].rect.height / 2);
+        return Std.int(Math.abs(distanceBetween(
+            roomZeroPos, new Vec2(room1.rect.x + room1.rect.width / 2, room1.rect.y + room1.rect.height / 2),
+        )) - Math.abs(distanceBetween(
+            roomZeroPos, new Vec2(room2.rect.x + room2.rect.width / 2, room2.rect.y + room2.rect.height / 2),
+        )));
+    });
+
+    var connectedMap:Map<Int, Array<Int>> = [];
+
     final hallways = [];
     for (room in roomsPlaced) {
-        // try to connect.
-        // diminishing chance based on distance and chance passed in.
+        connectedMap[room.id] = [];
 
-        for (otherRoom in roomsPlaced) {
+        for (otherRoom in otherRooms) {
             if (otherRoom != room) {
-
                 final distance = distanceBetween(
                     new Vec2(room.rect.x + room.rect.width / 2, room.rect.y + room.rect.height / 2),
                     new Vec2(otherRoom.rect.x + otherRoom.rect.width / 2, otherRoom.rect.y + otherRoom.rect.height / 2)
@@ -267,21 +295,25 @@ function generate (width:Int, height:Int):GeneratedWorld {
                 // final it = Math.pow(((width + height) / 2), 2) / 2;
                 // trace(it, distance);
 
+                final isConnected = connectedMap[room.id].contains(otherRoom.id) || (connectedMap[otherRoom.id] != null && connectedMap[otherRoom.id].contains(room.id));
+
                 // TODO: figure out better method to determine pathing
-                if (distance < 50 && ((room.connected && Math.random() < 0.1) || (!room.connected && Math.random() < 0.5))) {
-                    final roomExit = getRandomItem(room.exits);
-                    final otherRoomExit = getRandomItem(otherRoom.exits);
+                if (!isConnected && distance < 50 && ((otherRoom.connected && Math.random() < 0.1) || !otherRoom.connected)) {
+                    final roomExit = getClosestExit(otherRoom.rect, room.exits);
+                    final otherRoomExit = getClosestExit(room.rect, otherRoom.exits);
 
                     if (roomExit != null && otherRoomExit != null) {
                         final path = pathfind(intGrid, roomExit, otherRoomExit, Manhattan);
                         numPaths++;
 
-                        if (path != null && path.length > 0 && (!room.connected || path.length < 10)) {
+                        if (path != null && path.length > 0 && path.length < 25) {
                             // add the first tile to the start of the path
                             path.unshift(roomExit);
                             hallways.push(path);
                             room.exits.remove(roomExit);
                             otherRoom.exits.remove(otherRoomExit);
+
+                            connectedMap[room.id].push(otherRoom.id);
 
                             // only mark as connected if one of the two are connected.
                             // TODO: do the same to hallways.
@@ -297,19 +329,14 @@ function generate (width:Int, height:Int):GeneratedWorld {
         }
     }
 
-    // go through rooms and remove exits that werent placed
-
-    trace(hallways.length);
-
     for (hallway in hallways) {
         for (pos in hallway) {
             pregrid[pos.x][pos.y] = Hallway;
         }
     }
 
-    // 3. clean up, place everything
-        // a. if an exit has no hallway neighbors, remove it.
-        // b. if a room hasn't been touched, remove it
+    // TODO: if a room hasn't been touched, remove it
+
     trace('num paths tried', numPaths, enemySpawners.length);
     Console.timeEnd('generation');
     return {
@@ -326,8 +353,4 @@ function copyPregrid (toGrid:PreGrid, fromGrid:PreGrid, fromX:Int, fromY:Int) {
             toGrid[fromX + x][fromY + y] = fromGrid[x][y];
         }
     }
-}
-
-function createRoomItems () {
-
 }
