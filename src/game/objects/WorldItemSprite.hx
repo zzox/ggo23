@@ -12,10 +12,27 @@ final dirDiffs = [new IntVec2(1, 0), new IntVec2(-1, 0)];
 class WorldItemSprite extends Sprite {
     static inline final Y_OFFSET:Int = 26;
 
+    public var isHurt:Bool = false;
+    var hurtTimer:Float = 0;
+    var hurtFrames:Int = 0;
+
     public function new (pos:Vec2, image:Image, size:IntVec2, color:Int) {
         super(pos, image, size);
 
         this.color = color;
+    }
+
+    override function update (delta:Float) {
+        if (isHurt) {
+            hurtTimer -= delta;
+
+            visible = Math.floor(++hurtFrames / 5) % 2 == 1;
+            if (hurtTimer < 0.0) {
+                stopHurt();
+            }
+        }
+
+        super.update(delta);
     }
 
     override function render (g2:Graphics, cam:Camera) {
@@ -39,5 +56,16 @@ class WorldItemSprite extends Sprite {
         color = oldColor;
         super.render(g2, cam);
         y = oldY;
+    }
+
+    public function hurt (time:Float) {
+        hurtFrames = 0;
+        hurtTimer = time;
+        isHurt = true;
+    }
+
+    public function stopHurt () {
+        isHurt = false;
+        visible = true;
     }
 }

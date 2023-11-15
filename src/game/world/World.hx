@@ -72,7 +72,7 @@ class World {
                 Math.abs(actor.x - x) < MELEE_DISTANCE &&
                 Math.abs(actor.y - y) < MELEE_DISTANCE
             ) {
-                actor.damage(fromActor);
+                actor.doMeleeDamage(fromActor);
                 trace(fromActor.x, fromActor.y, actor.x, actor.y);
             }
         }

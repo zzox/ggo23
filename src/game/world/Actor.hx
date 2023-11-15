@@ -53,7 +53,11 @@ class Actor {
     public var x:Float;
     public var y:Float;
 
-    var world:World;
+    public var isHurt:Bool = false;
+    public var hurtTimer:Float = 0.0;
+    public var health:Int;
+    public var meleeDamage:Int;
+    var speed:Float;
 
     var preAttackTime:Float = 0.0;
     var attackTime:Float = 0.0;
@@ -63,11 +67,12 @@ class Actor {
     public var isManaged:Bool;
     var queuedMove:Null<QueuedMove> = null;
 
+    var world:World;
     public var actorType:ActorType;
     public var state:ActorState = Wait;
 
-    // TEMP: this needs to be a diff value that we take the inverse of.
-    var speed:Float = 0.166;
+    // to send updates to a listener.
+    // public var onUpdate:(str:String) -> Void;
 
     public function new (x:Int, y:Int, world:World, type:ActorType) {
         this.x = x;
@@ -75,12 +80,25 @@ class Actor {
 
         id = getId();
 
+        final data = actorData[type];
+
+        health = data.health;
+        meleeDamage = data.meleeDamage;
+        speed = data.speed;
+
         this.world = world;
         this.actorType = type;
         isManaged = type != PlayerActor;
     }
 
     public function update (delta:Float) {
+        if (isHurt) {
+            hurtTimer -= delta;
+            if (hurtTimer < 0.0) {
+                stopHurt();
+            }
+        }
+
         if (state == Moving) {
             handleCurrentMove(delta);
 
@@ -191,6 +209,14 @@ class Actor {
         }
     }
 
+    public function doMeleeDamage (fromActor:Actor) {
+        // TODO: set target depending on intelligence?
+        trace('took damage!', fromActor.actorType);
+        if (!isHurt) {
+            hurt(fromActor.meleeDamage);
+        }
+    }
+
     public function tryAttack (dir:GridDir) {
         // TODO: bring in from config
         currentAttack = {
@@ -211,11 +237,6 @@ class Actor {
         final pos = getPosition();
 
         world.meleeAttack(pos.x + diff.x, pos.y + diff.y, this);
-    }
-
-    public function damage (fromActor:Actor) {
-        // TODO: set target depending on intelligence?
-        trace('took damage!', fromActor.actorType);
     }
 
     function finishAttack () {
@@ -239,6 +260,19 @@ class Actor {
     function endMove () {
         currentPath = null;
         state = Wait;
+    }
+
+    function hurt (damage:Int) {
+        health -= damage;
+        if (damage <= 0) {
+            // die();
+        }
+        isHurt = true;
+        hurtTimer = 1.0;
+    }
+
+    function stopHurt () {
+        isHurt = false;
     }
 
     public function getPosition ():IntVec2 {

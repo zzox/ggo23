@@ -14,7 +14,10 @@ typedef ActorData = {
     var moveAnims:Array<Int>;
     var preAttackAnim:Int;
     var attackAnim:Int;
-    // speed
+
+    var meleeDamage:Int;
+    var speed:Float;
+    var health:Int;
     // experience (for kills)
     // attack distance
     // ?generate elements
@@ -24,6 +27,9 @@ final actorData:Map<ActorType, ActorData> = [
 PlayerActor => {
     preAttackTime: 0.0,
     attackTime: 0.0,
+    meleeDamage: 10,
+    health: 100,
+    speed: 0.25,
     color: 0xff5b6ee1,
     moveAnims: [0, 1],
     preAttackAnim: 2,
@@ -32,6 +38,9 @@ PlayerActor => {
 Rat => {
     preAttackTime: 0.5,
     attackTime: 1.0,
+    meleeDamage: 10,
+    health: 25,
+    speed: 0.5,
     color: 0xffa8a8a8,
     moveAnims: [4, 5],
     preAttackAnim: 6,

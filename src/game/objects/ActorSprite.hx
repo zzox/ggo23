@@ -10,6 +10,7 @@ class ActorSprite extends WorldItemSprite {
     var actorState:Actor;
 
     var prevX:Float;
+    var prevHurt:Bool;
 
     public function new (actor:Actor) {
         final data = actorData[actor.actorType];
@@ -74,7 +75,17 @@ class ActorSprite extends WorldItemSprite {
             animation.play('still');
         }
 
+        if (prevHurt && !isHurt) {
+            // TODO: better value
+            hurt(1.0);
+        }
+
+        if (!prevHurt && isHurt) {
+            stopHurt();
+        }
+
         prevX = x;
+        prevHurt = actorState.isHurt;
 
         super.update(delta);
     }
