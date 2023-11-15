@@ -39,3 +39,7 @@ long travel day. got a little bit of work done, started looking into dungeon gen
 ## day 13
 
 back to work. room generation took a bit of time. finally got some stuff working, but it's going to be a challenging process for this entire game.
+
+## day 14
+
+busy day at work. was able to get room gen looking okay, now it's just a bit boring. need it to generate an ok or better level _every_ time, so it's working in that regard. getting close to something playable.

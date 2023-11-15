@@ -2,20 +2,20 @@ package game.world;
 
 enum ElementType {
     Fire;
+    // Water;
+    // Blades;
+    // Air;
 }
 
-class Element {
-    public var x:Int;
-    public var y:Int;
-
+class Element extends WorldItem {
     var type:ElementType;
     public var time:Float;
+    // public var velocity:Vec2;
 
-    public function new (x:Int, y:Int, type:ElementType, time:Float) {
+    public function new (x:Float, y:Float, type:ElementType, time:Float) {
+        super(x, y);
         this.type = type;
         this.time = time;
-        this.x = x;
-        this.y = y;
     }
 
     public function update (delta:Float) {

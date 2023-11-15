@@ -46,12 +46,10 @@ function calcMovePosition (move:Move, percentMoved:Float):Vec2 {
     );
 }
 
-class Actor {
+class Actor extends WorldItem {
     static var curId:Int = 0;
 
     public var id:Int;
-    public var x:Float;
-    public var y:Float;
 
     public var isHurt:Bool = false;
     public var hurtTimer:Float = 0.0;
@@ -75,8 +73,7 @@ class Actor {
     // public var onUpdate:(str:String) -> Void;
 
     public function new (x:Int, y:Int, world:World, type:ActorType) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
 
         id = getId();
 
@@ -273,18 +270,6 @@ class Actor {
 
     function stopHurt () {
         isHurt = false;
-    }
-
-    public function getPosition ():IntVec2 {
-        if (x % 1.0 != 0.0 || y % 1.0 != 0.0) {
-            throw 'Not integer, position off.';
-        }
-
-        return new IntVec2(Std.int(x), Std.int(y));
-    }
-
-    public function getNearestPosition ():IntVec2 {
-        return new IntVec2(Math.round(x), Math.round(y));
     }
 
     static function getId ():Int {
