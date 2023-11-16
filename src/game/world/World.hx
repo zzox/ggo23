@@ -14,7 +14,7 @@ class Object {}
 typedef ElementAdd = (e:Element) -> Void;
 
 class World {
-    static inline final MELEE_DISTANCE:Float = 0.75;
+    static inline final HIT_DISTANCE:Float = 0.75;
 
     public var grid:Grid;
     public var size:IntVec2;
@@ -51,25 +51,40 @@ class World {
     }
 
     public function update (delta:Float) {
+        for (element in elements) {
+            element.update(delta);
+
+            for (actor in actors) {
+                if (
+                    !actor.isHurt &&
+                    Math.abs(element.x - actor.x) < HIT_DISTANCE &&
+                    Math.abs(element.y - actor.y) < HIT_DISTANCE
+                ) {
+                    actor.doElementDamage(element);
+                    element.velocity.x *= 0.5;
+                    element.velocity.y *= 0.5;
+                }
+            }
+
+            final nearPos = element.getNearestPosition();
+            final gi = getGridItem(grid, nearPos.x, nearPos.y);
+            if (gi == null || gi.tile == null) {
+                // collides with walls
+                element.velocity.set(0, 0);
+            }
+        }
+
+        for (element in elements) {
+            if (!element.active) {
+                removeElement(element);
+            }
+        }
+
         for (actor in actors) {
             if (actor.isManaged) {
                 actor.manage();
             }
             actor.update(delta);
-        }
-        for (element in elements) {
-            element.update(delta);
-            final pos = element.getNearestPosition();
-            final gi = getGridItem(grid, pos.x, pos.y);
-            if (gi == null || gi.tile == null) {
-                // collides with walls
-                element.velocity.set(0, 0);
-            }
-
-            if (!element.active) {
-                // ATTN: will this stop the next element's update from happening?
-                removeElement(element);
-            }
         }
     }
 
@@ -77,11 +92,10 @@ class World {
         for (actor in actors) {
             if (
                 actor != fromActor &&
-                Math.abs(actor.x - x) < MELEE_DISTANCE &&
-                Math.abs(actor.y - y) < MELEE_DISTANCE
+                Math.abs(actor.x - x) < HIT_DISTANCE &&
+                Math.abs(actor.y - y) < HIT_DISTANCE
             ) {
                 actor.doMeleeDamage(fromActor);
-                trace(fromActor.x, fromActor.y, actor.x, actor.y);
             }
         }
     }

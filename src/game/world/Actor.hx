@@ -231,6 +231,13 @@ class Actor extends WorldItem {
         }
     }
 
+    public function doElementDamage (fromElement:Element) {
+        trace('took element damage!', fromElement);
+        if (!isHurt) {
+            hurt(10);
+        }
+    }
+
     function tryAttack (attack:AttackData, ?dir:GridDir, pos:IntVec2) {
         // TODO: bring data in from config
         var vel:Vec2 = new Vec2(0, 0);

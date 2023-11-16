@@ -23,7 +23,6 @@ class Element extends WorldItem {
     }
 
     public function update (delta:Float) {
-        trace(x, y, time, active);
         time -= delta;
         if (time <= 0.0) {
             deactivate();
