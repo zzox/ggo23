@@ -28,7 +28,7 @@ class ActorSprite extends WorldItemSprite {
         final pos = translateWorldPos(actorState.x, actorState.y);
         var diffX = 0.0;
         var diffY = 0.0;
-        if (actorState.state == Attack) {
+        if (actorState.state == Attack && actorState.currentAttack.type == Melee) {
             // TODO: consider using a shorter time to show diffs.
             // linear there-and-back tween to show attack.
             final strikeDiff = getVisDiffFromDir(actorState.currentAttack.dir);

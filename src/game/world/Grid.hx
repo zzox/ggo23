@@ -10,7 +10,6 @@ typedef GridItem = {
     var tile:Null<TileType>;
     var actor:Null<Actor>;
     var object:Null<Object>;
-    var element:Null<Element>;
 }
 
 typedef Grid = Array<Array<GridItem>>;

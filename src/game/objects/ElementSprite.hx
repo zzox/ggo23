@@ -17,4 +17,10 @@ class ElementSprite extends WorldItemSprite {
 
         elementState = element;
     }
+
+    override function update (delta:Float) {
+        final pos = translateWorldPos(elementState.x, elementState.y);
+        setPosition(pos.x, pos.y);
+        super.update(delta);
+    }
 }

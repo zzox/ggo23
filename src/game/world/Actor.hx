@@ -3,6 +3,7 @@ package game.world;
 import core.Types;
 import core.Util;
 import game.data.ActorData;
+import game.data.AttackData;
 import game.util.Pathfinding;
 import game.util.Utils;
 import game.world.Grid;
@@ -22,21 +23,25 @@ typedef Move = {
     var time:Float;
 }
 
-// TODO: attack type, spell or strike
 typedef Attack = {
-    var dir:GridDir;
     var time:Float;
     var elapsed:Float;
+    var type:AttackType;
+    var ?dir:GridDir;
+    var ?vel:Vec2;
+    var ?startPos:Vec2;
 }
 
 enum QueuedMoveType {
-    QAttack;
     QMove;
+    QAttack;
 }
 
 typedef QueuedMove = {
     var moveType:QueuedMoveType;
-    var pos:IntVec2;
+    var ?pos:IntVec2;
+    var ?attack:AttackData;
+    var ?dir:GridDir;
 }
 
 function calcMovePosition (move:Move, percentMoved:Float):Vec2 {
@@ -99,6 +104,7 @@ class Actor extends WorldItem {
         if (state == Moving) {
             handleCurrentMove(delta);
 
+            // do the next move if a step is available and not waiting for a queued move
             if (currentMove == null && queuedMove == null) {
                 startNextMove();
             }
@@ -114,12 +120,13 @@ class Actor extends WorldItem {
             }
         }
 
-        if (queuedMove != null && currentMove == null) {
+        // do the queued move if actor is waiting or just finishing a step in a path.
+        if (queuedMove != null && (state == Wait || (state == Moving && currentMove == null))) {
             switch (queuedMove.moveType) {
                 case QMove:
                     move(queuedMove.pos.x, queuedMove.pos.y);
                 case QAttack:
-                    tryAttack(South);
+                    tryAttack(queuedMove.attack, queuedMove.dir, queuedMove.pos);
             }
             queuedMove = null;
         }
@@ -139,7 +146,7 @@ class Actor extends WorldItem {
                 final diffY = playerPosition.y - myPosition.y;
                 final dir = getDirFromDiff(diffX, diffY);
                 if (dir != null) {
-                    tryAttack(dir);
+                    queueAttack({ preTime: 0.5, time: 0.5, type: Melee }, dir);
                 } else {
                     trace('missed', distance, diffX, diffY);
                 }
@@ -151,13 +158,23 @@ class Actor extends WorldItem {
         }
     }
 
-    function decide () {
+    function decide () {}
 
+    public function queueMove (pos:IntVec2) {
+        queuedMove = {
+            moveType: QMove,
+            pos: pos
+        }
     }
 
-    public function queueMove (type:QueuedMoveType, pos:IntVec2) {
+    // annoying to try queueing an attack before trying to do it, but we are stopped
+    // by the grid since we can be in between a step.
+    // TODO: add a queue buffer time?
+    public function queueAttack (attack:AttackData, ?dir:GridDir, ?pos:IntVec2) {
         queuedMove = {
-            moveType: type,
+            moveType: QAttack,
+            attack: attack,
+            dir: dir,
             pos: pos
         }
     }
@@ -214,26 +231,43 @@ class Actor extends WorldItem {
         }
     }
 
-    public function tryAttack (dir:GridDir) {
-        // TODO: bring in from config
+    function tryAttack (attack:AttackData, ?dir:GridDir, pos:IntVec2) {
+        // TODO: bring data in from config
+        var vel:Vec2 = new Vec2(0, 0);
+        var startPos:Vec2 = new Vec2(x, y);
+        if (attack.type == Range) {
+            final angle = angleFromPoints(pos.toVec2(), getPosition().toVec2());
+            vel = velocityFromAngle(angle, attack.vel);
+            // start the element x tiles away so it doesn't touch actor.
+            final startDiff = velocityFromAngle(angle, 1.0);
+            startPos = new Vec2(x + startDiff.x, y + startDiff.y);
+        }
+
         currentAttack = {
-            dir: dir,
-            time: actorData[actorType].attackTime,
-            elapsed: 0
+            time: attack.time,
+            elapsed: 0,
+            type: attack.type,
+            dir: attack.type == Melee ? dir : null,
+            vel: attack.type == Range ? vel : null,
+            startPos: attack.type == Range ? startPos : null
         }
 
         state = PreAttack;
-        preAttackTime = actorData[actorType].preAttackTime;
+        preAttackTime = attack.preTime;
     }
 
     function attack () {
         state = Attack;
-        trace('attack');
+        trace('attack', currentAttack);
 
-        final diff = getDiffFromDir(currentAttack.dir);
-        final pos = getPosition();
-
-        world.meleeAttack(pos.x + diff.x, pos.y + diff.y, this);
+        if (currentAttack.type == Melee) {
+            // TODO: consider storing position on currentAttack
+            final diff = getDiffFromDir(currentAttack.dir);
+            final pos = getPosition();
+            world.meleeAttack(pos.x + diff.x, pos.y + diff.y, this);
+        } else if (currentAttack.type == Range) {
+            world.addElement(currentAttack.startPos.x, currentAttack.startPos.y, Fire, currentAttack.vel);
+        }
     }
 
     function finishAttack () {

@@ -59,7 +59,15 @@ class World {
         }
         for (element in elements) {
             element.update(delta);
-            if (element.time < 0.0) {
+            final pos = element.getNearestPosition();
+            final gi = getGridItem(grid, pos.x, pos.y);
+            if (gi == null || gi.tile == null) {
+                // collides with walls
+                element.velocity.set(0, 0);
+            }
+
+            if (!element.active) {
+                // ATTN: will this stop the next element's update from happening?
                 removeElement(element);
             }
         }
@@ -88,17 +96,13 @@ class World {
     }
 
     // TODO: velocity?
-    public function addElement (x:Int, y:Int, type:ElementType) {
-        final element = new Element(x, y, type, 1.0);
-        final gridItem = getGridItem(grid, x, y);
-        gridItem.element = element;
+    public function addElement (x:Float, y:Float, type:ElementType, vel:Vec2) {
+        final element = new Element(x, y, type, vel);
         elements.push(element);
         onAddElement(element);
     }
 
     public function removeElement (element:Element) {
-        final gridItem = getGridItem(grid, Std.int(element.x), Std.int(element.y));
-        gridItem.element = null;
         elements.remove(element);
         onRemoveElement(element);
     }

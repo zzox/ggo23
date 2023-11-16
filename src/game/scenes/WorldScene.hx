@@ -4,6 +4,7 @@ import core.Group;
 import core.Input;
 import core.Scene;
 import core.Types;
+import game.data.AttackData;
 import game.objects.ActorSprite;
 import game.objects.ElementSprite;
 import game.objects.TileSprite;
@@ -89,13 +90,14 @@ class WorldScene extends Scene {
             // highlight tile
             final clicked = game.mouse.justPressed(MouseButton.Left);
             if (clicked && tilePos.tile != null) {
-                world.playerActor.queueMove(QMove, new IntVec2(tilePos.x, tilePos.y));
+                world.playerActor.queueMove(new IntVec2(tilePos.x, tilePos.y));
             }
 
             final rightClicked = game.mouse.justPressed(MouseButton.Right);
             if (rightClicked) {
                 // TODO: This should be called from the player's Actor object
-                world.addElement(tilePos.x, tilePos.y, Fire);
+                // world.addElement(tilePos.x, tilePos.y, Fire);
+                world.playerActor.queueAttack(attackData[Fireball], null, new IntVec2(tilePos.x, tilePos.y));
             }
         }
     }
