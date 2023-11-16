@@ -148,7 +148,8 @@ function pathfind (
     startPoint: IntVec2,
     endPoint: IntVec2,
     heuristic: Heuristic,
-    canGoDiagonal:Bool = false
+    canGoDiagonal:Bool = false,
+    limit:Int = 1000000
 ): Null<Array<IntVec2>> {
     final startNode = new PathNode(startPoint);
 
@@ -183,7 +184,7 @@ function pathfind (
 
             // if the visited item exists and has a lower cost, don't do anything with this neighbor
             final visitedItem = visited.getItem(neighbor);
-            if (visitedItem == null || newCost < visitedItem) {
+            if (newCost < limit && (visitedItem == null || newCost < visitedItem)) {
                 final newNode = new PathNode(neighbor, currentNode);
                 newNode.cost = newCost;
                 newNode.h = heuristic(neighbor, endPoint);

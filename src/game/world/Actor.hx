@@ -291,7 +291,7 @@ class Actor extends WorldItem {
     }
 
     public function move (toX:Int, toY:Int) {
-        currentPath = pathfind(makeIntGrid(world.grid), getPosition(), new IntVec2(toX, toY), Diagonal, true);
+        currentPath = pathfind(makeIntGrid(world.grid), getPosition(), new IntVec2(toX, toY), Diagonal, true, 24);
 
         if (currentPath == null) {
             // throw 'Could not find path.';

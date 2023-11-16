@@ -27,7 +27,7 @@ class WorldScene extends Scene {
     var ratTest:ActorSprite;
 
     override function create () {
-        world = new World(new IntVec2(50, 50), handleAddElement, handleRemoveElement);
+        world = new World(new IntVec2(100, 100), handleAddElement, handleRemoveElement);
 
         for (outer in world.grid) {
             for (item in outer) {
@@ -53,9 +53,9 @@ class WorldScene extends Scene {
         }
 
         gridObjects.addChild(player);
-        camera.startFollow(player);
+        // camera.startFollow(player);
         // camera.followLerp.set(0.25, 0.25);
-        camera.scale.set(2.0, 2.0);
+        // camera.scale.set(2.0, 2.0);
 
         uiScene = new UiScene();
         game.addScene(uiScene);

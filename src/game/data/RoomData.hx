@@ -8,6 +8,25 @@ import game.world.World;
 import js.html.Console;
 
 final mainRoom1 = "
+             X
+ xxxxxxxxxxxxxxxxxx
+ xxPxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxxx
+XxxxxxxxxxxxxxxxxxxX
+ xxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxExxx
+ xxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxExxx
+ xxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxExxx
+ xxxxxxxxxxxxxxxxxx
+  X
+";
+
+final mainRoom1Old = "
         X
  xxxxxxxxx
  xxPxxxxxx
@@ -303,10 +322,10 @@ function generate (width:Int, height:Int):GeneratedWorld {
                     final otherRoomExit = getClosestExit(room.rect, otherRoom.exits);
 
                     if (roomExit != null && otherRoomExit != null) {
-                        final path = pathfind(intGrid, roomExit, otherRoomExit, Manhattan);
+                        final path = pathfind(intGrid, roomExit, otherRoomExit, Manhattan, false, 50);
                         numPaths++;
 
-                        if (path != null && path.length > 0 && path.length < 25) {
+                        if (path != null && path.length > 0) {
                             // add the first tile to the start of the path
                             path.unshift(roomExit);
                             hallways.push(path);

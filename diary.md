@@ -43,3 +43,9 @@ back to work. room generation took a bit of time. finally got some stuff working
 ## day 14
 
 busy day at work. was able to get room gen looking okay, now it's just a bit boring. need it to generate an ok or better level _every_ time, so it's working in that regard. getting close to something playable.
+
+## day 15
+
+i need to get something playable, month is half over at EOD. i have a full week off next week, so i'll need this game 99% done at the end of that. if i can get the game to a fun point by the end of this work week, i'll be in great shape.
+
+you can now shoot fireballs and get bit by rats. it's taken a long time to get to this point but hopefully development accelerates for the second half of the month.
