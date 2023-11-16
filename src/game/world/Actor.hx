@@ -57,10 +57,11 @@ class Actor extends WorldItem {
     public var id:Int;
 
     public var isHurt:Bool = false;
-    public var hurtTimer:Float = 0.0;
+    var hurtTimer:Float = 0.0;
+    var hurtSlowTimer:Float = 0.0;
     public var health:Int;
     public var meleeDamage:Int;
-    var speed:Float;
+    var speed:Int;
 
     var preAttackTime:Float = 0.0;
     var attackTime:Float = 0.0;
@@ -208,10 +209,17 @@ class Actor extends WorldItem {
                 endMove();
             } else {
                 final curPos = getPosition();
+                var speedVal = 10 / speed;
+
+                // slow down at the beginning of being hurt
+                if (isHurt && hurtTimer > hurtSlowTimer) {
+                    speedVal * 2;
+                }
+
                 currentMove = {
                     to: nextPos.clone(),
                     from: curPos,
-                    time: isDiagonal(nextPos, curPos) ? speed * Math.sqrt(2) : speed,
+                    time: isDiagonal(nextPos, curPos) ? speedVal * Math.sqrt(2) : speedVal,
                     elapsed: 0.0
                 }
 
@@ -307,6 +315,7 @@ class Actor extends WorldItem {
         }
         isHurt = true;
         hurtTimer = 1.0;
+        hurtSlowTimer = hurtTimer / 2;
     }
 
     function stopHurt () {
