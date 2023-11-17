@@ -1,6 +1,7 @@
 package game.world;
 
 import core.Types;
+import game.data.ActorData;
 import game.data.RoomData;
 import game.world.Element;
 import game.world.Grid;
@@ -32,6 +33,7 @@ class World {
         //     return { x: x, y: y, tile: Tile, object: null, actor: null, element: null };
         // });
         // grid = makeMap(makeRoom(mainRoom1).preGrid);
+        final enemyTypes:Array<ActorType> = [Snake, Snake, Rat];
         final generatedWorld = generate(size.x, size.y);
         grid = generatedWorld.grid;
 
@@ -40,8 +42,10 @@ class World {
 
         for (enemySpawner in generatedWorld.spawners) {
             // MD: enemy type from randomness in level config.
-            final rat = new Actor(enemySpawner.x, enemySpawner.y, this, Rat);
-            addActor(rat);
+            final type = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
+            final enemy = new Actor(enemySpawner.x, enemySpawner.y, this, type);
+            addActor(enemy);
+            enemy.target = playerActor;
         }
 
         this.size = size;

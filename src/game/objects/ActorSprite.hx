@@ -20,10 +20,10 @@ class ActorSprite extends WorldItemSprite {
 
         actor.onUpdate = onActorStateUpdate;
 
-        animation.add('still', [data.moveAnims[0]]);
-        animation.add('walk', data.moveAnims.copy(), 0.2);
-        animation.add('preattack', [data.preAttackAnim]);
-        animation.add('attack', [data.attackAnim]);
+        animation.add('still', [data.animIndex]);
+        animation.add('walk', [data.animIndex, data.animIndex + 1], 0.2);
+        animation.add('preattack', [data.animIndex + 2]);
+        animation.add('attack', [data.animIndex + 3]);
     }
 
     override function update (delta:Float) {

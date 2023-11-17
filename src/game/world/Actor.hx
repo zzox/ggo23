@@ -75,6 +75,7 @@ class Actor extends WorldItem {
     public var currentAttack:Null<Attack>;
     public var isManaged:Bool;
     var queuedMove:Null<QueuedMove> = null;
+    public var target:Null<Actor>;
 
     var world:World;
     public var actorType:ActorType;
@@ -139,27 +140,33 @@ class Actor extends WorldItem {
     }
 
     public function manage () {
-        if (state == Wait) {
-            final myPosition = getPosition();
-            // TODO: eventual `targetPosition`
-            final playerPosition = world.playerActor.getNearestPosition();
-            final distance = distanceBetween(myPosition.toVec2(), playerPosition.toVec2());
+        if (target != null && target.isDead) {
+            target = null;
+        }
 
-            // attack distance
-            if (distance <= Math.sqrt(2)) {
-                // attack
-                final diffX = playerPosition.x - myPosition.x;
-                final diffY = playerPosition.y - myPosition.y;
-                final dir = getDirFromDiff(diffX, diffY);
-                if (dir != null) {
-                    queueAttack({ preTime: 0.5, time: 0.5, type: Melee }, dir);
-                } else {
-                    trace('missed', distance, diffX, diffY);
+        if (target != null) {
+            if (state == Wait) {
+                final myPosition = getPosition();
+                // TODO: eventual `targetPosition`
+                final playerPosition = target.getNearestPosition();
+                final distance = distanceBetween(myPosition.toVec2(), playerPosition.toVec2());
+
+                // attack distance
+                if (distance <= Math.sqrt(2)) {
+                    // attack
+                    final diffX = playerPosition.x - myPosition.x;
+                    final diffY = playerPosition.y - myPosition.y;
+                    final dir = getDirFromDiff(diffX, diffY);
+                    if (dir != null) {
+                        queueAttack({ preTime: 0.5, time: 0.5, type: Melee }, dir);
+                    } else {
+                        trace('missed', distance, diffX, diffY);
+                    }
+                // approach distance
+                } else if (distance < 10.0) {
+                    final nearestPos = target.getNearestPosition();
+                    move(nearestPos.x, nearestPos.y);
                 }
-            // approach distance
-            } else if (distance < 10.0) {
-                final nearestPos = world.playerActor.getNearestPosition();
-                move(nearestPos.x, nearestPos.y);
             }
         }
     }
@@ -237,14 +244,14 @@ class Actor extends WorldItem {
     }
 
     public function doMeleeDamage (fromActor:Actor) {
-        // TODO: set target depending on intelligence?
-        trace('took damage!', fromActor.actorType);
+        target = fromActor;
         if (!isHurt) {
             hurt(fromActor.meleeDamage);
         }
     }
 
     public function doElementDamage (fromElement:Element) {
+        // TODO: set target to nearest depending on intelligence.
         trace('took element damage!', fromElement);
         if (!isHurt) {
             hurt(10);

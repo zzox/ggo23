@@ -3,6 +3,7 @@ package game.data;
 enum ActorType {
     PlayerActor;
     Rat;
+    Snake;
 }
 
 // Data for visuals _and_ state
@@ -10,10 +11,7 @@ typedef ActorData = {
     var preAttackTime:Float;
     var attackTime:Float;
     var color:Int;
-    // TODO: use a single index for anims and go from there.
-    var moveAnims:Array<Int>;
-    var preAttackAnim:Int;
-    var attackAnim:Int;
+    var animIndex:Int;
 
     var meleeDamage:Int;
     var speed:Int;
@@ -31,9 +29,7 @@ PlayerActor => {
     health: 100,
     speed: 50,
     color: 0xff5b6ee1,
-    moveAnims: [0, 1],
-    preAttackAnim: 2,
-    attackAnim: 3,
+    animIndex: 0,
 },
 Rat => {
     preAttackTime: 0.5,
@@ -42,8 +38,15 @@ Rat => {
     health: 25,
     speed: 25,
     color: 0xffa8a8a8,
-    moveAnims: [4, 5],
-    preAttackAnim: 6,
-    attackAnim: 6
+    animIndex: 4,
+},
+Snake => {
+    preAttackTime: 0.1,
+    attackTime: 0.5,
+    meleeDamage: 20,
+    health: 12,
+    speed: 35,
+    color: 0xffa8a8a8,
+    animIndex: 8,
 }
 ];
