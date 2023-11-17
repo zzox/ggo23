@@ -109,6 +109,13 @@ class World {
         }
     }
 
+    public function removeActor (actor:Actor) {
+        final pos = actor.getLinkedPosition();
+        final gridItem = getGridItem(grid, pos.x, pos.y);
+        gridItem.actor = null;
+        actors.remove(actor);
+    }
+
     // TODO: velocity?
     public function addElement (x:Float, y:Float, type:ElementType, vel:Vec2) {
         final element = new Element(x, y, type, vel);

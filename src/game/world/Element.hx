@@ -7,6 +7,9 @@ enum ElementType {
     // Water;
     // Blades;
     // Air;
+    // WetBlades;
+    // HotBlades;
+    // BladeWind;
 }
 
 class Element extends WorldItem {

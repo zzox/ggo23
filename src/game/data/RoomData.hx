@@ -197,7 +197,7 @@ function generate (width:Int, height:Int):GeneratedWorld {
 
     final PLACE_ATTEMPTS:Int = 100;
     final maxPlacedRooms:Int = 10;
-    final roomPadding:Int = 4;
+    final roomPadding:Int = 2;
     var numPaths:Int = 0;
 
     var roomId:Int = 0;

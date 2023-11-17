@@ -44,6 +44,10 @@ typedef QueuedMove = {
     var ?dir:GridDir;
 }
 
+enum UpdateType {
+    Death;
+}
+
 function calcMovePosition (move:Move, percentMoved:Float):Vec2 {
     return new Vec2(
         move.from.x + (move.to.x - move.from.x) * percentMoved,
@@ -56,6 +60,7 @@ class Actor extends WorldItem {
 
     public var id:Int;
 
+    var isDead:Bool = false;
     public var isHurt:Bool = false;
     var hurtTimer:Float = 0.0;
     var hurtSlowTimer:Float = 0.0;
@@ -76,7 +81,7 @@ class Actor extends WorldItem {
     public var state:ActorState = Wait;
 
     // to send updates to a listener.
-    // public var onUpdate:(str:String) -> Void;
+    public var onUpdate:(updateType:UpdateType) -> Void;
 
     public function new (x:Int, y:Int, world:World, type:ActorType) {
         super(x, y);
@@ -310,8 +315,8 @@ class Actor extends WorldItem {
 
     function hurt (damage:Int) {
         health -= damage;
-        if (damage <= 0) {
-            // die();
+        if (health <= 0) {
+            die();
         }
         isHurt = true;
         hurtTimer = 1.0;
@@ -320,6 +325,20 @@ class Actor extends WorldItem {
 
     function stopHurt () {
         isHurt = false;
+    }
+
+    function die () {
+        isDead = true;
+        world.removeActor(this);
+        onUpdate(Death);
+    }
+
+    public function getLinkedPosition ():IntVec2 {
+        if (currentMove != null) {
+            return currentMove.to;
+        }
+
+        return getPosition();
     }
 
     static function getId ():Int {
