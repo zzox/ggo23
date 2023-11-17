@@ -120,7 +120,6 @@ class World {
         actors.remove(actor);
     }
 
-    // TODO: velocity?
     public function addElement (x:Float, y:Float, type:ElementType, vel:Vec2, time:Float, fromActor:Actor) {
         final element = new Element(x, y, type, vel, time, fromActor);
         elements.push(element);

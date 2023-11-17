@@ -38,7 +38,7 @@ PlayerActor => {
     attackTime: 0.0,
     meleeDamage: 10,
     health: 100,
-    speed: 50,
+    speed: 60,
     color: 0xff5b6ee1,
     animIndex: 0,
 },

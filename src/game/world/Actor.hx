@@ -63,7 +63,7 @@ class Actor extends WorldItem {
 
     var isDead:Bool = false;
     public var isHurt:Bool = false;
-    var hurtTimer:Float = 0.0;
+    public var hurtTimer:Float = 0.0;
     var hurtSlowTimer:Float = 0.0;
     public var health:Int;
     public var meleeDamage:Int;
@@ -233,7 +233,7 @@ class Actor extends WorldItem {
         } else {
             final nextItem = getGridItem(world.grid, nextPos.x, nextPos.y);
             if (nextItem.actor != null) {
-                // TODO: do something about this.
+                // TODO: do something about this, maybe retrying the move
                 trace('actor in the way!!');
                 currentPath.unshift(nextPos);
                 endMove();

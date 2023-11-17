@@ -85,8 +85,8 @@ class ActorSprite extends WorldItemSprite {
             }
 
             if (prevHurt && !isHurt) {
-                // TODO: better value
-                hurt(1.0);
+                // TODO: use from signals
+                hurt(actorState.hurtTimer);
             }
 
             if (!prevHurt && isHurt) {

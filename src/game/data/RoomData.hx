@@ -153,29 +153,19 @@ function getClosestExit (room:Rect, exits:Array<IntVec2>):Null<IntVec2> {
     return exit;
 }
 
-// ATTN:
 function getAdjacentItems <T>(grid:Array<Array<T>>, x:Int, y:Int) {
     final items = [];
 
-    final item1 = grid[x + 1] != null ? grid[x + 1][y] : null;
-    final item2 = grid[x] != null ? grid[x][y + 1] : null;
-    final item3 = grid[x - 1] != null ? grid[x - 1][y] : null;
-    final item4 = grid[x] != null ? grid[x][y - 1] : null;
-    final item5 = grid[x + 1] != null ? grid[x + 1][y + 1] : null;
-    final item6 = grid[x - 1] != null ? grid[x - 1][y + 1] : null;
-    final item7 = grid[x + 1] != null ? grid[x + 1][y - 1] : null;
-    final item8 = grid[x - 1] != null ? grid[x - 1][y - 1] : null;
+    items.push(grid[x + 1] != null ? grid[x + 1][y] : null);
+    items.push(grid[x] != null ? grid[x][y + 1] : null);
+    items.push(grid[x - 1] != null ? grid[x - 1][y] : null);
+    items.push(grid[x] != null ? grid[x][y - 1] : null);
+    items.push(grid[x + 1] != null ? grid[x + 1][y + 1] : null);
+    items.push(grid[x - 1] != null ? grid[x - 1][y + 1] : null);
+    items.push(grid[x + 1] != null ? grid[x + 1][y - 1] : null);
+    items.push(grid[x - 1] != null ? grid[x - 1][y - 1] : null);
 
-    if (item1 != null) items.push(item1);
-    if (item2 != null) items.push(item2);
-    if (item3 != null) items.push(item3);
-    if (item4 != null) items.push(item4);
-    if (item5 != null) items.push(item5);
-    if (item6 != null) items.push(item6);
-    if (item7 != null) items.push(item7);
-    if (item8 != null) items.push(item8);
-
-    return items;
+    return items.filter((item) -> item != null);
 }
 
 typedef PlacedRoom = {
@@ -191,7 +181,6 @@ typedef GeneratedWorld = {
     var spawners:Array<IntVec2>;
 }
 
-// TODO: time this
 function generate (width:Int, height:Int):GeneratedWorld {
     Console.time('generation');
 
