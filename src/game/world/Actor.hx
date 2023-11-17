@@ -29,6 +29,7 @@ typedef Attack = {
     var type:AttackType;
     var ?dir:GridDir;
     var ?vel:Vec2;
+    var ?power:Float;
     var ?startPos:Vec2;
 }
 
@@ -269,14 +270,17 @@ class Actor extends WorldItem {
 
     public function doElementDamage (fromElement:Element) {
         // TODO: set target to nearest depending on intelligence.
-        trace('took element damage!', fromElement);
+        if (fromElement.fromActor != null) {
+            target = fromElement.fromActor;
+        }
+
+        // TODO: type resistance
         if (!isHurt) {
-            hurt(10);
+            hurt(Math.ceil(10 * (fromElement.time)));
         }
     }
 
     function tryAttack (attack:AttackData, ?dir:GridDir, pos:IntVec2) {
-        // TODO: bring data in from config
         var vel:Vec2 = new Vec2(0, 0);
         var startPos:Vec2 = new Vec2(x, y);
         if (attack.type == Range) {
@@ -293,6 +297,7 @@ class Actor extends WorldItem {
             type: attack.type,
             dir: attack.type == Melee ? dir : null,
             vel: attack.type == Range ? vel : null,
+            power: attack.power,
             startPos: attack.type == Range ? startPos : null
         }
 
@@ -310,7 +315,7 @@ class Actor extends WorldItem {
             final pos = getPosition();
             world.meleeAttack(pos.x + diff.x, pos.y + diff.y, this);
         } else if (currentAttack.type == Range) {
-            world.addElement(currentAttack.startPos.x, currentAttack.startPos.y, Fire, currentAttack.vel);
+            world.addElement(currentAttack.startPos.x, currentAttack.startPos.y, Fire, currentAttack.vel, currentAttack.power, this);
         }
     }
 

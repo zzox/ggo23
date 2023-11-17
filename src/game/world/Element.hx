@@ -15,14 +15,16 @@ enum ElementType {
 class Element extends WorldItem {
     public var active:Bool = true;
     var type:ElementType;
-    public var time:Float;
+    public var time:Float; // also used as power
     public var velocity:Vec2;
+    public var fromActor:Actor;
 
-    public function new (x:Float, y:Float, type:ElementType, velocity:Vec2) {
+    public function new (x:Float, y:Float, type:ElementType, velocity:Vec2, time:Float, fromActor:Actor) {
         super(x, y);
         this.type = type;
-        this.time = 1.0;
+        this.time = time;
         this.velocity = velocity;
+        this.fromActor = fromActor;
     }
 
     public function update (delta:Float) {

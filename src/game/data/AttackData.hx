@@ -14,6 +14,7 @@ typedef AttackData = {
     var time:Float; // How long it takes to execute. (post-time)
     var type:AttackType;
     var ?vel:Float;
+    var ?power:Float; // how long this stays around, correlates to its damage.
     var ?element:ElementType;
     // var shape:Float;
 }
@@ -34,6 +35,7 @@ Fireball => {
     time: 0.5,
     type: Range,
     vel: 5.0,
+    power: 2.0,
     element: Fire
 }
 ];

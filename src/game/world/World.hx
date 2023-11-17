@@ -121,8 +121,8 @@ class World {
     }
 
     // TODO: velocity?
-    public function addElement (x:Float, y:Float, type:ElementType, vel:Vec2) {
-        final element = new Element(x, y, type, vel);
+    public function addElement (x:Float, y:Float, type:ElementType, vel:Vec2, time:Float, fromActor:Actor) {
+        final element = new Element(x, y, type, vel, time, fromActor);
         elements.push(element);
         onAddElement(element);
     }

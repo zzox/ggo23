@@ -24,6 +24,12 @@ class ActorSprite extends WorldItemSprite {
         animation.add('walk', [data.animIndex, data.animIndex + 1], 0.2);
         animation.add('preattack', [data.animIndex + 2]);
         animation.add('attack', [data.animIndex + 3]);
+        // animation.add('die', [data.animIndex + 4, data.animIndex + 5], 0.5, false);
+        // animation.onComplete = (anim:String) -> {
+        //     if (anim == 'die') {
+        //         visible = false;
+        //     }
+        // }
     }
 
     override function update (delta:Float) {
