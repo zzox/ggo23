@@ -33,7 +33,7 @@ class World {
         //     return { x: x, y: y, tile: Tile, object: null, actor: null, element: null };
         // });
         // grid = makeMap(makeRoom(mainRoom1).preGrid);
-        final enemyTypes:Array<ActorType> = [Snake, Snake, Rat];
+        final enemyTypes:Array<ActorType> = [BigRat, Snake, BigRat];
         final generatedWorld = generate(size.x, size.y);
         grid = generatedWorld.grid;
 
@@ -86,7 +86,7 @@ class World {
 
         for (actor in actors) {
             if (actor.isManaged) {
-                actor.manage();
+                actor.manage(delta);
             }
             actor.update(delta);
         }

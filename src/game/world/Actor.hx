@@ -68,14 +68,19 @@ class Actor extends WorldItem {
     public var meleeDamage:Int;
     var speed:Int;
 
-    var preAttackTime:Float = 0.0;
-    var attackTime:Float = 0.0;
+    var preAttackTimer:Float = 0.0;
     var currentMove:Null<Move>;
     var currentPath:Null<Array<IntVec2>>;
     public var currentAttack:Null<Attack>;
     public var isManaged:Bool;
     var queuedMove:Null<QueuedMove> = null;
     public var target:Null<Actor>;
+
+    var decisionTimer:Float = 0.0;
+    var decideTime:Float = 0.0; // set by manageData, final
+    var approachDist:Float = 0.0;
+    var attackDist:Float = 0.0;
+    var chosenAttack:AttackName;
 
     var world:World;
     public var actorType:ActorType;
@@ -94,6 +99,13 @@ class Actor extends WorldItem {
         health = data.health;
         meleeDamage = data.meleeDamage;
         speed = data.speed;
+
+        if (type != PlayerActor) {
+            attackDist = data.manageData.attackDist;
+            approachDist = data.manageData.approachDist;
+            decideTime = data.manageData.decideTime;
+            chosenAttack = data.manageData.attack;
+        }
 
         this.world = world;
         this.actorType = type;
@@ -116,8 +128,8 @@ class Actor extends WorldItem {
                 startNextMove();
             }
         } else if (state == PreAttack) {
-            preAttackTime -= delta;
-            if (preAttackTime < 0.0) {
+            preAttackTimer -= delta;
+            if (preAttackTimer < 0.0) {
                 attack();
             }
         } else if (state == Attack) {
@@ -139,39 +151,44 @@ class Actor extends WorldItem {
         }
     }
 
-    public function manage () {
+    public function manage (delta:Float) {
         if (target != null && target.isDead) {
             target = null;
         }
 
         if (target != null) {
-            if (state == Wait) {
-                final myPosition = getPosition();
-                // TODO: eventual `targetPosition`
-                final playerPosition = target.getNearestPosition();
-                final distance = distanceBetween(myPosition.toVec2(), playerPosition.toVec2());
+            decisionTimer -= delta;
 
-                // attack distance
-                if (distance <= Math.sqrt(2)) {
-                    // attack
-                    final diffX = playerPosition.x - myPosition.x;
-                    final diffY = playerPosition.y - myPosition.y;
-                    final dir = getDirFromDiff(diffX, diffY);
-                    if (dir != null) {
-                        queueAttack({ preTime: 0.5, time: 0.5, type: Melee }, dir);
-                    } else {
-                        trace('missed', distance, diffX, diffY);
-                    }
-                // approach distance
-                } else if (distance < 10.0) {
-                    final nearestPos = target.getNearestPosition();
-                    move(nearestPos.x, nearestPos.y);
-                }
+            final myPosition = getNearestPosition();
+            final targetPosition = target.getNearestPosition();
+            final distance = distanceBetween(myPosition.toVec2(), targetPosition.toVec2());
+
+            // if it's time to decide or we're very close
+            if (decisionTimer < 0.0 || (decisionTimer < decideTime * .5 && distance < Math.sqrt(2))) {
+                decide(myPosition, targetPosition, distance);
             }
         }
     }
 
-    function decide () {}
+    function decide (myPos:IntVec2, targetPos:IntVec2, distance:Float) {
+        // attack distance
+        if (distance <= attackDist) {
+            // attack
+            final diffX = targetPos.x - myPos.x;
+            final diffY = targetPos.y - myPos.y;
+            final dir = getDirFromDiff(diffX, diffY);
+            if (dir != null) {
+                queueAttack(attackData[chosenAttack], dir, targetPos);
+            } else {
+                trace('missed', distance, diffX, diffY);
+            }
+        // approach distance
+        } else if (distance < approachDist) {
+            queueMove(targetPos.clone());
+        }
+
+        decisionTimer = Math.random() * decideTime + decideTime;
+    }
 
     public function queueMove (pos:IntVec2) {
         queuedMove = {
@@ -280,7 +297,7 @@ class Actor extends WorldItem {
         }
 
         state = PreAttack;
-        preAttackTime = attack.preTime;
+        preAttackTimer = attack.preTime;
     }
 
     function attack () {

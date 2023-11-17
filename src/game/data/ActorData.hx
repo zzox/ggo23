@@ -1,9 +1,18 @@
 package game.data;
 
+import game.data.AttackData;
+
 enum ActorType {
     PlayerActor;
-    Rat;
+    BigRat;
     Snake;
+}
+
+typedef ManageData = {
+    var approachDist:Float;
+    var attackDist:Float;
+    var decideTime:Float;
+    var attack:AttackName;
 }
 
 // Data for visuals _and_ state
@@ -16,6 +25,8 @@ typedef ActorData = {
     var meleeDamage:Int;
     var speed:Int;
     var health:Int;
+
+    var ?manageData:ManageData;
     // experience (for kills)
     // attack distance
     // ?generate elements
@@ -31,7 +42,7 @@ PlayerActor => {
     color: 0xff5b6ee1,
     animIndex: 0,
 },
-Rat => {
+BigRat => {
     preAttackTime: 0.5,
     attackTime: 1.0,
     meleeDamage: 10,
@@ -39,6 +50,12 @@ Rat => {
     speed: 25,
     color: 0xffa8a8a8,
     animIndex: 4,
+    manageData: {
+        attackDist: Math.sqrt(2),
+        approachDist: 10,
+        decideTime: 1.0,
+        attack: Bite
+    }
 },
 Snake => {
     preAttackTime: 0.1,
@@ -46,7 +63,13 @@ Snake => {
     meleeDamage: 20,
     health: 12,
     speed: 35,
-    color: 0xffa8a8a8,
+    color: 0xff37946e,
     animIndex: 8,
+    manageData: {
+        attackDist: Math.sqrt(2),
+        approachDist: 12,
+        decideTime: 0.5,
+        attack: Fireball
+    }
 }
 ];
