@@ -10,7 +10,7 @@ final dirDiffs = [new IntVec2(1, 0), new IntVec2(-1, 0)];
 // final dirDiffs = [new IntVec2(1, 0), new IntVec2(-1, 0), new IntVec2(0, 1), new IntVec2(0, -1)];
 
 class WorldItemSprite extends Sprite {
-    static inline final Y_OFFSET:Int = 26;
+    static inline final Y_OFFSET:Int = 24;
 
     public var isHurt:Bool = false;
     var hurtTimer:Float = 0;

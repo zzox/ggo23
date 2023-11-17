@@ -7,7 +7,7 @@ import game.world.Actor;
 import kha.Assets;
 
 class ActorSprite extends WorldItemSprite {
-    var actorState:Null<Actor>;
+    public var actorState:Null<Actor>;
 
     var prevX:Float;
     var prevHurt:Bool;

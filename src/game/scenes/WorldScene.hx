@@ -66,6 +66,12 @@ class WorldScene extends Scene {
             tile.clean();
         }
 
+        if (player.actorState != null && player.actorState.state == Moving && player.actorState.currentPath != null) {
+            for (tile in player.actorState.currentPath) {
+                getTileSpriteAt(tile.x, tile.y).stepped = true;
+            }
+        }
+
         handleCamera();
         handleInput();
 
@@ -132,7 +138,6 @@ class WorldScene extends Scene {
     }
 
     function handleAddElement (element:Element) {
-        trace('a', element);
         // TODO: use pool for these.
         final elementSprite = new ElementSprite(element);
         elementSprites.push(elementSprite);

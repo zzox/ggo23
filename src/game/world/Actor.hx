@@ -70,8 +70,8 @@ class Actor extends WorldItem {
     var speed:Int;
 
     var preAttackTimer:Float = 0.0;
-    var currentMove:Null<Move>;
-    var currentPath:Null<Array<IntVec2>>;
+    public var currentMove:Null<Move>;
+    public var currentPath:Null<Array<IntVec2>>;
     public var currentAttack:Null<Attack>;
     public var isManaged:Bool;
     var queuedMove:Null<QueuedMove> = null;

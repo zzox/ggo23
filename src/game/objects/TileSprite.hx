@@ -9,6 +9,7 @@ import kha.Assets;
 import kha.graphics2.Graphics;
 
 class TileSprite extends Sprite {
+    public var stepped:Bool = false;
     public var focused:Bool = false;
     public var pos:IntVec2;
 
@@ -24,6 +25,11 @@ class TileSprite extends Sprite {
         final index = tileIndex;
         super.render(g2, camera);
 
+        if (stepped) {
+            tileIndex = 4;
+            super.render(g2, camera);
+        }
+
         if (focused) {
             tileIndex = 3;
             super.render(g2, camera);
@@ -34,5 +40,6 @@ class TileSprite extends Sprite {
 
     public function clean () {
         focused = false;
+        stepped = false;
     }
 }
