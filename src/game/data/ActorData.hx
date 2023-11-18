@@ -49,7 +49,7 @@ BigRat => {
     health: 25,
     speed: 25,
     color: 0xffa8a8a8,
-    animIndex: 4,
+    animIndex: 6,
     manageData: {
         attackDist: Math.sqrt(2),
         approachDist: 10,
@@ -64,7 +64,7 @@ Snake => {
     health: 12,
     speed: 35,
     color: 0xff37946e,
-    animIndex: 8,
+    animIndex: 12,
     manageData: {
         attackDist: Math.sqrt(2),
         approachDist: 12,

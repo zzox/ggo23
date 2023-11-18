@@ -24,12 +24,12 @@ class ActorSprite extends WorldItemSprite {
         animation.add('walk', [data.animIndex, data.animIndex + 1], 0.2);
         animation.add('preattack', [data.animIndex + 2]);
         animation.add('attack', [data.animIndex + 3]);
-        // animation.add('die', [data.animIndex + 4, data.animIndex + 5], 0.5, false);
-        // animation.onComplete = (anim:String) -> {
-        //     if (anim == 'die') {
-        //         visible = false;
-        //     }
-        // }
+        animation.add('die', [data.animIndex + 4, data.animIndex + 5], actor.actorType == PlayerActor ? 2.0 : 0.5, false);
+        animation.onComplete = (anim:String) -> {
+            if (anim == 'die') {
+                visible = false;
+            }
+        }
     }
 
     override function update (delta:Float) {
@@ -95,8 +95,6 @@ class ActorSprite extends WorldItemSprite {
 
             prevX = x;
             prevHurt = actorState.isHurt;
-        } else {
-            visible = false;
         }
 
         super.update(delta);
@@ -104,7 +102,11 @@ class ActorSprite extends WorldItemSprite {
 
     function onActorStateUpdate (updateType:UpdateType) {
         if (updateType == Death) {
+            if (actorState.actorType != PlayerActor) {
+                alpha = 0.5;
+            }
             actorState = null;
+            animation.play('die');
         }
     }
 }
