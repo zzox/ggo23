@@ -19,3 +19,22 @@ function getText (x:Int, y:Int, text:String = ''):Sprite {
     sprite.makeBitmapText(text, getFont());
     return sprite;
 }
+
+function getSmallFont ():ConstructBitmapFont {
+    return new ConstructBitmapFont(
+        new IntVec2(8, 8),
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,;:?!"\'+-=*%_() ',
+        [
+            [5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789?"+-=*%_()'],
+            [3, ' '],
+            [3, '.,;:!\''],
+        ],
+        -2
+    );
+}
+
+// function getSmallText ():Sprite {
+//     final sprite = new Sprite(new Vec2(-16, -16), Assets.images.cards_with_outline);
+//     sprite.makeBitmapText('', getFont());
+//     return sprite;
+// }

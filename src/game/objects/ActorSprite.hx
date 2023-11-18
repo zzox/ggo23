@@ -18,7 +18,7 @@ class ActorSprite extends WorldItemSprite {
         super(new Vec2(pos.x, pos.y), Assets.images.actors, new IntVec2(16, 32), data.color);
         this.actorState = actor;
 
-        actor.onUpdate = onActorStateUpdate;
+        actor.updateListeners.push(onActorStateUpdate);
 
         animation.add('still', [data.animIndex]);
         animation.add('walk', [data.animIndex, data.animIndex + 1], 0.2);
@@ -100,7 +100,7 @@ class ActorSprite extends WorldItemSprite {
         super.update(delta);
     }
 
-    function onActorStateUpdate (updateType:UpdateType) {
+    function onActorStateUpdate (updateType:UpdateType, ?options:UpdateOptions) {
         if (updateType == Death) {
             if (actorState.actorType != PlayerActor) {
                 alpha = 0.5;

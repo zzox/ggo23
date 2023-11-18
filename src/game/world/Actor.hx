@@ -47,6 +47,12 @@ typedef QueuedMove = {
 
 enum UpdateType {
     Death;
+    Damage;
+}
+
+typedef UpdateOptions = {
+    var damage:Int;
+    var pos:Vec2;
 }
 
 function calcMovePosition (move:Move, percentMoved:Float):Vec2 {
@@ -88,7 +94,7 @@ class Actor extends WorldItem {
     public var state:ActorState = Wait;
 
     // to send updates to a listener.
-    public var onUpdate:(updateType:UpdateType) -> Void;
+    public var updateListeners:Array<(updateType:UpdateType, ?updateOptions:UpdateOptions) -> Void> = [];
 
     public function new (x:Int, y:Int, world:World, type:ActorType) {
         super(x, y);
@@ -307,7 +313,7 @@ class Actor extends WorldItem {
 
     function attack () {
         state = Attack;
-        trace('attack', currentAttack);
+        // trace('attack', currentAttack);
 
         if (currentAttack.type == Melee) {
             // TODO: consider storing position on currentAttack
@@ -345,8 +351,12 @@ class Actor extends WorldItem {
     function hurt (damage:Int) {
         health -= damage;
         if (health <= 0) {
+            health = 0;
             die();
         }
+
+        for (onUpdate in updateListeners) onUpdate(Damage, { damage: damage, pos: new Vec2(x, y) });
+
         isHurt = true;
         hurtTimer = 1.0;
         hurtSlowTimer = hurtTimer / 2;
@@ -359,7 +369,7 @@ class Actor extends WorldItem {
     function die () {
         isDead = true;
         world.removeActor(this);
-        onUpdate(Death);
+        for (onUpdate in updateListeners) onUpdate(Death);
     }
 
     public function getLinkedPosition ():IntVec2 {

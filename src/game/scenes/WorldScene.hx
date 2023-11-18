@@ -9,7 +9,9 @@ import game.objects.ActorSprite;
 import game.objects.ElementSprite;
 import game.objects.TileSprite;
 import game.scenes.UiScene;
+import game.ui.Numbers;
 import game.util.Utils;
+import game.world.Actor;
 import game.world.Element;
 import game.world.World;
 import kha.input.KeyCode;
@@ -21,6 +23,7 @@ class WorldScene extends Scene {
     var player:ActorSprite;
     var tileSprites:Array<TileSprite> = [];
     var elementSprites:Array<ElementSprite> = [];
+    var damageNumbers:Group;
 
     var uiScene:UiScene;
 
@@ -44,12 +47,21 @@ class WorldScene extends Scene {
         gridObjects = new Group();
         addSprite(gridObjects);
 
+        damageNumbers = new Group();
+        addSprite(damageNumbers);
+
         player = new ActorSprite(world.playerActor);
+        world.playerActor.updateListeners.push(handleActorUpdate);
 
         for (actor in world.actors) {
+            actor.updateListeners.push(handleActorUpdate);
             if (actor != world.playerActor) {
                 gridObjects.addChild(new ActorSprite(actor));
             }
+        }
+
+        for (_ in 0...20) {
+            damageNumbers.addChild(new Numbers());
         }
 
         gridObjects.addChild(player);
@@ -82,6 +94,16 @@ class WorldScene extends Scene {
 
         if (game.keys.justPressed(KeyCode.R)) {
             game.switchScene(new WorldScene());
+        }
+    }
+
+    function handleActorUpdate (updateType:UpdateType, ?updateOptions:UpdateOptions) {
+        if (updateType == Damage) {
+            final num = damageNumbers.getNext();
+            final worldPos = translateWorldPos(updateOptions.pos.x, updateOptions.pos.y);
+            num.setPosition(worldPos.x + 4, worldPos.y - 18);
+            num.text = updateOptions.damage + '';
+            num.start();
         }
     }
 

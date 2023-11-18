@@ -2,7 +2,9 @@ package game.scenes;
 
 import core.Scene;
 import core.Sprite;
+import core.Types.Vec2;
 import game.ui.UiText;
+import kha.Assets;
 
 class UiScene extends Scene {
     public var exText:Sprite;
@@ -10,7 +12,9 @@ class UiScene extends Scene {
     public var buttonClicked:Bool = false;
 
     override function create () {
-        addSprite(exText = getText(4, 4, 'ExAmPlE text'));
+        // addSprite(exText = getText(4, 4, 'ExAmPlE text'));
+        addSprite(new Sprite(new Vec2(2, 2), Assets.images.portraits));
+        camera.scale.set(2, 2);
     }
 
     override function update (delta:Float) {}

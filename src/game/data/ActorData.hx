@@ -69,7 +69,7 @@ Snake => {
         attackDist: Math.sqrt(2),
         approachDist: 12,
         decideTime: 0.5,
-        attack: Fireball
+        attack: Bite
     }
 }
 ];
