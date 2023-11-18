@@ -3,9 +3,11 @@ package game.data;
 import core.Types;
 import core.Util;
 import game.util.Pathfinding;
+import game.util.ShuffleRandom;
 import game.world.Grid;
 import game.world.World;
 import js.html.Console;
+import kha.math.Random;
 
 final mainRoom1 = "
              X
@@ -15,13 +17,13 @@ final mainRoom1 = "
  xxxxxxxxxxxxxxxxxx
 XxxxxxxxxxxxxxxxxxxX
  xxxxxxxxxxxxxxxxxx
- xxxxxxxxxxxxxxExxx
+ xxxxxxxxxxxxxx1xxx
  xxxxxxxxxxxxxxxxxx
  xxxxxxxxxxxxxxxxxx
- xxxxxxxxxxxxxxExxx
+ xxxxxxxxxxxxxx1xxx
  xxxxxxxxxxxxxxxxxx
  xxxxxxxxxxxxxxxxxx
- xxxxxxxxxxxxxxExxx
+ xxxxxxxxxxxxxx1xxx
  xxxxxxxxxxxxxxxxxx
   X
 ";
@@ -34,7 +36,7 @@ final mainRoom1Old = "
  xxxxxxxxx
 XxxxxxxxxxX
  xxxxxxxxx
- xxxxxxExx
+ xxxxxx1xx
  xxxxxxxxx
   X
 ";
@@ -42,7 +44,7 @@ XxxxxxxxxxX
 enum TileType {
     Ground;
     PlayerSpawn;
-    EnemySpawn;
+    EnemySpawn1;
     Exit;
     Hallway;
 }
@@ -82,7 +84,7 @@ function makeRoom (roomString:String):PreRoom {
                 case ' ': null;
                 case 'x': Ground;
                 case 'P': PlayerSpawn;
-                case 'E': EnemySpawn;
+                case '1': EnemySpawn1;
                 case 'X': Exit;
                 default: null;
             }
@@ -181,7 +183,7 @@ typedef GeneratedWorld = {
     var spawners:Array<IntVec2>;
 }
 
-function generate (width:Int, height:Int):GeneratedWorld {
+function generate (width:Int, height:Int, rooms:Array<String>, random:Random):GeneratedWorld {
     Console.time('generation');
 
     final PLACE_ATTEMPTS:Int = 100;
@@ -195,14 +197,16 @@ function generate (width:Int, height:Int):GeneratedWorld {
     var playerPos:Null<IntVec2> = null;
     final enemySpawners:Array<IntVec2> = [];
 
+    final randomRoom = new ShuffleRandom(rooms, random);
+
     final pregrid = makeEmptyPregrid(width, height);
     for (_ in 0...PLACE_ATTEMPTS) {
         // MD: room types
-        final room = makeRoom(mainRoom1);
+        final room = makeRoom(randomRoom.getNext());
 
         // random x and y position minus the width and height to not go off the edge
-        final randomX = Math.floor(Math.random() * (width - room.width));
-        final randomY = Math.floor(Math.random() * (height - room.height));
+        final randomX = Math.floor(random.GetFloat() * (width - room.width));
+        final randomY = Math.floor(random.GetFloat() * (height - room.height));
 
         var roomCollided = false;
         for (r in roomsPlaced) {
@@ -225,7 +229,7 @@ function generate (width:Int, height:Int):GeneratedWorld {
                     exits.push(new IntVec2(randomX + x, randomY + y));
                 } else if (item == PlayerSpawn) {
                     pSpawn = new IntVec2(x + randomX, y + randomY);
-                } else if (item == EnemySpawn && !initialConnected) {
+                } else if (item == EnemySpawn1 && !initialConnected) {
                     enemySpawners.push(new IntVec2(x + randomX, y + randomY));
                 }
             });
@@ -306,7 +310,7 @@ function generate (width:Int, height:Int):GeneratedWorld {
                 final isConnected = connectedMap[room.id].contains(otherRoom.id) || (connectedMap[otherRoom.id] != null && connectedMap[otherRoom.id].contains(room.id));
 
                 // TODO: figure out better method to determine pathing
-                if (!isConnected && distance < 50 && ((otherRoom.connected && Math.random() < 0.1) || !otherRoom.connected)) {
+                if (!isConnected && distance < width * .5 && ((otherRoom.connected && random.GetFloat() < 0.1) || !otherRoom.connected)) {
                     final roomExit = getClosestExit(otherRoom.rect, room.exits);
                     final otherRoomExit = getClosestExit(room.rect, otherRoom.exits);
 

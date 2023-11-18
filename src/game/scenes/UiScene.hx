@@ -12,7 +12,6 @@ class UiScene extends Scene {
     public var buttonClicked:Bool = false;
 
     override function create () {
-        // addSprite(exText = getText(4, 4, 'ExAmPlE text'));
         addSprite(new Sprite(new Vec2(2, 2), Assets.images.portraits));
         camera.scale.set(2, 2);
     }

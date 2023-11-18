@@ -1,10 +1,12 @@
 package game.world;
 
 import core.Types;
-import game.data.ActorData;
+import game.data.FloorData;
 import game.data.RoomData;
+import game.util.ShuffleRandom;
 import game.world.Element;
 import game.world.Grid;
+import kha.math.Random;
 
 enum TileType {
     Tile;
@@ -28,27 +30,26 @@ class World {
     var onAddElement:ElementAdd;
     var onRemoveElement:ElementAdd;
 
-    public function new (size:IntVec2, onAddElement:ElementAdd, onRemoveElement:ElementAdd) {
-        // grid = makeGrid(size, (x, y) -> {
-        //     return { x: x, y: y, tile: Tile, object: null, actor: null, element: null };
-        // });
-        // grid = makeMap(makeRoom(mainRoom1).preGrid);
-        final enemyTypes:Array<ActorType> = [BigRat, Snake, BigRat];
-        final generatedWorld = generate(size.x, size.y);
+    public function new (onAddElement:ElementAdd, onRemoveElement:ElementAdd) {
+        // TODO: bring in from singleton.
+        final floorNum = 0;
+        final random = new Random(Math.floor(Math.random() * 65536));
+        trace(random.GetFloat());
+        final data = floorData[floorNum];
+        final generatedWorld = generate(data.size.x, data.size.y, data.rooms, random);
         grid = generatedWorld.grid;
 
         playerActor = new Actor(generatedWorld.playerPos.x, generatedWorld.playerPos.y, this, PlayerActor);
         addActor(playerActor);
 
+        final randomEnemy = new ShuffleRandom(data.enemies, random);
         for (enemySpawner in generatedWorld.spawners) {
-            // MD: enemy type from randomness in level config.
-            final type = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
-            final enemy = new Actor(enemySpawner.x, enemySpawner.y, this, type);
+            final enemy = new Actor(enemySpawner.x, enemySpawner.y, this, randomEnemy.getNext());
             addActor(enemy);
             enemy.target = playerActor;
         }
 
-        this.size = size;
+        this.size = data.size;
 
         this.onAddElement = onAddElement;
         this.onRemoveElement = onRemoveElement;

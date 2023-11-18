@@ -59,3 +59,13 @@ i also just checked my todo list and it is fucking huge.
 also also just realized today i want to quit my day job.
 
 anyways, development is starting to get interesting. After going through some combat, i've realized how obtuse the movement is. maybe tiles should be a tad bigger? it's also been interesting because the systems are starting to feel solid. A snake bites a rat when it tries to bite me, now the rat is trying to attack the snake instead of me. I can sub out attacks for any actor and they'll work iterchangably. adding content is pretty simple and straightforward.
+
+# day 17
+
+busy day at work, met up with friends after work. not much time to program.
+
+# day 18
+
+think i'm going to take it easy this weekend. longer breaks, gotta run some errands. going to go ham this week (hopefully).
+
+went for a couple walks, did a little bit with ui and dungeon generation. met up with some friends again.

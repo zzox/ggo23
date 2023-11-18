@@ -30,7 +30,7 @@ class WorldScene extends Scene {
     var ratTest:ActorSprite;
 
     override function create () {
-        world = new World(new IntVec2(100, 100), handleAddElement, handleRemoveElement);
+        world = new World(handleAddElement, handleRemoveElement);
 
         for (outer in world.grid) {
             for (item in outer) {
