@@ -97,34 +97,43 @@ function checkCanMoveTo (grid: IntGrid, point: IntVec2, target: IntVec2): Bool {
 }
 
 function getNeighbors (grid: IntGrid, point: IntVec2, target: IntVec2, canGoDiagonal:Bool = false): Array<IntVec2> {
-  final neighbors: Array<IntVec2> = [];
+    final neighbors: Array<IntVec2> = [];
+
+    var canGoNorth = false;
+    var canGoSouth = false;
+    var canGoEast = false;
+    var canGoWest = false;
 
     // N, S, E, W
     if (checkCanMoveTo(grid, new IntVec2(point.x, point.y - 1), target)) {
         neighbors.push(new IntVec2(point.x, point.y - 1));
+        canGoNorth = true;
     }
     if (checkCanMoveTo(grid, new IntVec2(point.x, point.y + 1), target)) {
         neighbors.push(new IntVec2(point.x, point.y + 1));
+        canGoSouth = true;
     }
     if (checkCanMoveTo(grid, new IntVec2(point.x + 1, point.y), target)) {
         neighbors.push(new IntVec2(point.x + 1, point.y));
+        canGoEast = true;
     }
     if (checkCanMoveTo(grid, new IntVec2(point.x - 1, point.y), target)) {
         neighbors.push(new IntVec2(point.x - 1, point.y));
+        canGoWest = true;
     }
 
-    // NE, SE, NW, SW
+    // NE, SE, NW, SW, extra checks are to prevent cutting corners
     if (canGoDiagonal) {
-        if (checkCanMoveTo(grid, new IntVec2(point.x + 1, point.y - 1), target)) {
+        if (canGoNorth && canGoEast && checkCanMoveTo(grid, new IntVec2(point.x + 1, point.y - 1), target)) {
             neighbors.push(new IntVec2(point.x + 1, point.y - 1));
         }
-        if (checkCanMoveTo(grid, new IntVec2(point.x + 1, point.y + 1), target)) {
+        if (canGoSouth && canGoEast && checkCanMoveTo(grid, new IntVec2(point.x + 1, point.y + 1), target)) {
             neighbors.push(new IntVec2(point.x + 1, point.y + 1));
         }
-        if (checkCanMoveTo(grid, new IntVec2(point.x - 1, point.y - 1), target)) {
+        if (canGoNorth && canGoWest && checkCanMoveTo(grid, new IntVec2(point.x - 1, point.y - 1), target)) {
             neighbors.push(new IntVec2(point.x - 1, point.y - 1));
         }
-        if (checkCanMoveTo(grid, new IntVec2(point.x - 1, point.y + 1), target)) {
+        if (canGoSouth && canGoWest && checkCanMoveTo(grid, new IntVec2(point.x - 1, point.y + 1), target)) {
             neighbors.push(new IntVec2(point.x - 1, point.y + 1));
         }
     }

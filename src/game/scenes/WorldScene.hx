@@ -86,7 +86,7 @@ class WorldScene extends Scene {
     }
 
     function handleInput  () {
-        final tilePos = getTilePos(world.grid, game.mouse.position.x, game.mouse.position.y);
+        final tilePos = getTilePos(world.grid, game.mouse.position.x, game.mouse.position.y - 2);
 
         if (tilePos != null) {
             final tile = getTileSpriteAt(tilePos.x, tilePos.y);

@@ -27,7 +27,9 @@ class TileSprite extends Sprite {
 
         if (stepped) {
             tileIndex = 4;
+            alpha = 0.33;
             super.render(g2, camera);
+            alpha = 1.0;
         }
 
         if (focused) {
