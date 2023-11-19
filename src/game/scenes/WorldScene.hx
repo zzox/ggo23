@@ -84,7 +84,14 @@ class WorldScene extends Scene {
             }
         }
 
-        uiScene.healthNum = player.actorState != null ? player.actorState.health : 0;
+        if (player.actorState != null) {
+            uiScene.healthNum = player.actorState.health;
+            uiScene.recoveryNum = player.actorState.currentAttack != null ?
+                Math.floor(player.actorState.currentAttack.elapsed / player.actorState.currentAttack.time * 100)
+                : 100;
+        } else {
+            uiScene.healthNum = 0;
+        }
         uiScene.forceUpdate(delta);
 
         handleCamera();

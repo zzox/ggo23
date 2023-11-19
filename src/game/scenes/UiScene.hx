@@ -12,7 +12,7 @@ class UiScene extends Scene {
     public var healthBar:Bar;
     public var healthNum:Int;
     public var healthMax:Int;
-    public var recoveryBar:Sprite;
+    public var recoveryBar:Bar;
     public var recoveryNum:Int;
     public var experienceBar:Sprite;
     public var experienceNum:Int;
@@ -24,6 +24,7 @@ class UiScene extends Scene {
         addSprite(new Sprite(new Vec2(2, 2), Assets.images.portraits));
 
         addSprite(healthBar = new Bar(40, 2, 100, 8, [{ min: 0.0, color: 0xffd95763 }, { min: 0.2, color: 0xff37946e }], 100, 100));
+        addSprite(recoveryBar = new Bar(40, 16, 50, 2, [{ min: 0.0, color: 0xff5b6ee1 }, { min: 1.0, color: 0xff639bff }], 100, 100));
     }
 
     override function update (delta:Float) {}
@@ -31,6 +32,8 @@ class UiScene extends Scene {
     public function forceUpdate (delta:Float) {
         buttonClicked = false;
         healthBar.value = healthNum;
+        recoveryBar.value = recoveryNum;
+
         super.update(delta);
     }
 
