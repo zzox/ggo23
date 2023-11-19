@@ -65,7 +65,7 @@ class WorldScene extends Scene {
         }
 
         gridObjects.addChild(player);
-        camera.startFollow(player);
+        camera.startFollow(player, new IntVec2(16, 24));
         camera.scale.set(2.0, 2.0);
         // camera.followLerp.set(0.25, 0.25);
 
@@ -83,6 +83,9 @@ class WorldScene extends Scene {
                 getTileSpriteAt(tile.x, tile.y).stepped = true;
             }
         }
+
+        uiScene.healthNum = player.actorState != null ? player.actorState.health : 0;
+        uiScene.forceUpdate(delta);
 
         handleCamera();
         handleInput();
