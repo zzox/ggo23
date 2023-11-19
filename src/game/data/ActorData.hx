@@ -6,6 +6,7 @@ enum ActorType {
     PlayerActor;
     BigRat;
     Snake;
+    Plant;
 }
 
 typedef ManageData = {
@@ -28,7 +29,8 @@ typedef ActorData = {
 
     var ?manageData:ManageData;
     // experience (for kills)
-    // attack distance
+    // resistances: Array<Resistance>;
+
     // ?generate elements
 }
 
@@ -63,12 +65,28 @@ Snake => {
     meleeDamage: 20,
     health: 12,
     speed: 35,
-    color: 0xff37946e,
+    color: 0xff6abe30,
     animIndex: 12,
     manageData: {
         attackDist: Math.sqrt(2),
         approachDist: 12,
         decideTime: 0.5,
+        attack: Bite
+    }
+},
+Plant => {
+    preAttackTime: 0.1,
+    attackTime: 0.5,
+    meleeDamage: 33,
+    health: 12,
+    speed: 25,
+    color: 0xff37946e,
+    animIndex: 18,
+    // add neg fire resistance
+    manageData: {
+        attackDist: Math.sqrt(2),
+        approachDist: 25,
+        decideTime: 0.1,
         attack: Bite
     }
 }

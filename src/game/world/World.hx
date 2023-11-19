@@ -36,7 +36,7 @@ class World {
         final random = new Random(Math.floor(Math.random() * 65536));
         trace(random.GetFloat());
         final data = floorData[floorNum];
-        final generatedWorld = generate(data.size.x, data.size.y, data.rooms, random);
+        final generatedWorld = generate(floorNum, random);
         grid = generatedWorld.grid;
 
         playerActor = new Actor(generatedWorld.playerPos.x, generatedWorld.playerPos.y, this, PlayerActor);

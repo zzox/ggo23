@@ -14,6 +14,6 @@ final floorData:Array<FloorData> = [
 {
     size: new IntVec2(70, 70),
     rooms: [mainRoom1, mainRoom1, mainRoom1Old],
-    enemies: [BigRat, BigRat, Snake]
+    enemies: [BigRat, BigRat, Snake, Snake, Snake, Plant]
 }
 ];

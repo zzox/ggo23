@@ -2,6 +2,7 @@ package game.data;
 
 import core.Types;
 import core.Util;
+import game.data.FloorData.floorData;
 import game.util.Pathfinding;
 import game.util.ShuffleRandom;
 import game.world.Grid;
@@ -183,8 +184,12 @@ typedef GeneratedWorld = {
     var spawners:Array<IntVec2>;
 }
 
-function generate (width:Int, height:Int, rooms:Array<String>, random:Random):GeneratedWorld {
+function generate (floorNum:Int, random:Random):GeneratedWorld {
     Console.time('generation');
+
+    final data = floorData[floorNum];
+    final width = data.size.x;
+    final height = data.size.y;
 
     final PLACE_ATTEMPTS:Int = 100;
     final maxPlacedRooms:Int = 10;
@@ -197,7 +202,7 @@ function generate (width:Int, height:Int, rooms:Array<String>, random:Random):Ge
     var playerPos:Null<IntVec2> = null;
     final enemySpawners:Array<IntVec2> = [];
 
-    final randomRoom = new ShuffleRandom(rooms, random);
+    final randomRoom = new ShuffleRandom(data.rooms, random);
 
     final pregrid = makeEmptyPregrid(width, height);
     for (_ in 0...PLACE_ATTEMPTS) {
@@ -315,7 +320,7 @@ function generate (width:Int, height:Int, rooms:Array<String>, random:Random):Ge
                     final otherRoomExit = getClosestExit(room.rect, otherRoom.exits);
 
                     if (roomExit != null && otherRoomExit != null) {
-                        final path = pathfind(intGrid, roomExit, otherRoomExit, Manhattan, false, 50);
+                        final path = pathfind(intGrid, roomExit, otherRoomExit, Manhattan, false, Math.floor(height + width / 4));
                         numPaths++;
 
                         if (path != null && path.length > 0) {
