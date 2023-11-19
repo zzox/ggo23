@@ -34,13 +34,23 @@ typedef ActorData = {
     // ?generate elements
 }
 
+typedef PlayerData = {
+    var maxHealth:Int;
+    var speed:Int;
+    var attack:Int;
+    var defense:Int;
+    var dexterity:Int;
+
+    // var health:Int;
+}
+
 final actorData:Map<ActorType, ActorData> = [
 PlayerActor => {
     preAttackTime: 0.0,
     attackTime: 0.0,
-    meleeDamage: 10,
+    meleeDamage: 0,
     health: 100,
-    speed: 60,
+    speed: 55,
     color: 0xff5b6ee1,
     animIndex: 0,
 },

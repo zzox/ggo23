@@ -4,6 +4,7 @@ import core.Types;
 import core.Util;
 import game.data.ActorData;
 import game.data.AttackData;
+import game.data.GameData;
 import game.util.Pathfinding;
 import game.util.Utils;
 import game.world.Grid;
@@ -101,13 +102,15 @@ class Actor extends WorldItem {
 
         id = getId();
 
-        final data = actorData[type];
-
-        health = data.health;
-        meleeDamage = data.meleeDamage;
-        speed = data.speed;
-
-        if (type != PlayerActor) {
+        if (type == PlayerActor) {
+            final data = GameData.playerData;
+            health = data.maxHealth;
+            speed = data.speed;
+        } else {
+            final data = actorData[type];
+            health = data.health;
+            meleeDamage = data.meleeDamage;
+            speed = data.speed;
             attackDist = data.manageData.attackDist;
             approachDist = data.manageData.approachDist;
             decideTime = data.manageData.decideTime;
@@ -297,18 +300,35 @@ class Actor extends WorldItem {
             startPos = new Vec2(x + startDiff.x, y + startDiff.y);
         }
 
+        var attackTime = attack.time;
+        if (actorType == PlayerActor) {
+            attackTime = getDiminishedValue(GameData.playerData.dexterity, attack.time);
+        }
+
+        var preAttackTime = attack.preTime;
+        if (actorType == PlayerActor) {
+            preAttackTime = getDiminishedValue(GameData.playerData.dexterity, attack.preTime);
+        }
+
+        var attackPower = attack.power;
+        if (actorType == PlayerActor) {
+            attackPower = attackPower != null ? getIncreasedValue(GameData.playerData.attack, attackPower) : null;
+        }
+
+        // TODO: increase melee attack power
+
         currentAttack = {
-            time: attack.time,
+            time: attackTime,
             elapsed: 0,
             type: attack.type,
             dir: attack.type == Melee ? dir : null,
             vel: attack.type == Range ? vel : null,
-            power: attack.power,
+            power: attackPower,
             startPos: attack.type == Range ? startPos : null
         }
 
         state = PreAttack;
-        preAttackTimer = attack.preTime;
+        preAttackTimer = preAttackTime;
     }
 
     function attack () {
@@ -348,7 +368,15 @@ class Actor extends WorldItem {
         state = Wait;
     }
 
-    function hurt (damage:Int) {
+    function hurt (d:Int) {
+        var damage = d;
+        if (actorType == PlayerActor) {
+            final pre = damage;
+            damage = Math.ceil(getDiminishedValue(GameData.playerData.defense, damage));
+            // damage = Math.ceil((2 - (GameData.playerData.defense / 50)) * damage);
+            trace(damage, pre);
+        }
+
         health -= damage;
         if (health <= 0) {
             health = 0;
@@ -378,6 +406,25 @@ class Actor extends WorldItem {
         }
 
         return getPosition();
+    }
+
+    function getDiminishedValue (alterStat:Int, value:Float) {
+        if (alterStat <= 50) {
+            return (2 - (alterStat / 50)) * value;
+        }
+
+        return value * 0.5 * ((alterStat - 50) / 50);
+    }
+
+    function getIncreasedValue (alterStat:Int, value:Float) {
+        trace(alterStat, value);
+        if (alterStat <= 50) {
+            trace(value * (alterStat / 50));
+            return value * (alterStat / 50);
+        }
+
+        trace(value + value * 0.5 * ((alterStat - 50) / 50));
+        return value + value * 0.5 * ((alterStat - 50) / 50);
     }
 
     static function getId ():Int {

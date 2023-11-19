@@ -2,6 +2,7 @@ package game.world;
 
 import core.Types;
 import game.data.FloorData;
+import game.data.GameData;
 import game.data.RoomData;
 import game.util.ShuffleRandom;
 import game.world.Element;
@@ -31,6 +32,9 @@ class World {
     var onRemoveElement:ElementAdd;
 
     public function new (onAddElement:ElementAdd, onRemoveElement:ElementAdd) {
+        // ATTN: initialize static vars this way
+        new GameData();
+
         // TODO: bring in from singleton.
         final floorNum = 0;
         final random = new Random(Math.floor(Math.random() * 65536));
