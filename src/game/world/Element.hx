@@ -4,9 +4,10 @@ import core.Types;
 
 enum ElementType {
     Fire;
+    Lightning;
+    // Air;
     // Water;
     // Blades;
-    // Air;
     // WetBlades;
     // HotBlades;
     // BladeWind;
@@ -14,7 +15,7 @@ enum ElementType {
 
 class Element extends WorldItem {
     public var active:Bool = true;
-    var type:ElementType;
+    public var type:ElementType;
     public var time:Float; // also used as power
     public var velocity:Vec2;
     public var fromActor:Actor;

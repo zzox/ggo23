@@ -7,6 +7,7 @@ import game.data.AttackData;
 import game.data.GameData;
 import game.util.Pathfinding;
 import game.util.Utils;
+import game.world.Element;
 import game.world.Grid;
 import game.world.World;
 
@@ -28,6 +29,7 @@ typedef Attack = {
     var time:Float;
     var elapsed:Float;
     var type:AttackType;
+    var ?elementType:ElementType;
     var ?dir:GridDir;
     var ?vel:Vec2;
     var ?power:Float;
@@ -323,6 +325,7 @@ class Actor extends WorldItem {
             type: attack.type,
             dir: attack.type == Melee ? dir : null,
             vel: attack.type == Range ? vel : null,
+            elementType: attack.type == Range ? attack.element : null,
             power: attackPower,
             startPos: attack.type == Range ? startPos : null
         }
@@ -341,7 +344,7 @@ class Actor extends WorldItem {
             final pos = getPosition();
             world.meleeAttack(pos.x + diff.x, pos.y + diff.y, this);
         } else if (currentAttack.type == Range) {
-            world.addElement(currentAttack.startPos.x, currentAttack.startPos.y, Fire, currentAttack.vel, currentAttack.power, this);
+            world.addElement(currentAttack.startPos.x, currentAttack.startPos.y, currentAttack.elementType, currentAttack.vel, currentAttack.power, this);
         }
     }
 
