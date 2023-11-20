@@ -2,7 +2,7 @@ package game.data;
 
 import core.Types;
 import core.Util;
-import game.data.FloorData.floorData;
+import game.data.FloorData;
 import game.util.Pathfinding;
 import game.util.ShuffleRandom;
 import game.world.Grid;
@@ -30,7 +30,7 @@ XxxxxxxxxxxxxxxxxxxX
 ";
 
 final mainRoom1Old = "
-        X
+     X
  xxxxxxxxx
  xxPxxxxxx
  xxxxxxxxx
@@ -39,7 +39,31 @@ XxxxxxxxxxX
  xxxxxxxxx
  xxxxxx1xx
  xxxxxxxxx
-  X
+     X
+";
+
+final smallRoomNorthSouth = "
+     X
+ xxxxxxxxx
+ xxPxxxxxx
+ xxxxxxxxx
+ xxxxxxxxx
+ xxxxxxxxx
+ xxxxxxxxx
+ xxxxxx1xx
+ xxxxxxxxx
+     X
+";
+
+final smallRoomEastWest = "
+ xxxxxxxxx
+ xxPxxxxxx
+ xxxxxxxxx
+ xxxxxxxxx
+XxxxxxxxxxX
+ xxxxxxxxx
+ xxxxxx1xx
+ xxxxxxxxx
 ";
 
 enum TileType {
@@ -140,7 +164,7 @@ function makeMap (rows:PreGrid):Grid {
     return items;
 }
 
-function getClosestExit (room:Rect, exits:Array<IntVec2>):Null<IntVec2> {
+function getClosestExit (room:IntRect, exits:Array<IntVec2>):Null<IntVec2> {
     final roomPos = new Vec2(room.x + room.width / 2, room.y + room.height / 2);
 
     var exit:Null<IntVec2> = null;
@@ -173,9 +197,11 @@ function getAdjacentItems <T>(grid:Array<Array<T>>, x:Int, y:Int) {
 
 typedef PlacedRoom = {
     var id:Int;
-    var rect:Rect;
-    var connected:Bool;
+    var rect:IntRect;
+    var connected:Int;
     var exits:Array<IntVec2>;
+    var startRoom:Bool;
+    var spawners:Array<IntVec2>;
 }
 
 typedef GeneratedWorld = {
@@ -194,13 +220,14 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
     final PLACE_ATTEMPTS:Int = 100;
     final maxPlacedRooms:Int = 10;
     final roomPadding:Int = 2;
-    var numPaths:Int = 0;
+    // final minRooms:Int = 7;
 
     var roomId:Int = 0;
-    final roomsPlaced:Array<PlacedRoom> = [];
+    var numPaths:Int = 0;
     var initialConnected:Bool = true;
     var playerPos:Null<IntVec2> = null;
     final enemySpawners:Array<IntVec2> = [];
+    final roomsPlaced:Array<PlacedRoom> = [];
 
     final randomRoom = new ShuffleRandom(data.rooms, random);
 
@@ -229,13 +256,14 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
 
             var pSpawn:Null<IntVec2> = null;
             final exits = [];
+            var spawners:Array<IntVec2> = [];
             twoDMap(room.preGrid, (item:Null<TileType>, x:Int, y:Int) -> {
                 if (item == Exit) {
                     exits.push(new IntVec2(randomX + x, randomY + y));
                 } else if (item == PlayerSpawn) {
                     pSpawn = new IntVec2(x + randomX, y + randomY);
                 } else if (item == EnemySpawn1 && !initialConnected) {
-                    enemySpawners.push(new IntVec2(x + randomX, y + randomY));
+                    spawners.push(new IntVec2(x + randomX, y + randomY));
                 }
             });
 
@@ -248,7 +276,9 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
                     height: room.height + roomPadding * 2,
                     width: room.width + roomPadding * 2
                 },
-                connected: initialConnected,
+                connected: initialConnected ? 1 : 0,
+                startRoom: initialConnected,
+                spawners: spawners
             });
 
             // make this the starting point if this is the first room to be placed.
@@ -280,11 +310,6 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
         return isRoomAdjacent ? 0 : 1;
     });
 
-    // 2. connect rooms
-        // a. pathfind between each exit
-            // i. manhattan, only opposites
-            // ii. don't try this if the distance is too far (customizable?)
-
     // start with the closest rooms
     final otherRooms = roomsPlaced.copy();
     otherRooms.sort((room1:PlacedRoom, room2:PlacedRoom) -> {
@@ -303,19 +328,30 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
         connectedMap[room.id] = [];
 
         for (otherRoom in otherRooms) {
-            if (otherRoom != room) {
+            if (otherRoom != room && (room.connected > 0 || otherRoom.connected > 0)) {
                 final distance = distanceBetween(
                     new Vec2(room.rect.x + room.rect.width / 2, room.rect.y + room.rect.height / 2),
                     new Vec2(otherRoom.rect.x + otherRoom.rect.width / 2, otherRoom.rect.y + otherRoom.rect.height / 2)
                 );
 
-                // final it = Math.pow(((width + height) / 2), 2) / 2;
-                // trace(it, distance);
-
+                // are these two rooms connected already?
                 final isConnected = connectedMap[room.id].contains(otherRoom.id) || (connectedMap[otherRoom.id] != null && connectedMap[otherRoom.id].contains(room.id));
 
                 // TODO: figure out better method to determine pathing
-                if (!isConnected && distance < width * .5 && ((otherRoom.connected && random.GetFloat() < 0.1) || !otherRoom.connected)) {
+                // connect if they:
+                // -arent already connected
+                // -closer than half the width of the map
+                // -arent already well-connected rooms
+                // --later we check to see if their paths are short enough
+                if (
+                    !isConnected &&
+                    distance < width * .5 &&
+                    (
+                        (otherRoom.connected > 0 &&
+                            random.GetFloat() < (0.1 - otherRoom.connected * 0.03)) ||
+                        (otherRoom.connected == 0 && random.GetFloat() < 1.0 - room.connected * .1)
+                    )
+                ) {
                     final roomExit = getClosestExit(otherRoom.rect, room.exits);
                     final otherRoomExit = getClosestExit(room.rect, otherRoom.exits);
 
@@ -327,19 +363,37 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
                             // add the first tile to the start of the path
                             path.unshift(roomExit);
                             hallways.push(path);
-                            room.exits.remove(roomExit);
-                            otherRoom.exits.remove(otherRoomExit);
+                            // TODO: add these back if we need to. makes the pathways a bit zanier
+                            // room.exits.remove(roomExit);
+                            // otherRoom.exits.remove(otherRoomExit);
 
                             connectedMap[room.id].push(otherRoom.id);
 
                             // only mark as connected if one of the two are connected.
-                            // TODO: do the same to hallways.
-                            if (room.connected || otherRoom.connected) {
-                                room.connected = true;
-                                otherRoom.connected = true;
+                            trace(room.connected, otherRoom.connected);
+                            if (room.connected > 0 || otherRoom.connected > 0) {
+                                room.connected++;
+                                otherRoom.connected++;
                             }
                             continue;
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    for (room in roomsPlaced) {
+        if (room.connected > 0) {
+            for (s in room.spawners) {
+                enemySpawners.push(s);
+            }
+        } else {
+            // TODO: getSubGrid method?
+            for (x in room.rect.x...(room.rect.x + room.rect.width + roomPadding * 2)) {
+                for (y in room.rect.y...(room.rect.y + room.rect.height + roomPadding * 2)) {
+                    if (pregrid[x] != null && pregrid[x][y] != null) {
+                        pregrid[x][y] = null;
                     }
                 }
             }
@@ -351,8 +405,6 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
             pregrid[pos.x][pos.y] = Hallway;
         }
     }
-
-    // TODO: if a room hasn't been touched, remove it
 
     trace('num paths tried', numPaths, enemySpawners.length);
     Console.timeEnd('generation');

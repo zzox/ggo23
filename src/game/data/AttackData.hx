@@ -36,6 +36,6 @@ Fireball => {
     type: Range,
     vel: 5.0,
     power: 2.0,
-    element: Lightning
+    element: Fire
 }
 ];

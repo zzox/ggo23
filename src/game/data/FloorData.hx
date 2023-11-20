@@ -10,10 +10,8 @@ typedef FloorData = {
     var enemies:Array<ActorType>;
 }
 
-final floorData:Array<FloorData> = [
-{
+final floorData:Array<FloorData> = [{
     size: new IntVec2(70, 70),
-    rooms: [mainRoom1, mainRoom1, mainRoom1Old],
+    rooms: [mainRoom1Old, mainRoom1, mainRoom1, smallRoomNorthSouth, smallRoomEastWest],
     enemies: [BigRat, BigRat, Snake, Snake, Snake, Plant]
-}
-];
+}];
