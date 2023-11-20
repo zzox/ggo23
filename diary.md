@@ -69,3 +69,7 @@ busy day at work, met up with friends after work. not much time to program.
 think i'm going to take it easy this weekend. longer breaks, gotta run some errands. going to go ham this week (hopefully).
 
 went for a couple walks, did a little bit with ui and dungeon generation. met up with some friends again.
+
+# day 19
+
+cleaned the apartment today, hung out a bit. got caught up on some stupid math. really tired of this screen jitter. switched some stuff up so it's not so bad. elected to lay around today more than normal so i'm a bit behind.

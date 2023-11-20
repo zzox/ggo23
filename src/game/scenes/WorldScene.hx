@@ -65,9 +65,8 @@ class WorldScene extends Scene {
         }
 
         gridObjects.addChild(player);
-        camera.startFollow(player, new IntVec2(16, 24));
+        camera.startFollow(player, new IntVec2(1, 2), new Vec2(0.5, 0.1));
         camera.scale.set(2.0, 2.0);
-        // camera.followLerp.set(0.25, 0.25);
 
         uiScene = new UiScene();
         game.addScene(uiScene);

@@ -49,6 +49,7 @@ class ActorSprite extends WorldItemSprite {
                     diffY = (1 - ((actorState.currentAttack.elapsed / actorState.currentAttack.time) - .16) / .34) * strikeDiff.y / 2;
                 }
             }
+            // setPosition(pos.x + diffX, pos.y + diffY);
             setPosition(Math.round(pos.x + diffX), Math.round(pos.y + diffY));
 
             if (actorState.state == PreAttack) {
