@@ -217,81 +217,96 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
     final width = data.size.x;
     final height = data.size.y;
 
+    // increase this
+    final GEN_ATTEMPTS:Int = 100;
     final PLACE_ATTEMPTS:Int = 100;
-    final maxPlacedRooms:Int = 10;
     final roomPadding:Int = 2;
-    // final minRooms:Int = 7;
+
+    final randomRoom = new ShuffleRandom(data.rooms, random);
 
     var roomId:Int = 0;
     var numPaths:Int = 0;
     var initialConnected:Bool = true;
     var playerPos:Null<IntVec2> = null;
-    final enemySpawners:Array<IntVec2> = [];
-    final roomsPlaced:Array<PlacedRoom> = [];
+    var enemySpawners:Array<IntVec2> = [];
+    var roomsPlaced:Array<PlacedRoom> = [];
+    var pregrid:PreGrid = makeEmptyPregrid(0, 0);
 
-    final randomRoom = new ShuffleRandom(data.rooms, random);
+    for (_ in 0...GEN_ATTEMPTS) {
+        pregrid = makeEmptyPregrid(width, height);
+        for (__ in 0...PLACE_ATTEMPTS) {
+            // MD: room types
+            final room = makeRoom(randomRoom.getNext());
 
-    final pregrid = makeEmptyPregrid(width, height);
-    for (_ in 0...PLACE_ATTEMPTS) {
-        // MD: room types
-        final room = makeRoom(randomRoom.getNext());
+            // random x and y position minus the width and height to not go off the edge
+            final randomX = Math.floor(random.GetFloat() * (width - room.width));
+            final randomY = Math.floor(random.GetFloat() * (height - room.height));
 
-        // random x and y position minus the width and height to not go off the edge
-        final randomX = Math.floor(random.GetFloat() * (width - room.width));
-        final randomY = Math.floor(random.GetFloat() * (height - room.height));
-
-        var roomCollided = false;
-        for (r in roomsPlaced) {
-            if (rectOverlap(randomX, randomY, room.width, room.height, r.rect.x, r.rect.y, r.rect.width, r.rect.height)) {
-                roomCollided = true;
-                trace('collided');
-                break;
-            }
-        }
-
-        if (!roomCollided) {
-            // TODO: don't place grid here, wait until the end.
-            copyPregrid(pregrid, room.preGrid, randomX, randomY);
-            // pad the rooms after placement
-
-            var pSpawn:Null<IntVec2> = null;
-            final exits = [];
-            var spawners:Array<IntVec2> = [];
-            twoDMap(room.preGrid, (item:Null<TileType>, x:Int, y:Int) -> {
-                if (item == Exit) {
-                    exits.push(new IntVec2(randomX + x, randomY + y));
-                } else if (item == PlayerSpawn) {
-                    pSpawn = new IntVec2(x + randomX, y + randomY);
-                } else if (item == EnemySpawn1 && !initialConnected) {
-                    spawners.push(new IntVec2(x + randomX, y + randomY));
+            var roomCollided = false;
+            for (r in roomsPlaced) {
+                if (rectOverlap(randomX, randomY, room.width, room.height, r.rect.x, r.rect.y, r.rect.width, r.rect.height)) {
+                    roomCollided = true;
+                    trace('collided');
+                    break;
                 }
-            });
-
-            roomsPlaced.push({
-                id: roomId++,
-                exits: exits,
-                rect: {
-                    x: randomX - roomPadding,
-                    y: randomY - roomPadding,
-                    height: room.height + roomPadding * 2,
-                    width: room.width + roomPadding * 2
-                },
-                connected: initialConnected ? 1 : 0,
-                startRoom: initialConnected,
-                spawners: spawners
-            });
-
-            // make this the starting point if this is the first room to be placed.
-            if (initialConnected) {
-                playerPos = pSpawn;
             }
 
-            initialConnected = false;
+            if (!roomCollided) {
+                // TODO: don't place grid here, wait until the end.
+                copyPregrid(pregrid, room.preGrid, randomX, randomY);
+                // pad the rooms after placement
 
-            if (roomsPlaced.length == maxPlacedRooms) {
-                break;
+                var pSpawn:Null<IntVec2> = null;
+                final exits = [];
+                var spawners:Array<IntVec2> = [];
+                twoDMap(room.preGrid, (item:Null<TileType>, x:Int, y:Int) -> {
+                    if (item == Exit) {
+                        exits.push(new IntVec2(randomX + x, randomY + y));
+                    } else if (item == PlayerSpawn) {
+                        pSpawn = new IntVec2(x + randomX, y + randomY);
+                    } else if (item == EnemySpawn1 && !initialConnected) {
+                        spawners.push(new IntVec2(x + randomX, y + randomY));
+                    }
+                });
+
+                roomsPlaced.push({
+                    id: roomId++,
+                    exits: exits,
+                    rect: {
+                        x: randomX - roomPadding,
+                        y: randomY - roomPadding,
+                        height: room.height + roomPadding * 2,
+                        width: room.width + roomPadding * 2
+                    },
+                    connected: initialConnected ? 1 : 0,
+                    startRoom: initialConnected,
+                    spawners: spawners
+                });
+
+                // make this the starting point if this is the first room to be placed.
+                if (initialConnected) {
+                    playerPos = pSpawn;
+                }
+
+                initialConnected = false;
+
+                if (roomsPlaced.length == Math.floor(data.minRooms * 1.5)) {
+                    break;
+                }
             }
         }
+
+        if (roomsPlaced.length >= data.minRooms) {
+            break;
+        }
+        trace('gen failed');
+
+        roomId = 0;
+        numPaths = 0;
+        initialConnected = true;
+        playerPos = null;
+        enemySpawners = [];
+        roomsPlaced = [];
     }
 
     final intGrid = twoDMap(pregrid, (type:Null<TileType>, x:Int, y:Int) -> {
@@ -311,9 +326,9 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
     });
 
     // start with the closest rooms
+    final roomZeroPos = new Vec2(roomsPlaced[0].rect.x + roomsPlaced[0].rect.width / 2, roomsPlaced[0].rect.y + roomsPlaced[0].rect.height / 2);
     final otherRooms = roomsPlaced.copy();
     otherRooms.sort((room1:PlacedRoom, room2:PlacedRoom) -> {
-        final roomZeroPos = new Vec2(roomsPlaced[0].rect.x + roomsPlaced[0].rect.width / 2, roomsPlaced[0].rect.y + roomsPlaced[0].rect.height / 2);
         return Std.int(Math.abs(distanceBetween(
             roomZeroPos, new Vec2(room1.rect.x + room1.rect.width / 2, room1.rect.y + room1.rect.height / 2),
         )) - Math.abs(distanceBetween(
