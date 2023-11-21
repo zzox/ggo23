@@ -142,6 +142,7 @@ class World {
         if (elem1.type == Lightning || elem2.type == Lightning) {
             // ATTN: delete this
             if (elem1.type == Lightning && elem2.type == Lightning) {
+                // lightning never moves.
                 throw 'Shoudlnt be here!';
             }
 

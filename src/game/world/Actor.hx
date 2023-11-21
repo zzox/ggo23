@@ -68,6 +68,8 @@ function calcMovePosition (move:Move, percentMoved:Float):Vec2 {
 }
 
 class Actor extends WorldItem {
+    static final MAGIC_DISTANCE:Int = 18;
+
     static var curId:Int = 0;
 
     public var id:Int;
@@ -345,6 +347,13 @@ class Actor extends WorldItem {
             final startDiff = velocityFromAngle(angle, 1.25);
             startPos = new Vec2(x + startDiff.x, y + startDiff.y);
         } else if (attack.type == Magic) {
+            final path = pathfind(makeIntGrid(world.grid), getPosition(), pos.clone(), Diagonal, true, MAGIC_DISTANCE);
+            if (path == null) {
+                // TODO: use raycast to handle this.
+                trace('too far');
+                state = Wait;
+                return;
+            }
             startPos = pos.clone().toVec2();
         }
 
