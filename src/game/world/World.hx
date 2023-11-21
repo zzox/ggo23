@@ -25,6 +25,7 @@ class World {
     public var actors:Array<Actor> = [];
     public var objects:Array<Object> = [];
     public var elements:Array<Element> = [];
+    public var portalPos:IntVec2;
 
     public var playerActor:Actor;
 
@@ -32,7 +33,7 @@ class World {
     var onRemoveElement:ElementAdd;
 
     public function new (onAddElement:ElementAdd, onRemoveElement:ElementAdd) {
-        // ATTN: initialize static vars this way
+        // ATTN: initializing static vars this way
         new GameData();
 
         // TODO: bring in from singleton.
@@ -42,6 +43,9 @@ class World {
         final data = floorData[floorNum];
         final generatedWorld = generate(floorNum, random);
         grid = generatedWorld.grid;
+
+        portalPos = generatedWorld.portal;
+        // final item = getGridItem(grid, generatedWorld.portal.x, generatedWorld.portal.y);
 
         playerActor = new Actor(generatedWorld.playerPos.x, generatedWorld.playerPos.y, this, PlayerActor);
         addActor(playerActor);

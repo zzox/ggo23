@@ -53,6 +53,8 @@ class WorldScene extends Scene {
         player = new ActorSprite(world.playerActor);
         world.playerActor.updateListeners.push(handleActorUpdate);
 
+        getTileSpriteAt(world.portalPos.x, world.portalPos.y).isPortal = true;
+
         for (actor in world.actors) {
             actor.updateListeners.push(handleActorUpdate);
             if (actor != world.playerActor) {
@@ -66,7 +68,9 @@ class WorldScene extends Scene {
 
         gridObjects.addChild(player);
         camera.startFollow(player, new IntVec2(1, 2), new Vec2(0.5, 0.1));
+        camera.scroll.set(player.x - 320, player.y - 180);
         camera.scale.set(2.0, 2.0);
+        // camera.scroll.y -= 180;
 
         uiScene = new UiScene();
         game.addScene(uiScene);
@@ -141,6 +145,7 @@ class WorldScene extends Scene {
     }
 
     function handleCamera () {
+        // TODO: remove these?
         if (game.keys.justPressed(KeyCode.Equals)) {
             camera.scale.set(2.0, 2.0);
         }

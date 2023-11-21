@@ -5,12 +5,8 @@ import core.Types;
 enum ElementType {
     Fire;
     Lightning;
-    // Air;
-    // Water;
-    // Blades;
-    // WetBlades;
-    // HotBlades;
-    // BladeWind;
+    Air;
+    Water;
 }
 
 class Element extends WorldItem {

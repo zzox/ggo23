@@ -11,6 +11,7 @@ import kha.graphics2.Graphics;
 class TileSprite extends Sprite {
     public var stepped:Bool = false;
     public var focused:Bool = false;
+    public var isPortal:Bool = false;
     public var pos:IntVec2;
 
     public function new (x:Int, y:Int, index:Int) {
@@ -24,6 +25,11 @@ class TileSprite extends Sprite {
     override function render (g2, camera) {
         final index = tileIndex;
         super.render(g2, camera);
+
+        if (isPortal) {
+            tileIndex = 5;
+            super.render(g2, camera);
+        }
 
         if (stepped) {
             tileIndex = 4;
