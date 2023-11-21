@@ -65,3 +65,7 @@ function getDirFromDiff (x:Int, y:Int):GridDir {
     if (x == -1 && y == 1) return SouthWest;
     return null;
 }
+
+function xCollideDir (x1:Float, y1:Float, x2:Float, y2:Float) {
+    return Math.abs(y1 - y2) < Math.abs(x1 - x2);
+}

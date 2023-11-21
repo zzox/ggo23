@@ -121,6 +121,10 @@ class WorldScene extends Scene {
     }
 
     function handleInput  () {
+        if (game.keys.justPressed(KeyCode.P)) {
+            world.isPaused = !world.isPaused;
+        }
+
         final tilePos = getTilePos(world.grid, game.mouse.position.x, game.mouse.position.y - 2);
 
         if (tilePos != null) {

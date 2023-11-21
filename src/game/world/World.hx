@@ -5,6 +5,7 @@ import game.data.FloorData;
 import game.data.GameData;
 import game.data.RoomData;
 import game.util.ShuffleRandom;
+import game.util.Utils;
 import game.world.Element;
 import game.world.Grid;
 import kha.math.Random;
@@ -26,11 +27,14 @@ class World {
     public var objects:Array<Object> = [];
     public var elements:Array<Element> = [];
     public var portalPos:IntVec2;
+    var step:Int = 0; // used for debugging
 
     public var playerActor:Actor;
 
     var onAddElement:ElementAdd;
     var onRemoveElement:ElementAdd;
+
+    public var isPaused:Bool = false;
 
     public function new (onAddElement:ElementAdd, onRemoveElement:ElementAdd) {
         // ATTN: initializing static vars this way
@@ -64,6 +68,10 @@ class World {
     }
 
     public function update (delta:Float) {
+        if (isPaused) return;
+
+        step++;
+
         for (element in elements) {
             element.update(delta);
 
@@ -83,7 +91,36 @@ class World {
             final gi = getGridItem(grid, nearPos.x, nearPos.y);
             if (gi == null || gi.tile == null) {
                 // collides with walls
-                element.velocity.set(0, 0);
+                // TODO: bounce air, see if y or x val is closest
+                // if (element.type == Air) {
+                //     element.velocity.
+                // } else {
+                    element.velocity.set(0, 0);
+                // }
+            }
+
+            var elementMap:Map<Element, Element> = [];
+            for (otherElement in elements) {
+                if (
+                    !element.isNew &&
+                    !otherElement.isNew &&
+                    otherElement != element &&
+                    element.active &&
+                    otherElement.active &&
+                    Math.abs(otherElement.x - element.x) < HIT_DISTANCE &&
+                    Math.abs(otherElement.y - element.y) < HIT_DISTANCE &&
+                    elementMap[otherElement] != element
+                ) {
+                    if (element.type == Air && otherElement.type == Air) continue;
+
+                    trace('elem before ${step}', element.type, element.velocity, otherElement.type, otherElement.velocity);
+                    handleElementInteraction(otherElement, element);
+                    trace('elem after ${step}', element.type, element.velocity, otherElement.type, otherElement.velocity);
+                    elementMap[element] = otherElement;
+                    if (elementMap[otherElement] != null) {
+                        trace('!!!', elementMap[otherElement].type);
+                    }
+                }
             }
         }
 
@@ -91,6 +128,8 @@ class World {
             if (!element.active) {
                 removeElement(element);
             }
+
+            element.isNew = false;
         }
 
         for (actor in actors) {
@@ -99,6 +138,60 @@ class World {
             }
             actor.update(delta);
         }
+    }
+
+    function handleElementInteraction (elem1:Element, elem2:Element) {
+        if (elem1.type == Lightning || elem2.type == Lightning) {
+            // ATTN: delete this
+            if (elem1.type == Lightning && elem2.type == Lightning) {
+                throw 'Shoudlnt be here!';
+            }
+
+            return;
+        }
+
+        if (elem1.type == Air && elem2.type == Air) {
+            return;
+        } else if (elem1.type == Air || elem2.type == Air) {
+            var isAir:Element;
+            var isNonAir:Element;
+
+            if (elem1.type == Air) {
+                isAir = elem1;
+                isNonAir = elem2;
+            } else {
+                isAir = elem2;
+                isNonAir = elem1;
+            }
+
+            final xColl = xCollideDir(isNonAir.x, isNonAir.y, isAir.x, isAir.y);
+            if (xColl) {
+                isNonAir.velocity.set(-isNonAir.velocity.x + isAir.velocity.x, isNonAir.velocity.y + isAir.velocity.y);
+            } else {
+                isNonAir.velocity.set(isNonAir.velocity.x + isAir.velocity.x, -isNonAir.velocity.y + isAir.velocity.y);
+            }
+
+            return;
+        }
+
+        if (elem1.type == elem2.type) {
+            trace('combine!');
+            elem1.deactivate();
+            elem2.deactivate();
+
+            addElement(
+                elem1.x,
+                elem2.y,
+                elem1.type,
+                // TODO: normalize
+                new Vec2(elem1.velocity.x + elem2.velocity.x, elem1.velocity.y + elem2.velocity.y),
+                elem1.time + elem2.time,
+                null
+            );
+            return;
+        }
+
+        throw 'unhandled interaction ${elem1.type} and ${elem2.type}';
     }
 
     public function meleeAttack (x:Int, y:Int, fromActor:Actor) {

@@ -11,6 +11,7 @@ enum ElementType {
 
 class Element extends WorldItem {
     public var active:Bool = true;
+    public var isNew:Bool = true; // used to prevent collisions on creation
     public var type:ElementType;
     public var time:Float; // also used as power
     public var velocity:Vec2;

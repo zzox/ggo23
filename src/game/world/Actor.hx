@@ -340,7 +340,7 @@ class Actor extends WorldItem {
             final angle = angleFromPoints(pos.toVec2(), getPosition().toVec2());
             vel = velocityFromAngle(angle, attack.vel);
             // start the element x tiles away so it doesn't touch actor.
-            final startDiff = velocityFromAngle(angle, 1.0);
+            final startDiff = velocityFromAngle(angle, 1.25);
             startPos = new Vec2(x + startDiff.x, y + startDiff.y);
         }
 

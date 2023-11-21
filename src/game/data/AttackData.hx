@@ -22,6 +22,7 @@ typedef AttackData = {
 enum AttackName {
     Bite;
     Fireball;
+    Windthrow;
 }
 
 final attackData:Map<AttackName, AttackData> = [
@@ -37,5 +38,13 @@ Fireball => {
     vel: 5.0,
     power: 2.0,
     element: Fire
+},
+Windthrow => {
+    preTime: 0.5,
+    time: 0.5,
+    type: Range,
+    vel: 2.5,
+    power: 2.0,
+    element: Air
 }
 ];

@@ -120,7 +120,7 @@ Butterfly => {
         attackDist: 10,
         approachDist: 25,
         decideTime: 0.25,
-        attack: Fireball
+        attack: Windthrow
     }
 }
 ];

@@ -73,3 +73,13 @@ went for a couple walks, did a little bit with ui and dungeon generation. met up
 # day 19
 
 cleaned the apartment today, hung out a bit. got caught up on some stupid math. really tired of this screen jitter. switched some stuff up so it's not so bad. elected to lay around today more than normal so i'm a bit behind.
+
+# day 20
+
+the stretch before the home stretch. the time where I need to get everything done. today was tough, really thought i would be further along. i guess thats game dev.
+
+also scavengers reign is sick.
+
+# day 21
+
+started off spending too much time working on "retreat" tech.

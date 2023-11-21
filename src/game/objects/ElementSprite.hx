@@ -8,6 +8,8 @@ import kha.Assets;
 final elementColors:Map<ElementType, Int> = [
     Fire => 0xffdf7126,
     Lightning => 0xfffbf236,
+    Water => 0xff5b6ee1,
+    Air => 0xff9badb7 //,cbdbfc
 ];
 
 class ElementSprite extends WorldItemSprite {
@@ -26,6 +28,14 @@ class ElementSprite extends WorldItemSprite {
         animation.add('lightning-medium', [10, 11], 0.175);
         animation.add('lightning-small', [12, 13], 0.15);
         animation.add('lightning-tiny', [14, 15], 0.125);
+        animation.add('air-large', [16, 17], 0.2);
+        animation.add('air-medium', [18, 19], 0.175);
+        animation.add('air-small', [20, 21], 0.15);
+        animation.add('air-tiny', [22, 23], 0.125);
+        animation.add('water-large', [24, 25], 0.2);
+        animation.add('water-medium', [26, 27], 0.175);
+        animation.add('water-small', [28, 29], 0.15);
+        animation.add('water-tiny', [30, 31], 0.125);
 
         elementState = element;
     }
@@ -34,6 +44,10 @@ class ElementSprite extends WorldItemSprite {
         var animType = 'fire';
         if (elementState.type == Lightning) {
             animType = 'lightning';
+        } else if (elementState.type == Air) {
+            animType = 'air';
+        } else if (elementState.type == Water) {
+            animType = 'water';
         }
 
         var animSize = 'large';
