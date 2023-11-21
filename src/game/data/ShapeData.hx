@@ -14,6 +14,7 @@ function noVel (time:Float) {
     return { vel: new Vec2(0, 0), time: time };
 }
 
+// warning: mutable
 final square:Shape = [
     [null, noVel(0.25), noVel(0.25), noVel(0.25), null],
     [noVel(0.25), noVel(0.125), noVel(0.125), noVel(0.125), noVel(0.25)],

@@ -103,6 +103,8 @@ class World {
                 //         separateElementGridItem(element, gi, false);
                 //     }
                 // } else {
+                // freeze velocity and diminish time remaining.
+                element.time *= 0.9;
                 element.velocity.set(0, 0);
                 // }
             }

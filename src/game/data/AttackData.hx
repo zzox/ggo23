@@ -1,6 +1,7 @@
 package game.data;
 
 import game.data.ShapeData;
+import game.world.Actor.Attack;
 import game.world.Element;
 
 enum AttackType {
@@ -57,3 +58,16 @@ FlameSquare => {
     shape: square
 }
 ];
+
+function cloneSpell (name:AttackName):AttackData {
+    final data = attackData[name];
+    return {
+        preTime: data.preTime,
+        time: data.time,
+        type: data.type,
+        vel: data.vel,
+        power: data.power,
+        element: data.element,
+        shape: data.shape,
+    }
+}

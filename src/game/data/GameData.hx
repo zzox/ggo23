@@ -1,6 +1,7 @@
 package game.data;
 
 import game.data.ActorData;
+import game.data.AttackData;
 
 class GameData {
     public static var playerData:PlayerData;
@@ -11,7 +12,13 @@ class GameData {
             speed: 50,
             attack: 50,
             defense: 50,
-            dexterity: 50
+            dexterity: 50,
+            spells: []
         }
+
+        trace(playerData.spells);
+
+        playerData.spells.push(cloneSpell(Fireball));
+        playerData.spells.push(cloneSpell(FlameSquare));
     }
 }

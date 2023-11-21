@@ -5,6 +5,7 @@ import core.Input;
 import core.Scene;
 import core.Types;
 import game.data.AttackData;
+import game.data.GameData;
 import game.objects.ActorSprite;
 import game.objects.ElementSprite;
 import game.objects.TileSprite;
@@ -143,7 +144,11 @@ class WorldScene extends Scene {
             if (rightClicked) {
                 // TODO: This should be called from the player's Actor object
                 // world.addElement(tilePos.x, tilePos.y, Fire);
-                world.playerActor.queueAttack(attackData[FlameSquare], null, new IntVec2(tilePos.x, tilePos.y));
+                world.playerActor.queueAttack(
+                    GameData.playerData.spells[uiScene.selectedSpell],
+                    null,
+                    new IntVec2(tilePos.x, tilePos.y)
+                );
             }
         }
     }

@@ -44,6 +44,7 @@ typedef PlayerData = {
     var attack:Int;
     var defense:Int;
     var dexterity:Int;
+    var spells:Array<AttackData>;
 
     // var health:Int;
 }
