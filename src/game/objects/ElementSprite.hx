@@ -41,6 +41,8 @@ class ElementSprite extends WorldItemSprite {
     }
 
     override function update (delta:Float) {
+        visible = elementState.active;
+
         var animType = 'fire';
         if (elementState.type == Lightning) {
             animType = 'lightning';

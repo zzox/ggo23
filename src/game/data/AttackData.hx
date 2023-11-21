@@ -1,6 +1,6 @@
 package game.data;
 
-import core.Types;
+import game.data.ShapeData;
 import game.world.Element;
 
 enum AttackType {
@@ -16,13 +16,14 @@ typedef AttackData = {
     var ?vel:Float;
     var ?power:Float; // how long this stays around, correlates to its damage.
     var ?element:ElementType;
-    // var shape:Float;
+    var ?shape:Shape;
 }
 
 enum AttackName {
     Bite;
     Fireball;
     Windthrow;
+    FlameSquare;
 }
 
 final attackData:Map<AttackName, AttackData> = [
@@ -46,5 +47,13 @@ Windthrow => {
     vel: 2.5,
     power: 2.0,
     element: Air
+},
+FlameSquare => {
+    preTime: 2.0,
+    time: 2.0,
+    type: Magic,
+    power: 2.0,
+    element: Fire,
+    shape: square
 }
 ];

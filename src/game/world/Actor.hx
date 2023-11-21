@@ -5,6 +5,7 @@ import core.Util;
 import game.data.ActorData;
 import game.data.AttackData;
 import game.data.GameData;
+import game.data.ShapeData;
 import game.util.Pathfinding;
 import game.util.Utils;
 import game.world.Element;
@@ -34,6 +35,7 @@ typedef Attack = {
     var ?vel:Vec2;
     var ?power:Float;
     var ?startPos:Vec2;
+    var ?shape:Shape;
 }
 
 enum QueuedMoveType {
@@ -323,7 +325,7 @@ class Actor extends WorldItem {
 
     public function doElementDamage (fromElement:Element) {
         // TODO: set target to nearest depending on intelligence.
-        if (fromElement.fromActor != null) {
+        if (fromElement.fromActor != null && fromElement.fromActor != this) {
             target = fromElement.fromActor;
         }
 
@@ -342,6 +344,8 @@ class Actor extends WorldItem {
             // start the element x tiles away so it doesn't touch actor.
             final startDiff = velocityFromAngle(angle, 1.25);
             startPos = new Vec2(x + startDiff.x, y + startDiff.y);
+        } else if (attack.type == Magic) {
+            startPos = pos.clone().toVec2();
         }
 
         var attackTime = attack.time;
@@ -367,9 +371,10 @@ class Actor extends WorldItem {
             type: attack.type,
             dir: attack.type == Melee ? dir : null,
             vel: attack.type == Range ? vel : null,
-            elementType: attack.type == Range ? attack.element : null,
+            elementType: attack.type == Range || attack.type == Magic ? attack.element : null,
             power: attackPower,
-            startPos: attack.type == Range ? startPos : null
+            shape: attack.type == Magic ? attack.shape : null,
+            startPos: attack.type == Range || attack.type == Magic ? startPos : null
         }
 
         state = PreAttack;
@@ -387,6 +392,26 @@ class Actor extends WorldItem {
             world.meleeAttack(pos.x + diff.x, pos.y + diff.y, this);
         } else if (currentAttack.type == Range) {
             world.addElement(currentAttack.startPos.x, currentAttack.startPos.y, currentAttack.elementType, currentAttack.vel, currentAttack.power, this);
+        } else if (currentAttack.type == Magic) {
+            final shapeSize = Math.floor(currentAttack.shape.length / 2);
+            twoDMap(currentAttack.shape, (item:Null<ShapeData>, x:Int, y:Int) -> {
+                final xPos = Std.int(currentAttack.startPos.x - shapeSize + x);
+                final yPos = Std.int(currentAttack.startPos.y - shapeSize + y);
+
+                final gridItem = getGridItem(world.grid, xPos, yPos);
+
+                if (item != null && gridItem != null && gridItem.tile != null) {
+                    world.addElement(
+                        xPos,
+                        yPos,
+                        currentAttack.elementType,
+                        item.vel,
+                        currentAttack.power,
+                        this,
+                        item.time
+                    );
+                }
+            });
         }
     }
 
@@ -422,17 +447,21 @@ class Actor extends WorldItem {
             trace(damage, pre);
         }
 
-        health -= damage;
-        if (health <= 0) {
-            health = 0;
-            die();
+        if (damage >= 1) {
+            health -= damage;
+            if (health <= 0) {
+                health = 0;
+                die();
+            }
+
+            for (onUpdate in updateListeners) onUpdate(Damage, { damage: damage, pos: new Vec2(x, y) });
+
+            isHurt = true;
+            hurtTimer = 1.0;
+            hurtSlowTimer = hurtTimer / 2;
+        } else {
+            trace('no damage');
         }
-
-        for (onUpdate in updateListeners) onUpdate(Damage, { damage: damage, pos: new Vec2(x, y) });
-
-        isHurt = true;
-        hurtTimer = 1.0;
-        hurtSlowTimer = hurtTimer / 2;
     }
 
     function stopHurt () {

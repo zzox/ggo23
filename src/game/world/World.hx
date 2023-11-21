@@ -91,8 +91,9 @@ class World {
             final nearPos = element.getNearestPosition();
             final gi = getGridItem(grid, nearPos.x, nearPos.y);
             if (gi == null || gi.tile == null) {
-                // collides with walls (kinda janky for now)
-                // TODO: reenable when canSeeTarget is implemented
+                // collides with walls (kinda janky)
+                // TODO: reenable when canSeeTarget is implemented,
+                // can also test to see adjacent tiles to get wall direction
                 // if (element.type == Air) {
                 //     if (xCollides(element.x, element.y, gi.x, gi.y)) {
                 //         element.velocity.set(-element.velocity.x, element.velocity.x);
@@ -109,8 +110,6 @@ class World {
             for (otherElement in elements) {
                 if (
                     otherElement != element &&
-                    !element.isNew &&
-                    !otherElement.isNew &&
                     element.active &&
                     otherElement.active &&
                     Math.abs(otherElement.x - element.x) < HIT_DISTANCE &&
@@ -126,11 +125,9 @@ class World {
         }
 
         for (element in elements) {
-            if (!element.active) {
+            if (!element.active && !element.preActive) {
                 removeElement(element);
             }
-
-            element.isNew = false;
         }
 
         for (actor in actors) {
@@ -177,7 +174,7 @@ class World {
         }
 
         if (elem1.type == elem2.type) {
-            trace('combine!');
+            trace('combine!', elem1.time + elem2.time);
             elem1.deactivate();
             elem2.deactivate();
 
@@ -224,8 +221,8 @@ class World {
         actors.remove(actor);
     }
 
-    public function addElement (x:Float, y:Float, type:ElementType, vel:Vec2, time:Float, fromActor:Actor) {
-        final element = new Element(x, y, type, vel, time, fromActor);
+    public function addElement (x:Float, y:Float, type:ElementType, vel:Vec2, time:Float, fromActor:Actor, preTime:Float = 0.0) {
+        final element = new Element(x, y, type, vel, time, fromActor, preTime);
         elements.push(element);
         onAddElement(element);
     }

@@ -143,7 +143,7 @@ class WorldScene extends Scene {
             if (rightClicked) {
                 // TODO: This should be called from the player's Actor object
                 // world.addElement(tilePos.x, tilePos.y, Fire);
-                world.playerActor.queueAttack(attackData[Fireball], null, new IntVec2(tilePos.x, tilePos.y));
+                world.playerActor.queueAttack(attackData[FlameSquare], null, new IntVec2(tilePos.x, tilePos.y));
             }
         }
     }
