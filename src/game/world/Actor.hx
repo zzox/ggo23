@@ -88,6 +88,7 @@ class Actor extends WorldItem {
 
     var decisionTimer:Float = 0.0;
     var decideTime:Float = 0.0; // set by manageData, final
+    var retreatDist:Float = 0.0;
     var approachDist:Float = 0.0;
     var attackDist:Float = 0.0;
     var chosenAttack:AttackName;
@@ -113,6 +114,7 @@ class Actor extends WorldItem {
             health = data.health;
             meleeDamage = data.meleeDamage;
             speed = data.speed;
+            retreatDist = data.manageData.retreatDist;
             attackDist = data.manageData.attackDist;
             approachDist = data.manageData.approachDist;
             decideTime = data.manageData.decideTime;
@@ -183,19 +185,59 @@ class Actor extends WorldItem {
     }
 
     function decide (myPos:IntVec2, targetPos:IntVec2, distance:Float) {
-        // attack distance
-        if (distance <= attackDist) {
-            // attack
-            final diffX = targetPos.x - myPos.x;
-            final diffY = targetPos.y - myPos.y;
-            final dir = getDirFromDiff(diffX, diffY);
-            if (dir != null) {
-                queueAttack(attackData[chosenAttack], dir, targetPos);
-            } else {
-                trace('missed', distance, diffX, diffY);
+        // try to retreat. If cant, attack.
+        var retreatDone = false;
+        if (distance <= retreatDist) {
+            trace('retreat!');
+            // get a group of tiles away from the target.
+            var diffX = targetPos.x - myPos.x;
+            var diffY = targetPos.y - myPos.y;
+
+            if (diffX > 0) diffX = -1;
+            if (diffX < 0) diffX = 1;
+            if (diffY > 0) diffY = -1;
+            if (diffY < 0) diffY = 1;
+
+            final posX = myPos.x - 4 + (diffX * 5);
+            final posY = myPos.y - 4 + (diffY * 5);
+
+            final items = [];
+            for (x in posX...(posX + 9)) { // width
+                for (y in posY...(posY + 9)) { // height
+                    final gridItem = getGridItem(world.grid, x, y);
+                    if (gridItem != null && gridItem.tile != null) {
+                        items.push(new Vec2(x, y));
+                    }
+                }
             }
-        // approach distance
-        } else if (distance < approachDist) {
+
+            // find the furthest item.
+            final t = targetPos.toVec2();
+            items.sort((pos1:Vec2, pos2:Vec2) -> {
+                return Std.int(Math.abs(distanceBetween(t, pos2)) - Math.abs(distanceBetween(t, pos1)));
+            });
+
+            if (items.length > 0) {
+                queueMove(new IntVec2(Std.int(items[0].x), Std.int(items[0].y)));
+                retreatDone = true;
+            }
+        }
+
+        if (distance <= attackDist && !retreatDone) {
+            final att = attackData[chosenAttack];
+            if (att.type == Melee) {
+                final diffX = targetPos.x - myPos.x;
+                final diffY = targetPos.y - myPos.y;
+                final dir = getDirFromDiff(diffX, diffY);
+                if (dir != null) {
+                    queueAttack(attackData[chosenAttack], dir, targetPos);
+                } else {
+                    trace('missed', distance, diffX, diffY);
+                }
+            } else {
+                queueAttack(att, null, targetPos.clone());
+            }
+        } else if (distance < approachDist && !retreatDone) {
             queueMove(targetPos.clone());
         }
 

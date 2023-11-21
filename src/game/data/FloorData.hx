@@ -15,7 +15,7 @@ final floorData:Array<FloorData> = [{
     minRooms: 5,
     size: new IntVec2(50, 50),
     rooms: [mainRoom1Old, smallRoomNorthSouth, smallRoomEastWest, smallRoomNorthSouth, smallRoomEastWest],
-    enemies: [BigRat, BigRat, Snake, Snake, Snake, Plant]
+    enemies: [Butterfly]
 }, {
     minRooms: 7,
     size: new IntVec2(70, 70),

@@ -7,10 +7,12 @@ enum ActorType {
     BigRat;
     Snake;
     Plant;
+    Butterfly;
 }
 
 typedef ManageData = {
     var approachDist:Float;
+    var retreatDist:Float;
     var attackDist:Float;
     var decideTime:Float;
     var attack:AttackName;
@@ -63,6 +65,7 @@ BigRat => {
     color: 0xffa8a8a8,
     animIndex: 6,
     manageData: {
+        retreatDist: 0,
         attackDist: Math.sqrt(2),
         approachDist: 10,
         decideTime: 1.0,
@@ -78,6 +81,7 @@ Snake => {
     color: 0xff6abe30,
     animIndex: 12,
     manageData: {
+        retreatDist: 0,
         attackDist: Math.sqrt(2),
         approachDist: 12,
         decideTime: 0.5,
@@ -94,10 +98,27 @@ Plant => {
     animIndex: 18,
     // add neg fire resistance
     manageData: {
+        retreatDist: 0,
         attackDist: Math.sqrt(2),
         approachDist: 25,
         decideTime: 0.1,
         attack: Bite
+    }
+},
+Butterfly => {
+    preAttackTime: 0.1,
+    attackTime: 0.5,
+    meleeDamage: 0,
+    health: 10,
+    speed: 50,
+    color: 0xfffbf236,
+    animIndex: 24,
+    manageData: {
+        retreatDist: 5,
+        attackDist: 10,
+        approachDist: 25,
+        decideTime: 0.25,
+        attack: Fireball
     }
 }
 ];

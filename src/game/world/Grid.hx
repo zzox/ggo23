@@ -65,3 +65,21 @@ function getGridItem (grid:Grid, x:Int, y:Int):Null<GridItem> {
 
     return grid[x][y];
 }
+
+// doesn't work for some reason
+// function getSubgrid (grid:Grid, topLeft:IntVec2, size:IntVec2):Grid {
+//     final grid = [];
+
+//     for (x in topLeft.x...(topLeft.x + size.x)) { // width
+//         final column = [];
+
+//         for (y in topLeft.y...(topLeft.y + size.y)) { // height
+//             trace(getGridItem(grid, x, y), x, y);
+//             column.push(getGridItem(grid, x, y));
+//         }
+
+//         grid.push(column);
+//     }
+
+//     return grid;
+// }

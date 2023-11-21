@@ -412,7 +412,7 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
                 enemySpawners.push(s);
             }
         } else {
-            // TODO: getSubGrid method?
+            // TODO: use getSubGrid method?
             for (x in room.rect.x...(room.rect.x + room.rect.width)) {
                 for (y in room.rect.y...(room.rect.y + room.rect.height)) {
                     // occasionally room dimensions will be out of bounds because of padding
