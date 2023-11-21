@@ -4,8 +4,10 @@ import game.data.AttackData;
 
 enum ActorType {
     PlayerActor;
+    // Rat;
     BigRat;
     Snake;
+    // Cobra;
     Plant;
     Butterfly;
 }
@@ -63,7 +65,7 @@ BigRat => {
     health: 25,
     speed: 25,
     color: 0xffa8a8a8,
-    animIndex: 6,
+    animIndex: 12,
     manageData: {
         retreatDist: 0,
         attackDist: Math.sqrt(2),
@@ -79,7 +81,7 @@ Snake => {
     health: 12,
     speed: 35,
     color: 0xff6abe30,
-    animIndex: 12,
+    animIndex: 18,
     manageData: {
         retreatDist: 0,
         attackDist: Math.sqrt(2),
@@ -95,7 +97,7 @@ Plant => {
     health: 12,
     speed: 25,
     color: 0xff37946e,
-    animIndex: 18,
+    animIndex: 30,
     // add neg fire resistance
     manageData: {
         retreatDist: 0,
@@ -112,7 +114,7 @@ Butterfly => {
     health: 10,
     speed: 50,
     color: 0xfffbf236,
-    animIndex: 24,
+    animIndex: 36,
     manageData: {
         retreatDist: 5,
         attackDist: 10,
