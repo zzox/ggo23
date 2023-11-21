@@ -10,6 +10,10 @@ enum ElementType {
 }
 
 class Element extends WorldItem {
+    static var curId:Int = 0;
+
+    public var id:Int;
+
     public var active:Bool = true;
     public var isNew:Bool = true; // used to prevent collisions on creation
     public var type:ElementType;
@@ -23,6 +27,8 @@ class Element extends WorldItem {
         this.time = time;
         this.velocity = velocity;
         this.fromActor = fromActor;
+
+        id = curId++;
     }
 
     public function update (delta:Float) {

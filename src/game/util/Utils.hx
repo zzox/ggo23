@@ -2,7 +2,9 @@ package game.util;
 
 import core.Group;
 import core.Types;
+import game.world.Element;
 import game.world.Grid;
+import game.world.World;
 
 function translateWorldPos (x:Float, y:Float):Vec2 {
     return new Vec2((x * 8) + (y * 8), (y * 4) + (x * -4));
@@ -66,6 +68,38 @@ function getDirFromDiff (x:Int, y:Int):GridDir {
     return null;
 }
 
-function xCollideDir (x1:Float, y1:Float, x2:Float, y2:Float) {
+function xCollides (x1:Float, y1:Float, x2:Float, y2:Float) {
     return Math.abs(y1 - y2) < Math.abs(x1 - x2);
+}
+
+function separateElements (elem1:Element, elem2:Element, xCollide:Bool) {
+    if (xCollide) {
+        if (elem1.x < elem2.x) {
+            elem1.x = elem2.x - World.HIT_DISTANCE;
+        } else {
+            elem1.x = elem2.x + World.HIT_DISTANCE;
+        }
+    } else {
+        if (elem1.y < elem2.y) {
+            elem1.y = elem2.y - World.HIT_DISTANCE;
+        } else {
+            elem1.y = elem2.y + World.HIT_DISTANCE;
+        }
+    }
+}
+
+function separateElementGridItem (elem1:Element, elem2:GridItem, xCollide:Bool) {
+    if (xCollide) {
+        if (elem1.x < elem2.x) {
+            elem1.x = elem2.x - World.HIT_DISTANCE;
+        } else {
+            elem1.x = elem2.x + World.HIT_DISTANCE;
+        }
+    } else {
+        if (elem1.y < elem2.y) {
+            elem1.y = elem2.y - World.HIT_DISTANCE;
+        } else {
+            elem1.y = elem2.y + World.HIT_DISTANCE;
+        }
+    }
 }

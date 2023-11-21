@@ -19,7 +19,7 @@ class Object {}
 typedef ElementAdd = (e:Element) -> Void;
 
 class World {
-    static inline final HIT_DISTANCE:Float = 0.75;
+    public static inline final HIT_DISTANCE:Float = 0.75;
 
     public var grid:Grid;
     public var size:IntVec2;
@@ -72,6 +72,7 @@ class World {
 
         step++;
 
+        var elementMap:Map<Int, Int> = [];
         for (element in elements) {
             element.update(delta);
 
@@ -90,36 +91,36 @@ class World {
             final nearPos = element.getNearestPosition();
             final gi = getGridItem(grid, nearPos.x, nearPos.y);
             if (gi == null || gi.tile == null) {
-                // collides with walls
-                // TODO: bounce air, see if y or x val is closest
+                // collides with walls (kinda janky for now)
+                // TODO: reenable when canSeeTarget is implemented
                 // if (element.type == Air) {
-                //     element.velocity.
+                //     if (xCollides(element.x, element.y, gi.x, gi.y)) {
+                //         element.velocity.set(-element.velocity.x, element.velocity.x);
+                //         separateElementGridItem(element, gi, true);
+                //     } else {
+                //         element.velocity.set(element.velocity.x, -element.velocity.y);
+                //         separateElementGridItem(element, gi, false);
+                //     }
                 // } else {
-                    element.velocity.set(0, 0);
+                element.velocity.set(0, 0);
                 // }
             }
 
-            var elementMap:Map<Element, Element> = [];
             for (otherElement in elements) {
                 if (
+                    otherElement != element &&
                     !element.isNew &&
                     !otherElement.isNew &&
-                    otherElement != element &&
                     element.active &&
                     otherElement.active &&
                     Math.abs(otherElement.x - element.x) < HIT_DISTANCE &&
                     Math.abs(otherElement.y - element.y) < HIT_DISTANCE &&
-                    elementMap[otherElement] != element
+                    elementMap.get(element.id) != otherElement.id
                 ) {
                     if (element.type == Air && otherElement.type == Air) continue;
 
-                    trace('elem before ${step}', element.type, element.velocity, otherElement.type, otherElement.velocity);
                     handleElementInteraction(otherElement, element);
-                    trace('elem after ${step}', element.type, element.velocity, otherElement.type, otherElement.velocity);
-                    elementMap[element] = otherElement;
-                    if (elementMap[otherElement] != null) {
-                        trace('!!!', elementMap[otherElement].type);
-                    }
+                    elementMap.set(otherElement.id, element.id);
                 }
             }
         }
@@ -164,13 +165,14 @@ class World {
                 isNonAir = elem1;
             }
 
-            final xColl = xCollideDir(isNonAir.x, isNonAir.y, isAir.x, isAir.y);
+            final xColl = xCollides(isNonAir.x, isNonAir.y, isAir.x, isAir.y);
             if (xColl) {
                 isNonAir.velocity.set(-isNonAir.velocity.x + isAir.velocity.x, isNonAir.velocity.y + isAir.velocity.y);
             } else {
                 isNonAir.velocity.set(isNonAir.velocity.x + isAir.velocity.x, -isNonAir.velocity.y + isAir.velocity.y);
             }
 
+            separateElements(isNonAir, isAir, xColl);
             return;
         }
 
