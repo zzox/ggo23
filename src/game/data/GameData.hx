@@ -16,8 +16,6 @@ class GameData {
             spells: []
         }
 
-        trace(playerData.spells);
-
         playerData.spells.push(cloneSpell(Fireball));
         playerData.spells.push(cloneSpell(FlameSquare));
     }

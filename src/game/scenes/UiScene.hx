@@ -80,8 +80,6 @@ class UiScene extends Scene {
                 addExperience('HEALTH');
             }
         ));
-
-        // addSprite(testButton = new Button(200, 100, Assets.images.button_bg));
     }
 
     override function update (delta:Float) {}

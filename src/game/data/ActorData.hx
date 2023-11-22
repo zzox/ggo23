@@ -38,10 +38,10 @@ typedef ActorData = {
     var health:Int;
 
     var ?manageData:ManageData;
-    // experience (for kills)
+    var experience:Int;
     var resistances: Array<Resistance>;
 
-    // ?generate elements
+    // ?generate elements ???
 }
 
 typedef PlayerData = {
@@ -62,6 +62,7 @@ PlayerActor => {
     meleeDamage: 0,
     health: 100,
     speed: 55,
+    experience: 66,
     color: 0xff5b6ee1,
     animIndex: 0,
     resistances: [],
@@ -72,6 +73,7 @@ BigRat => {
     meleeDamage: 10,
     health: 25,
     speed: 25,
+    experience: 10,
     color: 0xffa8a8a8,
     animIndex: 12,
     resistances: [],
@@ -89,6 +91,7 @@ Snake => {
     meleeDamage: 20,
     health: 12,
     speed: 35,
+    experience: 10,
     color: 0xff6abe30,
     animIndex: 18,
     resistances: [],
@@ -106,6 +109,7 @@ Plant => {
     meleeDamage: 33,
     health: 12,
     speed: 25,
+    experience: 15,
     color: 0xff37946e,
     resistances: [{ type: Fire, amount: 2.0 }],
     animIndex: 30,
@@ -124,6 +128,7 @@ Butterfly => {
     meleeDamage: 0,
     health: 10,
     speed: 50,
+    experience: 20,
     color: 0xfffbf236,
     animIndex: 36,
     resistances: [{ type: Fire, amount: 1.5 }, { type: Air, amount: 0.0 }],

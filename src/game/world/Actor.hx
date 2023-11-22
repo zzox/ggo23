@@ -53,10 +53,11 @@ typedef QueuedMove = {
 enum UpdateType {
     Death;
     Damage;
+    Experience;
 }
 
 typedef UpdateOptions = {
-    var damage:Int;
+    var amount:Int;
     var pos:Vec2;
 }
 
@@ -329,7 +330,7 @@ class Actor extends WorldItem {
     public function doMeleeDamage (fromActor:Actor) {
         target = fromActor;
         if (!isHurt) {
-            hurt(fromActor.meleeDamage);
+            hurt(fromActor.meleeDamage, fromActor);
         }
     }
 
@@ -347,7 +348,7 @@ class Actor extends WorldItem {
         }
 
         if (!isHurt) {
-            hurt(Math.ceil(damage));
+            hurt(Math.ceil(damage), fromElement.fromActor);
         }
     }
 
@@ -461,7 +462,7 @@ class Actor extends WorldItem {
         state = Wait;
     }
 
-    function hurt (d:Int) {
+    function hurt (d:Int, fromActor:Null<Actor>) {
         var damage = d;
         if (actorType == PlayerActor) {
             final pre = damage;
@@ -474,10 +475,15 @@ class Actor extends WorldItem {
             health -= damage;
             if (health <= 0) {
                 health = 0;
+
+                if (fromActor != null) {
+                    fromActor.gainExperience(this);
+                }
+
                 die();
             }
 
-            for (onUpdate in updateListeners) onUpdate(Damage, { damage: damage, pos: new Vec2(x, y) });
+            for (onUpdate in updateListeners) onUpdate(Damage, { amount: damage, pos: new Vec2(x, y) });
 
             isHurt = true;
             hurtTimer = 1.0;
@@ -495,6 +501,13 @@ class Actor extends WorldItem {
         isDead = true;
         world.removeActor(this);
         for (onUpdate in updateListeners) onUpdate(Death);
+    }
+
+
+    function gainExperience (actor:Actor) {
+        for (onUpdate in updateListeners) {
+            onUpdate(Experience, { amount: actorData[actor.actorType].experience, pos: new Vec2(x, y) });
+        }
     }
 
     public function getLinkedPosition ():IntVec2 {

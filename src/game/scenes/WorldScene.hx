@@ -125,7 +125,15 @@ class WorldScene extends Scene {
             final num = damageNumbers.getNext();
             final worldPos = translateWorldPos(updateOptions.pos.x, updateOptions.pos.y);
             num.setPosition(worldPos.x + 4, worldPos.y - 18);
-            num.text = updateOptions.damage + '';
+            num.text = updateOptions.amount + '';
+            num.color = 0xffd95763;
+            num.start();
+        } else if (updateType == Experience) {
+            final num = damageNumbers.getNext();
+            final worldPos = translateWorldPos(updateOptions.pos.x, updateOptions.pos.y);
+            num.setPosition(worldPos.x + 4, worldPos.y - 18);
+            num.text = updateOptions.amount + '';
+            num.color = 0xfffbf236;
             num.start();
         }
     }

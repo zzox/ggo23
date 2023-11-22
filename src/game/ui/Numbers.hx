@@ -31,7 +31,6 @@ class Numbers extends Sprite {
         body.velocity.set(0, -15);
         alpha = 1.0;
         numTimer = NUMBER_TIME;
-        color = 0xffd95763;
         super.start();
     }
 

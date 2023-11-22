@@ -26,7 +26,7 @@ class ActorSprite extends WorldItemSprite {
         animation.add('attack', [data.animIndex + 3]);
         animation.add('die', [data.animIndex + 4, data.animIndex + 5], actor.actorType == PlayerActor ? 2.0 : 0.5, false);
         animation.onComplete = (anim:String) -> {
-            if (anim == 'die') {
+            if (anim == 'die' && actor.actorType != PlayerActor) {
                 visible = false;
             }
         }
