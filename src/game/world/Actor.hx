@@ -331,9 +331,15 @@ class Actor extends WorldItem {
             target = fromElement.fromActor;
         }
 
-        // TODO: type resistance
+        var damage = fromElement.time * damageLookup(fromElement.type);
+        for (r in actorData[actorType].resistances) {
+            if (r.type == fromElement.type) {
+                damage *= r.amount;
+            }
+        }
+
         if (!isHurt) {
-            hurt(Math.ceil(10 * (fromElement.time)));
+            hurt(Math.ceil(damage));
         }
     }
 

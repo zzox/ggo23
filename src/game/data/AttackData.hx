@@ -1,7 +1,6 @@
 package game.data;
 
 import game.data.ShapeData;
-import game.world.Actor.Attack;
 import game.world.Element;
 
 enum AttackType {

@@ -9,6 +9,15 @@ enum ElementType {
     Water;
 }
 
+function damageLookup (type:ElementType):Int {
+    return switch (type) {
+        case Fire: 12;
+        case Lightning: 20;
+        case Air: 5;
+        case Water: 8;
+    }
+}
+
 class Element extends WorldItem {
     static var curId:Int = 0;
 

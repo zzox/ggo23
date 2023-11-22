@@ -1,6 +1,7 @@
 package game.data;
 
 import game.data.AttackData;
+import game.world.Element.ElementType;
 
 enum ActorType {
     PlayerActor;
@@ -20,6 +21,11 @@ typedef ManageData = {
     var attack:AttackName;
 }
 
+typedef Resistance = {
+    var type:ElementType;
+    var amount:Float;
+}
+
 // Data for visuals _and_ state
 typedef ActorData = {
     var preAttackTime:Float;
@@ -33,7 +39,7 @@ typedef ActorData = {
 
     var ?manageData:ManageData;
     // experience (for kills)
-    // resistances: Array<Resistance>;
+    var resistances: Array<Resistance>;
 
     // ?generate elements
 }
@@ -58,6 +64,7 @@ PlayerActor => {
     speed: 55,
     color: 0xff5b6ee1,
     animIndex: 0,
+    resistances: [],
 },
 BigRat => {
     preAttackTime: 0.5,
@@ -67,6 +74,7 @@ BigRat => {
     speed: 25,
     color: 0xffa8a8a8,
     animIndex: 12,
+    resistances: [],
     manageData: {
         retreatDist: 0,
         attackDist: Math.sqrt(2),
@@ -83,6 +91,7 @@ Snake => {
     speed: 35,
     color: 0xff6abe30,
     animIndex: 18,
+    resistances: [],
     manageData: {
         retreatDist: 0,
         attackDist: Math.sqrt(2),
@@ -98,6 +107,7 @@ Plant => {
     health: 12,
     speed: 25,
     color: 0xff37946e,
+    resistances: [{ type: Fire, amount: 2.0 }],
     animIndex: 30,
     // add neg fire resistance
     manageData: {
@@ -116,6 +126,7 @@ Butterfly => {
     speed: 50,
     color: 0xfffbf236,
     animIndex: 36,
+    resistances: [{ type: Fire, amount: 1.5 }, { type: Air, amount: 0.0 }],
     manageData: {
         retreatDist: 5,
         attackDist: 10,
