@@ -24,6 +24,7 @@ enum AttackName {
     Fireball;
     Windthrow;
     FlameSquare;
+    CastLight;
 }
 
 final attackData:Map<AttackName, AttackData> = [
@@ -55,6 +56,14 @@ FlameSquare => {
     power: 2.0,
     element: Fire,
     shape: square
+},
+CastLight => {
+    preTime: 2.0,
+    time: 2.0,
+    type: Magic,
+    power: 2.0,
+    element: Lightning,
+    shape: single
 }
 ];
 

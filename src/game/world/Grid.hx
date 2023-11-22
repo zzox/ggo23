@@ -55,7 +55,7 @@ function twoDMap <T, TT>(grid:Array<Array<T>>, callback:(T, Int, Int) -> TT):Arr
 }
 
 function makeIntGrid (grid:Grid):IntGrid {
-    return twoDMap(grid, (item, x, y) -> item.tile != null && item.actor == null && item.object == null ? 1 : 0);
+    return twoDMap(grid, (item, x, y) -> item.tile != null /*&& item.actor == null*/ && item.object == null ? 1 : 0);
 }
 
 function getGridItem (grid:Grid, x:Int, y:Int):Null<GridItem> {

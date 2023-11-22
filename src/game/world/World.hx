@@ -65,7 +65,9 @@ class World {
         for (enemySpawner in generatedWorld.spawners) {
             final enemy = new Actor(enemySpawner.x, enemySpawner.y, this, randomEnemy.getNext());
             addActor(enemy);
-            enemy.target = playerActor;
+            if (enemy.attitude != Nonchalant) {
+                enemy.target = playerActor;
+            }
         }
 
         this.size = data.size;

@@ -5,12 +5,20 @@ import game.world.Element.ElementType;
 
 enum ActorType {
     PlayerActor;
-    // Rat;
+    Rat;
     BigRat;
     Snake;
     // Cobra;
     Plant;
     Butterfly;
+    LightningMan;
+    Unicorn;
+}
+
+enum Attitude {
+    Aggro;
+    // Frightened; // doesn't do anything
+    Nonchalant;
 }
 
 typedef ManageData = {
@@ -19,6 +27,7 @@ typedef ManageData = {
     var attackDist:Float;
     var decideTime:Float;
     var attack:AttackName;
+    var attitude:Attitude;
 }
 
 typedef Resistance = {
@@ -71,6 +80,25 @@ PlayerActor => {
     animIndex: 0,
     resistances: [],
 },
+Rat => {
+    preAttackTime: 0.5,
+    attackTime: 1.0,
+    meleeDamage: 10,
+    health: 15,
+    speed: 40,
+    experience: 3,
+    color: 0xff9badb7,
+    animIndex: 6,
+    resistances: [],
+    manageData: {
+        retreatDist: 10,
+        attackDist: Math.sqrt(2),
+        approachDist: 0,
+        decideTime: 0.5,
+        attack: Bite,
+        attitude: Aggro
+    }
+},
 BigRat => {
     preAttackTime: 0.5,
     attackTime: 1.0,
@@ -78,7 +106,7 @@ BigRat => {
     health: 25,
     speed: 25,
     experience: 10,
-    color: 0xffa8a8a8,
+    color: 0xff847e87,
     animIndex: 12,
     resistances: [],
     manageData: {
@@ -86,7 +114,8 @@ BigRat => {
         attackDist: Math.sqrt(2),
         approachDist: 10,
         decideTime: 1.0,
-        attack: Bite
+        attack: Bite,
+        attitude: Aggro
     }
 },
 Snake => {
@@ -104,11 +133,12 @@ Snake => {
         attackDist: Math.sqrt(2),
         approachDist: 12,
         decideTime: 0.5,
-        attack: Bite
+        attack: Bite,
+        attitude: Aggro
     }
 },
 Plant => {
-    preAttackTime: 0.1,
+    preAttackTime: 1.0,
     attackTime: 0.5,
     meleeDamage: 33,
     health: 12,
@@ -123,11 +153,12 @@ Plant => {
         attackDist: Math.sqrt(2),
         approachDist: 25,
         decideTime: 0.1,
-        attack: Bite
+        attack: Bite,
+        attitude: Aggro
     }
 },
 Butterfly => {
-    preAttackTime: 0.1,
+    preAttackTime: 0.5,
     attackTime: 0.5,
     meleeDamage: 0,
     health: 10,
@@ -139,9 +170,48 @@ Butterfly => {
     manageData: {
         retreatDist: 5,
         attackDist: 10,
-        approachDist: 25,
+        approachDist: 12,
         decideTime: 0.25,
-        attack: Windthrow
+        attack: Windthrow,
+        attitude: Aggro
+    }
+},
+LightningMan => {
+    preAttackTime: 0.25,
+    attackTime: 0.25,
+    meleeDamage: 0,
+    health: 50,
+    speed: 20,
+    experience: 40,
+    color: 0xffcbdbfc,
+    animIndex: 42,
+    resistances: [],
+    manageData: {
+        retreatDist: 0,
+        attackDist: 10,
+        approachDist: 18,
+        decideTime: 0.25,
+        attack: CastLight,
+        attitude: Aggro
+    }
+},
+Unicorn => {
+    preAttackTime: 0.25,
+    attackTime: 0.25,
+    meleeDamage: 20,
+    health: 50,
+    speed: 66,
+    experience: 30,
+    color: 0xffcbdbfc,
+    animIndex: 48,
+    resistances: [],
+    manageData: {
+        retreatDist: 0,
+        attackDist: Math.sqrt(2),
+        approachDist: 12,
+        decideTime: 0.25,
+        attack: Bite,
+        attitude: Nonchalant
     }
 }
 ];

@@ -13,9 +13,9 @@ typedef FloorData = {
 
 final floorData:Array<FloorData> = [{
     minRooms: 5,
-    size: new IntVec2(50, 50),
+    size: new IntVec2(60, 60),
     rooms: [mainRoom1Old, smallRoomNorthSouth, smallRoomEastWest, smallRoomNorthSouth, smallRoomEastWest],
-    enemies: [Butterfly, Plant]
+    enemies: [Rat, Unicorn, LightningMan]
 }, {
     minRooms: 7,
     size: new IntVec2(70, 70),

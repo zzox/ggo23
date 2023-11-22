@@ -97,6 +97,7 @@ class Actor extends WorldItem {
     var approachDist:Float = 0.0;
     var attackDist:Float = 0.0;
     var chosenAttack:AttackName;
+    public var attitude:Attitude;
 
     var world:World;
     public var actorType:ActorType;
@@ -124,6 +125,7 @@ class Actor extends WorldItem {
             approachDist = data.manageData.approachDist;
             decideTime = data.manageData.decideTime;
             chosenAttack = data.manageData.attack;
+            attitude = data.manageData.attitude;
         }
 
         this.world = world;
@@ -250,6 +252,10 @@ class Actor extends WorldItem {
         }
 
         decisionTimer = Math.random() * decideTime + decideTime;
+
+        if (target == null && !world.playerActor.isDead && attitude != Nonchalant) {
+            target = world.playerActor;
+        }
     }
 
     public function queueMove (pos:IntVec2) {
@@ -415,7 +421,7 @@ class Actor extends WorldItem {
             final pos = getPosition();
             world.meleeAttack(pos.x + diff.x, pos.y + diff.y, this);
         } else if (currentAttack.type == Range) {
-            world.addElement(currentAttack.startPos.x, currentAttack.startPos.y, currentAttack.elementType, currentAttack.vel, currentAttack.power, this);
+            world.addElement(currentAttack.startPos.x, currentAttack.startPos.y, currentAttack.elementType, currentAttack.vel.clone(), currentAttack.power, this);
         } else if (currentAttack.type == Magic) {
             final shapeSize = Math.floor(currentAttack.shape.length / 2);
             twoDMap(currentAttack.shape, (item:Null<ShapeData>, x:Int, y:Int) -> {
@@ -429,7 +435,7 @@ class Actor extends WorldItem {
                         xPos,
                         yPos,
                         currentAttack.elementType,
-                        item.vel,
+                        item.vel.clone(),
                         currentAttack.power,
                         this,
                         item.time
@@ -502,7 +508,6 @@ class Actor extends WorldItem {
         world.removeActor(this);
         for (onUpdate in updateListeners) onUpdate(Death);
     }
-
 
     function gainExperience (actor:Actor) {
         final amount = actorData[actor.actorType].experience;
