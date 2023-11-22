@@ -4,16 +4,10 @@ import core.Input.MouseButton;
 import core.Sprite;
 import core.Types;
 import core.Util;
+import game.ui.Button;
 import kha.Assets;
 
-// TODO: make buttons into parent classes?
-enum ButtonState {
-    Idle;
-    Hovered;
-    Pressed;
-    Disabled;
-}
-
+// special button. should this move into a parent class?
 class SpellBg extends Sprite {
     public var selected:Bool;
 

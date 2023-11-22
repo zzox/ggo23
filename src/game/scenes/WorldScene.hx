@@ -4,7 +4,6 @@ import core.Group;
 import core.Input;
 import core.Scene;
 import core.Types;
-import game.data.AttackData;
 import game.data.GameData;
 import game.objects.ActorSprite;
 import game.objects.ElementSprite;
@@ -138,7 +137,7 @@ class WorldScene extends Scene {
 
         final tilePos = getTilePos(world.grid, game.mouse.position.x, game.mouse.position.y - 2);
 
-        if (tilePos != null) {
+        if (tilePos != null && !uiScene.buttonClicked) {
             final tile = getTileSpriteAt(tilePos.x, tilePos.y);
             if (tile != null) {
                 tile.focused = true;

@@ -298,8 +298,13 @@ class Actor extends WorldItem {
                 currentPath.unshift(nextPos);
                 endMove();
             } else {
+                var s = speed;
+                if (actorType == PlayerActor) {
+                    s = GameData.playerData.speed;
+                }
+
                 final curPos = getPosition();
-                var speedVal = 10 / speed;
+                var speedVal = 10 / s;
 
                 // slow down at the beginning of being hurt
                 if (isHurt && hurtTimer > hurtSlowTimer) {
