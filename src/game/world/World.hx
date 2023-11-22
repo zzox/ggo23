@@ -14,12 +14,18 @@ enum TileType {
     Tile;
 }
 
+enum SignalType {
+    PlayerPortal;
+}
+
 class Object {}
 
 typedef ElementAdd = (e:Element) -> Void;
+typedef Signal = (signal:SignalType) -> Void;
 
 class World {
     public static inline final HIT_DISTANCE:Float = 0.75;
+    static inline final ELEMENT_WALL_VANQUISH:Float = 0.9;
 
     public var grid:Grid;
     public var size:IntVec2;
@@ -31,12 +37,13 @@ class World {
 
     public var playerActor:Actor;
 
+    var onSignal:Signal;
     var onAddElement:ElementAdd;
     var onRemoveElement:ElementAdd;
 
     public var isPaused:Bool = false;
 
-    public function new (onAddElement:ElementAdd, onRemoveElement:ElementAdd) {
+    public function new (onSigal:Signal, onAddElement:ElementAdd, onRemoveElement:ElementAdd) {
         // ATTN: initializing static vars this way
         new GameData();
 
@@ -104,7 +111,7 @@ class World {
                 //     }
                 // } else {
                 // freeze velocity and diminish time remaining.
-                element.time *= 0.9;
+                element.time *= ELEMENT_WALL_VANQUISH;
                 element.velocity.set(0, 0);
                 // }
             }
@@ -137,6 +144,12 @@ class World {
                 actor.manage(delta);
             }
             actor.update(delta);
+        }
+    }
+
+    public function onFinishedStep (actor:Actor) {
+        if (actor == playerActor && actor.x == portalPos.x && actor.y == portalPos.y) {
+            isPaused = true;
         }
     }
 

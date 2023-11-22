@@ -141,9 +141,12 @@ class Actor extends WorldItem {
         if (state == Moving) {
             handleCurrentMove(delta);
 
-            // do the next move if a step is available and not waiting for a queued move
-            if (currentMove == null && queuedMove == null) {
-                startNextMove();
+            if (currentMove == null) {
+                world.onFinishedStep(this);
+                // do the next move if a step is available and not waiting for a queued move
+                if (queuedMove == null) {
+                    startNextMove();
+                }
             }
         } else if (state == PreAttack) {
             preAttackTimer -= delta;

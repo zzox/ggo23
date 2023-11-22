@@ -22,7 +22,7 @@ class WorldScene extends Scene {
     var gridTiles:Group;
     var gridObjects:Group;
     var player:ActorSprite;
-    var tileSprites:Array<TileSprite> = [];
+    var tileSprites:Array<Null<TileSprite>> = [];
     var elementSprites:Array<ElementSprite> = [];
     var damageNumbers:Group;
 
@@ -31,17 +31,19 @@ class WorldScene extends Scene {
     var ratTest:ActorSprite;
 
     override function create () {
-        world = new World(handleAddElement, handleRemoveElement);
+        world = new World(handleWorldSignal, handleAddElement, handleRemoveElement);
 
         for (outer in world.grid) {
             for (item in outer) {
                 if (item.tile != null) {
                     final gridTile = new TileSprite(item.x, item.y, Math.random() < 0.1 ? 1 : 0);
                     tileSprites.push(gridTile);
+                } else {
+                    tileSprites.push(null);
                 }
             }
         }
-        gridTiles = new Group(cast tileSprites.copy());
+        gridTiles = new Group(cast tileSprites.filter((i) -> i != null).copy());
         addSprite(gridTiles);
         sortGroupByY(gridTiles);
 
@@ -79,7 +81,9 @@ class WorldScene extends Scene {
 
     override function update (delta:Float) {
         for (tile in tileSprites) {
-            tile.clean();
+            if (tile != null) {
+                tile.clean();
+            }
         }
 
         if (player.actorState != null && player.actorState.state == Moving && player.actorState.currentPath != null) {
@@ -108,6 +112,12 @@ class WorldScene extends Scene {
 
         if (game.keys.justPressed(KeyCode.R)) {
             game.switchScene(new WorldScene());
+        }
+    }
+
+    function handleWorldSignal (signalType:SignalType) {
+        if (signalType == PlayerPortal) {
+            trace('its over!');
         }
     }
 
@@ -202,16 +212,6 @@ class WorldScene extends Scene {
     }
 
     function getTileSpriteAt (x:Int, y:Int):Null<TileSprite> {
-        // ATTN: find a better way than to have linear-time access, especially if
-        // this gets used more often.
-        for (ts in tileSprites) {
-            if (ts.pos.x == x && ts.pos.y == y) {
-                return ts;
-            }
-        }
-
-        return null;
-
-        // return tileSprites[x * world.size.y + y];
+        return tileSprites[x * world.size.y + y];
     }
 }
