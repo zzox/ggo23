@@ -10,10 +10,9 @@ typedef BarColor = {
     var color:Int;
 }
 
-// TODO: color changing based on min values. (array of int -> hex tuples?)
 class Bar extends Sprite {
     public var value:Float;
-    var max:Float;
+    public var max:Float;
     var width:Int;
     var height:Int;
 

@@ -69,7 +69,7 @@ class WorldScene extends Scene {
         }
 
         gridObjects.addChild(player);
-        camera.startFollow(player, new IntVec2(1, 2), new Vec2(0.5, 0.1));
+        camera.startFollow(player, new IntVec2(4, 4), new Vec2(0.5, 0.1));
         camera.scroll.set(player.x - 320, player.y - 180);
         camera.scale.set(2.0, 2.0);
         // camera.scroll.y -= 180;
@@ -96,6 +96,8 @@ class WorldScene extends Scene {
             uiScene.recoveryNum = player.actorState.currentAttack != null ?
                 Math.floor(player.actorState.currentAttack.elapsed / player.actorState.currentAttack.time * 100)
                 : 100;
+            uiScene.experienceNum = GameData.playerData.experience;
+            uiScene.experienceMaxNum = GameData.playerData.maxExperience;
         } else {
             uiScene.healthNum = 0;
         }

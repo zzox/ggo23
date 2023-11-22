@@ -52,6 +52,10 @@ typedef PlayerData = {
     var dexterity:Int;
     var spells:Array<AttackData>;
 
+    var level:Int;
+    var experience:Int;
+    var maxExperience:Int;
+    var pointsAvailable:Array<Int>;
     // var health:Int;
 }
 

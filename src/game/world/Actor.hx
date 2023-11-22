@@ -505,8 +505,14 @@ class Actor extends WorldItem {
 
 
     function gainExperience (actor:Actor) {
+        final amount = actorData[actor.actorType].experience;
+
         for (onUpdate in updateListeners) {
-            onUpdate(Experience, { amount: actorData[actor.actorType].experience, pos: new Vec2(x, y) });
+            onUpdate(Experience, { amount: amount, pos: new Vec2(x, y) });
+        }
+
+        if (actorType == PlayerActor) {
+            GameData.addExperience(amount);
         }
     }
 

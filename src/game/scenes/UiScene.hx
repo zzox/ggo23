@@ -16,16 +16,22 @@ class UiScene extends Scene {
 
     public var healthBar:Bar;
     public var healthNum:Int;
-    public var healthMax:Int;
     public var recoveryBar:Bar;
     public var recoveryNum:Int;
-    // public var experienceBar:Sprite;
-    // public var experienceNum:Int;
+    public var experienceBar:Bar;
+    public var experienceNum:Int;
+    public var experienceMaxNum:Int;
 
     var attNum:Sprite;
     var defNum:Sprite;
     var dexNum:Sprite;
     var spdNum:Sprite;
+
+    var attButton:Button;
+    var defButton:Button;
+    var dexButton:Button;
+    var spdButton:Button;
+    var healthButton:Button;
 
     var spells:Array<SpellBg> = [];
     public var selectedSpell:Int = 0;
@@ -38,8 +44,8 @@ class UiScene extends Scene {
 
         // bars
         addSprite(healthBar = new Bar(40, 2, 100, 8, [{ min: 0.0, color: 0xffd95763 }, { min: 0.2, color: 0xff37946e }], 100, 100));
-        addSprite(recoveryBar = new Bar(40, 16, 50, 2, [{ min: 0.0, color: 0xff5b6ee1 }, { min: 1.0, color: 0xff639bff }], 100, 100));
-        // TODO: experienceBar
+        addSprite(experienceBar = new Bar(40, 16, 50, 2, [{ min: 0.0, color: 0xfffbf236 }], GameData.playerData.experience, GameData.playerData.maxExperience));
+        addSprite(recoveryBar = new Bar(40, 24, 50, 2, [{ min: 0.0, color: 0xff5b6ee1 }, { min: 1.0, color: 0xff639bff }], 100, 100));
 
         for (i in 0...GameData.playerData.spells.length) {
             final spellBg = new SpellBg(i, () -> {
@@ -64,12 +70,11 @@ class UiScene extends Scene {
         addSprite(spdNum = getText(26, 71));
         addSprite(dexNum = getText(26, 85));
 
-        makeButton(42, 42, 'ATT');
-        makeButton(42, 56, 'DEF');
-        makeButton(42, 70, 'SPD');
-        makeButton(42, 84, 'DEX');
-
-        addSprite(new Button(
+        addSprite(attButton = makeButton(42, 42, 'ATT'));
+        addSprite(defButton = makeButton(42, 56, 'DEF'));
+        addSprite(spdButton = makeButton(42, 70, 'SPD'));
+        addSprite(dexButton = makeButton(42, 84, 'DEX'));
+        addSprite(healthButton = new Button(
             new Vec2(4, 98),
             Assets.images.button_slice,
             new IntVec2(8, 8),
@@ -88,6 +93,8 @@ class UiScene extends Scene {
         buttonClicked = false;
         healthBar.value = healthNum;
         recoveryBar.value = recoveryNum;
+        experienceBar.value = experienceNum;
+        experienceBar.max = experienceMaxNum;
 
         if (game.keys.justPressed(KeyCode.One)) {
             changeSpell(0);
@@ -105,6 +112,20 @@ class UiScene extends Scene {
             changeSpell(3);
         }
 
+        if (GameData.playerData.pointsAvailable.length > 0) {
+            attButton.state = Idle;
+            defButton.state = Idle;
+            spdButton.state = Idle;
+            dexButton.state = Idle;
+            healthButton.state = Idle;
+        } else {
+            attButton.state = Disabled;
+            defButton.state = Disabled;
+            spdButton.state = Disabled;
+            dexButton.state = Disabled;
+            healthButton.state = Disabled;
+        }
+
         attNum.text = GameData.playerData.attack + '';
         defNum.text = GameData.playerData.defense + '';
         spdNum.text = GameData.playerData.speed + '';
@@ -115,16 +136,17 @@ class UiScene extends Scene {
 
     function addExperience (stat:String) {
         buttonClicked = true;
-        trace('stat', stat);
-        // get next num
+
+        final amount = GameData.playerData.pointsAvailable.shift();
+
         switch (stat) {
-            case 'ATT': GameData.playerData.attack += 3;
-            case 'DEF': GameData.playerData.defense += 3;
-            case 'SPD': GameData.playerData.speed += 3;
-            case 'DEX': GameData.playerData.dexterity += 3;
+            case 'ATT': GameData.playerData.attack += amount;
+            case 'DEF': GameData.playerData.defense += amount;
+            case 'SPD': GameData.playerData.speed += amount;
+            case 'DEX': GameData.playerData.dexterity += amount;
             case 'HEALTH': {
                 // TODO: increase player health by ???
-                GameData.playerData.maxHealth += 6;
+                GameData.playerData.maxHealth += amount * 2;
                 healthBar.destroy();
                 healthBar = new Bar(
                     40,
@@ -155,8 +177,8 @@ class UiScene extends Scene {
         }
     }
 
-    function makeButton (x:Int, y:Int, stat:String) {
-        addSprite(new Button(
+    function makeButton (x:Int, y:Int, stat:String):Button {
+        return new Button(
             new Vec2(x, y),
             Assets.images.button_slice,
             new IntVec2(8, 8),
@@ -166,7 +188,7 @@ class UiScene extends Scene {
             () -> {
                 addExperience(stat);
             }
-        ));
+        );
     }
 
     // public function addTestButton (onClick:() -> Void) {
