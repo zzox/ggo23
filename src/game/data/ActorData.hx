@@ -74,7 +74,7 @@ PlayerActor => {
     preAttackTime: 0.0,
     attackTime: 0.0,
     meleeDamage: 0,
-    health: 100,
+    health: 0,
     speed: 55,
     experience: 66,
     color: 0xff5b6ee1,

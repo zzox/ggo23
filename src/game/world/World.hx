@@ -8,7 +8,6 @@ import game.util.ShuffleRandom;
 import game.util.Utils;
 import game.world.Element;
 import game.world.Grid;
-import kha.math.Random;
 
 enum TileType {
     Tile;
@@ -48,11 +47,9 @@ class World {
         new GameData();
 
         // TODO: bring in from singleton.
-        final floorNum = 0;
-        final random = new Random(Math.floor(Math.random() * 65536));
-        trace(random.GetFloat());
+        final floorNum = GameData.floorNum;
         final data = floorData[floorNum];
-        final generatedWorld = generate(floorNum, random);
+        final generatedWorld = generate(floorNum, GameData.random);
         grid = generatedWorld.grid;
 
         portalPos = generatedWorld.portal;
@@ -61,7 +58,7 @@ class World {
         playerActor = new Actor(generatedWorld.playerPos.x, generatedWorld.playerPos.y, this, PlayerActor);
         addActor(playerActor);
 
-        final randomEnemy = new ShuffleRandom(data.enemies, random);
+        final randomEnemy = new ShuffleRandom(data.enemies, GameData.random);
         for (enemySpawner in generatedWorld.spawners) {
             final enemy = new Actor(enemySpawner.x, enemySpawner.y, this, randomEnemy.getNext());
             addActor(enemy);

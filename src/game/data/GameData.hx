@@ -2,6 +2,7 @@ package game.data;
 
 import game.data.ActorData;
 import game.data.AttackData;
+import kha.math.Random;
 
 function getMaxExp (level:Int):Int {
     return Std.int(Math.pow(level, 2)) + level * 2;
@@ -9,6 +10,8 @@ function getMaxExp (level:Int):Int {
 
 class GameData {
     public static var playerData:PlayerData;
+    public static var random:Random;
+    public static var floorNum:Int = 0;
 
     public function new () {
         playerData = {
@@ -25,9 +28,11 @@ class GameData {
             pointsAvailable: []
         }
 
+        random = new Random(Math.floor(Math.random() * 65536));
+
         final spellOptions = attackOptions.copy();
         for (_ in 0...2) {
-            final spell = spellOptions[Math.floor(Math.random() * spellOptions.length)];
+            final spell = spellOptions[Math.floor(random.GetFloat() * spellOptions.length)];
             spellOptions.remove(spell);
             playerData.spells.push(cloneSpell(spell));
             playerData.scales = playerScales[spell].copy();

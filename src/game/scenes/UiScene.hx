@@ -119,28 +119,26 @@ class UiScene extends Scene {
             if (game.keys.justPressed(KeyCode.Four)) {
                 changeSpell(3);
             }
+        } else {}
 
-            if (GameData.playerData.pointsAvailable.length > 0) {
-                attButton.state = Idle;
-                defButton.state = Idle;
-                spdButton.state = Idle;
-                dexButton.state = Idle;
-                healthButton.state = Idle;
-            } else {
-                attButton.state = Disabled;
-                defButton.state = Disabled;
-                spdButton.state = Disabled;
-                dexButton.state = Disabled;
-                healthButton.state = Disabled;
-            }
-
-            attNum.text = GameData.playerData.attack + '';
-            defNum.text = GameData.playerData.defense + '';
-            spdNum.text = GameData.playerData.speed + '';
-            dexNum.text = GameData.playerData.dexterity + '';
+        if (GameData.playerData.pointsAvailable.length > 0) {
+            attButton.state = Idle;
+            defButton.state = Idle;
+            spdButton.state = Idle;
+            dexButton.state = Idle;
+            healthButton.state = Idle;
         } else {
-
+            attButton.state = Disabled;
+            defButton.state = Disabled;
+            spdButton.state = Disabled;
+            dexButton.state = Disabled;
+            healthButton.state = Disabled;
         }
+
+        attNum.text = GameData.playerData.attack + '';
+        defNum.text = GameData.playerData.defense + '';
+        spdNum.text = GameData.playerData.speed + '';
+        dexNum.text = GameData.playerData.dexterity + '';
 
         super.update(delta);
     }

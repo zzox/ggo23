@@ -77,6 +77,7 @@ enum Scale {
     LearnCastlight;
     LearnFireball;
     LearnWindthrow;
+    AllTime50;
 }
 
 // TODO: add scales when cloning, or make a separate type
