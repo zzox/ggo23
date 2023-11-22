@@ -506,15 +506,18 @@ class Actor extends WorldItem {
     }
 
     function getDiminishedValue (alterStat:Int, value:Float) {
+        trace('dim', alterStat, value);
         if (alterStat <= 50) {
+            trace((2 - (alterStat / 50)) * value);
             return (2 - (alterStat / 50)) * value;
         }
 
-        return value * 0.5 * ((alterStat - 50) / 50);
+        trace(value * 0.5 + value * ((100 - alterStat) / 100));
+        return value * 0.5 + value * ((100 - alterStat) / 100);
     }
 
     function getIncreasedValue (alterStat:Int, value:Float) {
-        trace(alterStat, value);
+        trace('inc', alterStat, value);
         if (alterStat <= 50) {
             trace(value * (alterStat / 50));
             return value * (alterStat / 50);

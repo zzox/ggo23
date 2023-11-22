@@ -9,10 +9,10 @@ class GameData {
     public function new () {
         playerData = {
             maxHealth: 100,
-            speed: 50,
-            attack: 50,
-            defense: 50,
-            dexterity: 50,
+            speed: 40,
+            attack: 40,
+            defense: 40,
+            dexterity: 40,
             spells: []
         }
 

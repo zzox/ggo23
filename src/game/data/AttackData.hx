@@ -58,6 +58,14 @@ FlameSquare => {
 }
 ];
 
+
+// TODO: add scales when cloning, or make a separate type
+// final playerScales:Map<AttakName, Array<Scale>> = [
+// Windthrow => [{
+//     {}
+// }]
+// ];
+
 function cloneSpell (name:AttackName):AttackData {
     final data = attackData[name];
     return {

@@ -135,8 +135,9 @@ class WorldScene extends Scene {
             world.isPaused = !world.isPaused;
         }
 
+        // ATTN: we are checking the mouse buttons here on release, in order to
+        // be in sync with the uiScene's button release.
         final tilePos = getTilePos(world.grid, game.mouse.position.x, game.mouse.position.y - 2);
-
         if (tilePos != null && !uiScene.buttonClicked) {
             final tile = getTileSpriteAt(tilePos.x, tilePos.y);
             if (tile != null) {
@@ -144,12 +145,12 @@ class WorldScene extends Scene {
             }
 
             // highlight tile
-            final clicked = game.mouse.justPressed(MouseButton.Left);
+            final clicked = game.mouse.justReleased(MouseButton.Left);
             if (clicked && tilePos.tile != null) {
                 world.playerActor.queueMove(new IntVec2(tilePos.x, tilePos.y));
             }
 
-            final rightClicked = game.mouse.justPressed(MouseButton.Right);
+            final rightClicked = game.mouse.justReleased(MouseButton.Right);
             if (rightClicked) {
                 // TODO: This should be called from the player's Actor object
                 // world.addElement(tilePos.x, tilePos.y, Fire);
