@@ -43,7 +43,7 @@ class World {
 
     public var isPaused:Bool = false;
 
-    public function new (onSigal:Signal, onAddElement:ElementAdd, onRemoveElement:ElementAdd) {
+    public function new (onSignal:Signal, onAddElement:ElementAdd, onRemoveElement:ElementAdd) {
         // ATTN: initializing static vars this way
         new GameData();
 
@@ -74,6 +74,7 @@ class World {
 
         this.onAddElement = onAddElement;
         this.onRemoveElement = onRemoveElement;
+        this.onSignal = onSignal;
     }
 
     public function update (delta:Float) {
@@ -152,6 +153,7 @@ class World {
     public function onFinishedStep (actor:Actor) {
         if (actor == playerActor && actor.x == portalPos.x && actor.y == portalPos.y) {
             isPaused = true;
+            onSignal(PlayerPortal);
         }
     }
 

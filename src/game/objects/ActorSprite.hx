@@ -1,5 +1,6 @@
 package game.objects;
 
+import core.Tweens;
 import core.Types;
 import game.data.ActorData;
 import game.util.Utils;
@@ -11,6 +12,8 @@ class ActorSprite extends WorldItemSprite {
 
     var prevX:Float;
     var prevHurt:Bool;
+
+    var outTween:Null<Tween> = null;
 
     public function new (actor:Actor) {
         final data = actorData[actor.actorType];
@@ -98,7 +101,21 @@ class ActorSprite extends WorldItemSprite {
             prevHurt = actorState.isHurt;
         }
 
+        if (outTween != null) {
+            scale.set(1 - outTween.value, outTween.value * 1.5);
+        }
+
         super.update(delta);
+    }
+
+    public function tweenOut () {
+        actorState = null;
+        visible = true;
+        animation.play('still');
+
+        scene.tweens.addTween(outTween = new Tween(0, 1, 1, () -> {
+            visible = false;
+        }, easeOutCubic));
     }
 
     function onActorStateUpdate (updateType:UpdateType, ?options:UpdateOptions) {

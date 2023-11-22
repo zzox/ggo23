@@ -23,8 +23,8 @@ enum AttackName {
     Bite;
     Fireball;
     Windthrow;
-    FlameSquare;
-    CastLight;
+    Flamebigsquare;
+    Castlight;
 }
 
 final attackData:Map<AttackName, AttackData> = [
@@ -49,15 +49,15 @@ Windthrow => {
     power: 2.0,
     element: Air
 },
-FlameSquare => {
+Flamebigsquare => {
     preTime: 2.0,
     time: 2.0,
     type: Magic,
     power: 2.0,
     element: Fire,
-    shape: square
+    shape: bigSquare
 },
-CastLight => {
+Castlight => {
     preTime: 2.0,
     time: 2.0,
     type: Magic,
@@ -68,12 +68,22 @@ CastLight => {
 ];
 
 
+enum Scale {
+    Power50;
+    Vel50;
+    Power100Vel;
+    BeFlamebigsquare;
+    BeWindStorm;
+    LearnCastlight;
+    LearnFireball;
+    LearnWindthrow;
+}
+
 // TODO: add scales when cloning, or make a separate type
-// final playerScales:Map<AttakName, Array<Scale>> = [
-// Windthrow => [{
-//     {}
-// }]
-// ];
+final playerScales:Map<AttackName, Array<Scale>> = [
+    Windthrow => [Power50, Vel50],
+    Fireball => [Power50, Vel50]
+];
 
 function cloneSpell (name:AttackName):AttackData {
     final data = attackData[name];

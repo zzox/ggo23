@@ -3,6 +3,7 @@ package game.scenes;
 import core.Group;
 import core.Input;
 import core.Scene;
+import core.Timers;
 import core.Types;
 import game.data.GameData;
 import game.objects.ActorSprite;
@@ -24,10 +25,9 @@ class WorldScene extends Scene {
     var tileSprites:Array<Null<TileSprite>> = [];
     var elementSprites:Array<ElementSprite> = [];
     var damageNumbers:Group;
+    var roundOver:Bool = false;
 
     var uiScene:UiScene;
-
-    var ratTest:ActorSprite;
 
     override function create () {
         world = new World(handleWorldSignal, handleAddElement, handleRemoveElement);
@@ -79,6 +79,10 @@ class WorldScene extends Scene {
     }
 
     override function update (delta:Float) {
+        if (roundOver) {
+            camera.scroll.y--;
+        }
+
         for (tile in tileSprites) {
             if (tile != null) {
                 tile.clean();
@@ -118,7 +122,12 @@ class WorldScene extends Scene {
 
     function handleWorldSignal (signalType:SignalType) {
         if (signalType == PlayerPortal) {
-            trace('its over!');
+            player.tweenOut();
+            timers.addTimer(new Timer(1.0, () -> {
+                roundOver = true;
+                uiScene.setupScales();
+            }));
+            camera.stopFollow();
         }
     }
 

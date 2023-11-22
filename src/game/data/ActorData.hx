@@ -60,6 +60,7 @@ typedef PlayerData = {
     var defense:Int;
     var dexterity:Int;
     var spells:Array<AttackData>;
+    var scales:Array<Scale>;
 
     var level:Int;
     var experience:Int;
@@ -191,7 +192,7 @@ LightningMan => {
         attackDist: 10,
         approachDist: 18,
         decideTime: 0.25,
-        attack: CastLight,
+        attack: Castlight,
         attitude: Aggro
     }
 },

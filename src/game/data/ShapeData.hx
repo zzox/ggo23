@@ -17,7 +17,7 @@ function noVel (time:Float) {
 // warning: mutable
 final single:Shape = [[noVel(0.0)]];
 
-final square:Shape = [
+final bigSquare:Shape = [
     [null, noVel(0.25), noVel(0.25), noVel(0.25), null],
     [noVel(0.25), noVel(0.125), noVel(0.125), noVel(0.125), noVel(0.25)],
     [noVel(0.25), noVel(0.125), noVel(0.0), noVel(0.125), noVel(0.25)],

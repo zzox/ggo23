@@ -11,6 +11,11 @@ import game.ui.UiText;
 import kha.Assets;
 import kha.input.KeyCode;
 
+enum UiState {
+    InGame;
+    PostGame;
+}
+
 class UiScene extends Scene {
     public var exText:Sprite;
 
@@ -37,6 +42,8 @@ class UiScene extends Scene {
     public var selectedSpell:Int = 0;
 
     public var buttonClicked:Bool = false;
+
+    public var state:UiState = InGame;
 
     override function create () {
         camera.scale.set(2, 2);
@@ -90,46 +97,50 @@ class UiScene extends Scene {
     override function update (delta:Float) {}
 
     public function forceUpdate (delta:Float) {
-        buttonClicked = false;
-        healthBar.value = healthNum;
-        recoveryBar.value = recoveryNum;
-        experienceBar.value = experienceNum;
-        experienceBar.max = experienceMaxNum;
+        if (state == InGame) {
+            buttonClicked = false;
+            healthBar.value = healthNum;
+            recoveryBar.value = recoveryNum;
+            experienceBar.value = experienceNum;
+            experienceBar.max = experienceMaxNum;
 
-        if (game.keys.justPressed(KeyCode.One)) {
-            changeSpell(0);
-        }
+            if (game.keys.justPressed(KeyCode.One)) {
+                changeSpell(0);
+            }
 
-        if (game.keys.justPressed(KeyCode.Two)) {
-            changeSpell(1);
-        }
+            if (game.keys.justPressed(KeyCode.Two)) {
+                changeSpell(1);
+            }
 
-        if (game.keys.justPressed(KeyCode.Three)) {
-            changeSpell(2);
-        }
+            if (game.keys.justPressed(KeyCode.Three)) {
+                changeSpell(2);
+            }
 
-        if (game.keys.justPressed(KeyCode.Four)) {
-            changeSpell(3);
-        }
+            if (game.keys.justPressed(KeyCode.Four)) {
+                changeSpell(3);
+            }
 
-        if (GameData.playerData.pointsAvailable.length > 0) {
-            attButton.state = Idle;
-            defButton.state = Idle;
-            spdButton.state = Idle;
-            dexButton.state = Idle;
-            healthButton.state = Idle;
+            if (GameData.playerData.pointsAvailable.length > 0) {
+                attButton.state = Idle;
+                defButton.state = Idle;
+                spdButton.state = Idle;
+                dexButton.state = Idle;
+                healthButton.state = Idle;
+            } else {
+                attButton.state = Disabled;
+                defButton.state = Disabled;
+                spdButton.state = Disabled;
+                dexButton.state = Disabled;
+                healthButton.state = Disabled;
+            }
+
+            attNum.text = GameData.playerData.attack + '';
+            defNum.text = GameData.playerData.defense + '';
+            spdNum.text = GameData.playerData.speed + '';
+            dexNum.text = GameData.playerData.dexterity + '';
         } else {
-            attButton.state = Disabled;
-            defButton.state = Disabled;
-            spdButton.state = Disabled;
-            dexButton.state = Disabled;
-            healthButton.state = Disabled;
-        }
 
-        attNum.text = GameData.playerData.attack + '';
-        defNum.text = GameData.playerData.defense + '';
-        spdNum.text = GameData.playerData.speed + '';
-        dexNum.text = GameData.playerData.dexterity + '';
+        }
 
         super.update(delta);
     }
@@ -191,13 +202,20 @@ class UiScene extends Scene {
         );
     }
 
+    public function setupScales () {
+        for (s in spells) s.stop();
+
+        // pick 2-3 scales
+        // the further level we're on, the more likely it's what we want
+        // tie each button to a spell num _and_ a scale
+            // or scales is separate from spells?
+    }
+
     // public function addTestButton (onClick:() -> Void) {
     //     function clickMe () {
     //         buttonClicked = true;
     //         onClick();
     //     }
-
-    //     addSprite(testButton = new Button(new Vec2(4, 60), Assets.images.blue_button_slice, new IntVec2(18, 18), 0xffffe9c5, 'Customer', clickMe));
     // }
 
     public function activateDebugGroup () {}

@@ -18,14 +18,22 @@ class GameData {
             defense: 40,
             dexterity: 40,
             spells: [],
+            scales: [],
             experience: 0,
             level: 5,
             maxExperience: getMaxExp(5),
-            pointsAvailable: [3]
+            pointsAvailable: []
         }
 
-        playerData.spells.push(cloneSpell(Fireball));
-        playerData.spells.push(cloneSpell(FlameSquare));
+        final spellOptions = attackOptions.copy();
+        for (_ in 0...2) {
+            final spell = spellOptions[Math.floor(Math.random() * spellOptions.length)];
+            spellOptions.remove(spell);
+            playerData.spells.push(cloneSpell(spell));
+            playerData.scales = playerScales[spell].copy();
+        }
+        // playerData.spells.push(cloneSpell(Fireball));
+        // playerData.spells.push(cloneSpell(Windthrow));
     }
 
     public static function addExperience (amount:Int):Bool {
@@ -48,3 +56,7 @@ class GameData {
         return leveledUp;
     }
 }
+
+final attackOptions:Array<AttackName> = [
+    Fireball, Windthrow
+];
