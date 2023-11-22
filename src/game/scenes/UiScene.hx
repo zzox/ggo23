@@ -54,20 +54,32 @@ class UiScene extends Scene {
         // stats
         addSprite(new Sprite(new Vec2(2, 40), Assets.images.stats_bg));
 
-        addSprite(getText(4, 42, 'ATT:'));
-        addSprite(getText(4, 56, 'DEF:'));
-        addSprite(getText(4, 70, 'SPD:'));
-        addSprite(getText(4, 84, 'DEX:'));
+        addSprite(getText(4, 43, 'ATT:', 0xff9badb7));
+        addSprite(getText(4, 57, 'DEF:', 0xff9badb7));
+        addSprite(getText(4, 71, 'SPD:', 0xff9badb7));
+        addSprite(getText(4, 85, 'DEX:', 0xff9badb7));
 
-        addSprite(attNum = getText(24, 42));
-        addSprite(defNum = getText(24, 56));
-        addSprite(spdNum = getText(24, 70));
-        addSprite(dexNum = getText(24, 84));
+        addSprite(attNum = getText(26, 43));
+        addSprite(defNum = getText(26, 57));
+        addSprite(spdNum = getText(26, 71));
+        addSprite(dexNum = getText(26, 85));
 
-        makeButton(48, 42, 'ATT');
-        makeButton(48, 56, 'DEF');
-        makeButton(48, 70, 'SPD');
-        makeButton(48, 84, 'DEX');
+        makeButton(42, 42, 'ATT');
+        makeButton(42, 56, 'DEF');
+        makeButton(42, 70, 'SPD');
+        makeButton(42, 84, 'DEX');
+
+        addSprite(new Button(
+            new Vec2(4, 98),
+            Assets.images.button_slice,
+            new IntVec2(8, 8),
+            new IntVec2(50, 14),
+            0xffffffff,
+            'health++',
+            () -> {
+                addExperience('HEALTH');
+            }
+        ));
 
         // addSprite(testButton = new Button(200, 100, Assets.images.button_bg));
     }
@@ -112,6 +124,21 @@ class UiScene extends Scene {
             case 'DEF': GameData.playerData.defense += 3;
             case 'SPD': GameData.playerData.speed += 3;
             case 'DEX': GameData.playerData.dexterity += 3;
+            case 'HEALTH': {
+                // TODO: increase player health by ???
+                GameData.playerData.maxHealth += 6;
+                healthBar.destroy();
+                healthBar = new Bar(
+                    40,
+                    2,
+                    GameData.playerData.maxHealth,
+                    8,
+                    [{ min: 0.0, color: 0xffd95763 }, { min: 0.2, color: 0xff37946e }],
+                    GameData.playerData.maxHealth,
+                    healthNum
+                );
+                addSprite(healthBar);
+            }
         }
 
         if (GameData.playerData.attack >= 100) GameData.playerData.attack = 99;

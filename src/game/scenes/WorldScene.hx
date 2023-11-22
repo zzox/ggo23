@@ -137,6 +137,7 @@ class WorldScene extends Scene {
 
         // ATTN: we are checking the mouse buttons here on release, in order to
         // be in sync with the uiScene's button release.
+        // Some potential fixes may be not triggering on longer holds with mouse movement.
         final tilePos = getTilePos(world.grid, game.mouse.position.x, game.mouse.position.y - 2);
         if (tilePos != null && !uiScene.buttonClicked) {
             final tile = getTileSpriteAt(tilePos.x, tilePos.y);

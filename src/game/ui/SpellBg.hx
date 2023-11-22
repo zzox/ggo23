@@ -1,15 +1,19 @@
 package game.ui;
 
+import core.Camera;
 import core.Input.MouseButton;
 import core.Sprite;
 import core.Types;
 import core.Util;
 import game.ui.Button;
+import game.ui.UiText.getText;
 import kha.Assets;
+import kha.graphics2.Graphics;
 
 // special button. should this move into a parent class?
 class SpellBg extends Sprite {
     public var selected:Bool;
+    public var number:Sprite;
 
     var isPressed:Bool = false;
     public var state:ButtonState = Idle;
@@ -17,6 +21,8 @@ class SpellBg extends Sprite {
 
     public function new (num:Int, callback:Void -> Void) {
         super(new Vec2(8 + num * 32, num == 0 ? 156 : 164), Assets.images.spell_bg, new IntVec2(24, 24));
+
+        addChild(number = getText(-16, -16, '${num + 1}', 0xffeec39a));
 
         selected = num == 0;
         this.onClick = callback;
@@ -69,5 +75,8 @@ class SpellBg extends Sprite {
     }
 
     // draw number and image relative to y position
-    // override function render () {}
+    override function render (g2:Graphics, cam:Camera) {
+        number.setPosition(x + 12, y);
+        super.render(g2, cam);
+    }
 }

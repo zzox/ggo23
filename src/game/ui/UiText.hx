@@ -14,9 +14,10 @@ function getFont ():ConstructBitmapFont {
     );
 }
 
-function getText (x:Int, y:Int, text:String = ''):Sprite {
+function getText (x:Int, y:Int, text:String = '', color:Int = 0xffffffff):Sprite {
     final sprite = new Sprite(new Vec2(x, y), Assets.images.somepx_04);
     sprite.makeBitmapText(text, getFont());
+    sprite.color = color;
     return sprite;
 }
 
