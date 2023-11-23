@@ -14,12 +14,14 @@ class GameData {
     public static var floorNum:Int = 0;
 
     public function new () {
+        random = new Random(Math.floor(Math.random() * 65536));
+
         playerData = {
             maxHealth: 100,
-            speed: 40,
-            attack: 40,
-            defense: 40,
-            dexterity: 40,
+            speed: 40 + random.GetIn(1, 15),
+            attack: 40 + random.GetIn(1, 15),
+            defense: 40 + random.GetIn(1, 15),
+            dexterity: 40 + random.GetIn(1, 15),
             spells: [],
             scales: [],
             experience: 0,
@@ -28,14 +30,12 @@ class GameData {
             pointsAvailable: []
         }
 
-        random = new Random(Math.floor(Math.random() * 65536));
-
         final spellOptions = attackOptions.copy();
         for (_ in 0...2) {
             final spell = spellOptions[Math.floor(random.GetFloat() * spellOptions.length)];
             spellOptions.remove(spell);
             playerData.spells.push(cloneSpell(spell));
-            playerData.scales = playerScales[spell].copy();
+            playerData.scales.push(playerScales[spell].copy());
         }
         // playerData.spells.push(cloneSpell(Fireball));
         // playerData.spells.push(cloneSpell(Windthrow));
@@ -52,7 +52,7 @@ class GameData {
                 playerData.level++;
                 playerData.maxExperience = getMaxExp(playerData.level);
                 leveledUp = true;
-                playerData.pointsAvailable.push(3);
+                playerData.pointsAvailable.push(5);
             } else {
                 maxed = true;
             }

@@ -2,7 +2,9 @@ package game.scenes;
 
 import core.Scene;
 import core.Sprite;
+import core.Tweens;
 import core.Types;
+import game.data.AttackData;
 import game.data.GameData;
 import game.ui.Bar;
 import game.ui.Button;
@@ -14,6 +16,11 @@ import kha.input.KeyCode;
 enum UiState {
     InGame;
     PostGame;
+}
+
+typedef ScaleChoice = {
+    var spellNum:Int;
+    var scale:Scale;
 }
 
 class UiScene extends Scene {
@@ -41,9 +48,15 @@ class UiScene extends Scene {
     var spells:Array<SpellBg> = [];
     public var selectedSpell:Int = 0;
 
-    public var buttonClicked:Bool = false;
+    var scaleChoices:Array<ScaleChoice>;
 
-    public var state:UiState = InGame;
+    public var buttonClicked:Bool = false;
+    var state:UiState = InGame;
+
+    var leftCurtain:Sprite;
+    var rightCurtain:Sprite;
+    var inTween:Tween;
+    var outTween:Tween;
 
     override function create () {
         camera.scale.set(2, 2);
@@ -77,10 +90,10 @@ class UiScene extends Scene {
         addSprite(spdNum = getText(26, 71));
         addSprite(dexNum = getText(26, 85));
 
-        addSprite(attButton = makeButton(42, 42, 'ATT'));
-        addSprite(defButton = makeButton(42, 56, 'DEF'));
-        addSprite(spdButton = makeButton(42, 70, 'SPD'));
-        addSprite(dexButton = makeButton(42, 84, 'DEX'));
+        addSprite(attButton = makePlusButton(42, 42, 'ATT'));
+        addSprite(defButton = makePlusButton(42, 56, 'DEF'));
+        addSprite(spdButton = makePlusButton(42, 70, 'SPD'));
+        addSprite(dexButton = makePlusButton(42, 84, 'DEX'));
         addSprite(healthButton = new Button(
             new Vec2(4, 98),
             Assets.images.button_slice,
@@ -92,11 +105,32 @@ class UiScene extends Scene {
                 addExperience('HEALTH');
             }
         ));
+
+        leftCurtain = new Sprite(new Vec2(0, 0));
+        rightCurtain = new Sprite(new Vec2(180, 0));
+
+        leftCurtain.makeRect(0xff222034, new IntVec2(160, 180));
+        rightCurtain.makeRect(0xff222034, new IntVec2(160, 180));
+
+        addSprite(leftCurtain);
+        addSprite(rightCurtain);
+
+        tweenIn();
     }
 
     override function update (delta:Float) {}
 
     public function forceUpdate (delta:Float) {
+        if (inTween != null) {
+            leftCurtain.setPosition(-inTween.value * 160, 0);
+            rightCurtain.setPosition(160 + inTween.value * 160, 0);
+        }
+
+        if (outTween != null) {
+            leftCurtain.setPosition(inTween.value * 160, 0);
+            rightCurtain.setPosition(160 - inTween.value * 160, 0);
+        }
+
         if (state == InGame) {
             buttonClicked = false;
             healthBar.value = healthNum;
@@ -186,7 +220,7 @@ class UiScene extends Scene {
         }
     }
 
-    function makeButton (x:Int, y:Int, stat:String):Button {
+    function makePlusButton (x:Int, y:Int, stat:String):Button {
         return new Button(
             new Vec2(x, y),
             Assets.images.button_slice,
@@ -203,10 +237,63 @@ class UiScene extends Scene {
     public function setupScales () {
         for (s in spells) s.stop();
 
+        // scalesSelected = [];
+        state = PostGame;
+
+        final scaleList = [];
+        var i = 0;
+        var scalesFound = true;
+        while (scalesFound) {
+            scalesFound = false;
+            // this assumes scales and spells are stored in the same spot
+            // in their respective arrays
+            for (scaleNum in 0...GameData.playerData.scales.length) {
+                if (GameData.playerData.scales[scaleNum][i] != null) {
+                    scaleList.push({ spellNum: scaleNum, scale: GameData.playerData.scales[scaleNum][i] });
+                    scalesFound = true;
+                }
+            }
+
+            i++;
+        }
+
+        // TODO: mix it up. occasionally add in others.
+        scaleChoices = scaleList.slice(0, 3);
+
+        for (i in 0...scaleChoices.length) {
+            // TODO: description title and image
+            final scaleButton = new Button(
+                new Vec2(80, 40 + i * 32),
+                Assets.images.button_slice,
+                new IntVec2(8, 8),
+                new IntVec2(160, 24),
+                0xffffffff,
+                '',
+                () -> {
+                    selectScale(scaleChoices[i]);
+                }
+            );
+            addSprite(scaleButton);
+        }
+
+        // handle scales here
+
         // pick 2-3 scales
         // the further level we're on, the more likely it's what we want
         // tie each button to a spell num _and_ a scale
             // or scales is separate from spells?
+    }
+
+    function selectScale (choice:ScaleChoice) {
+        trace('choice!!', choice);
+    }
+
+    function tweenIn () {
+        tweens.addTween(inTween = new Tween(0.0, 1.0, 1.0, () -> {
+            inTween = null;
+            leftCurtain.setPosition(-160, 0);
+            rightCurtain.setPosition(320, 0);
+        }));
     }
 
     // public function addTestButton (onClick:() -> Void) {

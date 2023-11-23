@@ -60,7 +60,7 @@ typedef PlayerData = {
     var defense:Int;
     var dexterity:Int;
     var spells:Array<AttackData>;
-    var scales:Array<Scale>;
+    var scales:Array<Array<Scale>>;
 
     var level:Int;
     var experience:Int;
