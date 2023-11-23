@@ -83,3 +83,7 @@ also scavengers reign is sick.
 # day 21
 
 started off spending too much time working on "retreat" tech. might be working too hard, keep getting caught on dumb bugs. still making some progress, starting to feel fun. it's also hectic, i guess i've never really made a roguelike before.
+
+## day 22
+
+the more i do the more i realize i need to do

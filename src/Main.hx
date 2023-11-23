@@ -1,7 +1,7 @@
 import core.Game;
 import core.Logs;
 import core.Types;
-import game.scenes.WorldScene;
+import game.scenes.TitleScene;
 
 #if kha_html5
 import js.Browser.document;
@@ -15,7 +15,7 @@ class Main {
         setFullWindowCanvas();
         new Game(
             new IntVec2(1300, 750),
-            new WorldScene(),
+            new TitleScene(),
             PixelPerfect,
             'depths',
             new IntVec2(640, 360),
