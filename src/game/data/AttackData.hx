@@ -25,6 +25,7 @@ enum AttackName {
     Bite;
     Fireball;
     Windthrow;
+    Raincast;
     Flamebigsquare;
     Castlight;
 }
@@ -54,6 +55,16 @@ Windthrow => {
     element: Air,
     imageIndex: 1,
     name: 'Windthrow'
+},
+Raincast => {
+    preTime: 0.5,
+    time: 0.5,
+    type: Range,
+    vel: 5.0,
+    power: 2.0,
+    element: Water,
+    imageIndex: 3,
+    name: 'Raincast'
 },
 Flamebigsquare => {
     preTime: 2.0,

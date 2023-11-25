@@ -23,5 +23,6 @@ final scaleData:Map<Scale, String> = [
 // TODO: add scales when cloning, or make a separate type
 final playerScales:Map<AttackName, Array<Scale>> = [
     Windthrow => [Power50, Vel50],
-    Fireball => [Power50, Vel50]
+    Fireball => [Power50, Vel50],
+    Raincast => [Power50, Vel50],
 ];

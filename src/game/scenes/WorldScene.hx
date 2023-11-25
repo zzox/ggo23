@@ -31,6 +31,7 @@ class WorldScene extends Scene {
 
     override function create () {
         world = new World(handleWorldSignal, handleAddElement, handleRemoveElement);
+        world.isPaused = true;
 
         for (outer in world.grid) {
             for (item in outer) {
@@ -76,6 +77,10 @@ class WorldScene extends Scene {
 
         uiScene = new UiScene();
         game.addScene(uiScene);
+
+        timers.addTimer(new Timer(1.0, () -> {
+            world.isPaused = false;
+        }));
     }
 
     override function update (delta:Float) {
@@ -132,7 +137,7 @@ class WorldScene extends Scene {
     }
 
     function handleActorUpdate (updateType:UpdateType, ?updateOptions:UpdateOptions) {
-        if (updateType == Damage) {
+        if (updateType == Damage && updateOptions.amount != 0) {
             final num = damageNumbers.getNext();
             final worldPos = translateWorldPos(updateOptions.pos.x, updateOptions.pos.y);
             num.setPosition(worldPos.x + 4, worldPos.y - 18);

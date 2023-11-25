@@ -340,7 +340,7 @@ class Actor extends WorldItem {
         }
     }
 
-    public function doElementDamage (fromElement:Element) {
+    public function doElementDamage (fromElement:Element):Bool {
         // TODO: set target to nearest depending on intelligence.
         if (fromElement.fromActor != null && fromElement.fromActor != this) {
             target = fromElement.fromActor;
@@ -354,8 +354,10 @@ class Actor extends WorldItem {
         }
 
         if (!isHurt) {
-            hurt(Math.ceil(damage), fromElement.fromActor);
+            return hurt(Math.ceil(damage), fromElement.fromActor);
         }
+
+        return false;
     }
 
     function tryAttack (attack:AttackData, ?dir:GridDir, pos:IntVec2) {
@@ -468,7 +470,7 @@ class Actor extends WorldItem {
         state = Wait;
     }
 
-    function hurt (d:Int, fromActor:Null<Actor>) {
+    function hurt (d:Int, fromActor:Null<Actor>):Bool {
         var damage = d;
         if (actorType == PlayerActor) {
             final pre = damage;
@@ -494,9 +496,11 @@ class Actor extends WorldItem {
             isHurt = true;
             hurtTimer = 1.0;
             hurtSlowTimer = hurtTimer / 2;
-        } else {
-            trace('no damage');
+            return true;
         }
+
+        for (onUpdate in updateListeners) onUpdate(Damage, { amount: 0, pos: new Vec2(x, y) });
+        return false;
     }
 
     function stopHurt () {

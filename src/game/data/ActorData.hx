@@ -14,11 +14,11 @@ enum ActorType {
     Butterfly;
     LightningMan;
     Unicorn;
+    Spitter;
 }
 
 enum Attitude {
     Aggro;
-    // Frightened; // doesn't do anything
     Nonchalant;
 }
 
@@ -196,6 +196,23 @@ Unicorn => {
         decideTime: 0.25,
         attack: Bite,
         attitude: Nonchalant
+    }
+},
+Spitter => {
+    meleeDamage: 0,
+    health: 35,
+    speed: 35,
+    experience: 30,
+    color: 0xff76428a,
+    animIndex: 66,
+    resistances: [{ type: Fire, amount: 0.75 }],
+    manageData: {
+        retreatDist: 5,
+        attackDist: 10,
+        approachDist: 18,
+        decideTime: 0.25,
+        attack: Fireball,
+        attitude: Aggro
     }
 }
 ];

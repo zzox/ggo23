@@ -64,5 +64,7 @@ class GameData {
 }
 
 final attackOptions:Array<AttackName> = [
-    Fireball, Windthrow
+    // Fireball, Windthrow
+    // Windthrow, Raincast // use these two always to start?
+    Fireball, Raincast
 ];

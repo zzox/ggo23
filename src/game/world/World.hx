@@ -25,6 +25,7 @@ typedef Signal = (signal:SignalType) -> Void;
 class World {
     public static inline final HIT_DISTANCE:Float = 0.75;
     static inline final ELEMENT_WALL_VANQUISH:Float = 0.9;
+    static inline final ELEMENT_SLOWDOWN:Float = 0.75;
 
     public var grid:Grid;
     public var size:IntVec2;
@@ -86,9 +87,11 @@ class World {
                     Math.abs(element.x - actor.x) < HIT_DISTANCE &&
                     Math.abs(element.y - actor.y) < HIT_DISTANCE
                 ) {
-                    actor.doElementDamage(element);
-                    element.velocity.x *= 0.5;
-                    element.velocity.y *= 0.5;
+                    final didDamage = actor.doElementDamage(element);
+                    if (didDamage) {
+                        element.velocity.x *= ELEMENT_SLOWDOWN;
+                        element.velocity.y *= ELEMENT_SLOWDOWN;
+                    }
                 }
             }
 
@@ -176,11 +179,21 @@ class World {
                 isNonAir = elem1;
             }
 
+            // final isAirWeight = isAir.time / isNonAir.time + isAir.time;
+            // final isNonAirWeight = isNonAir.time / isNonAir.time + isAir.time;
+            final weight = isNonAir.time / isNonAir.time + isAir.time;
+
             final xColl = xCollides(isNonAir.x, isNonAir.y, isAir.x, isAir.y);
             if (xColl) {
-                isNonAir.velocity.set(-isNonAir.velocity.x + isAir.velocity.x, isNonAir.velocity.y + isAir.velocity.y);
+                isNonAir.velocity.set(
+                    -isNonAir.velocity.x + isAir.velocity.x * weight,
+                    isNonAir.velocity.y + isAir.velocity.y * weight
+                );
             } else {
-                isNonAir.velocity.set(isNonAir.velocity.x + isAir.velocity.x, -isNonAir.velocity.y + isAir.velocity.y);
+                isNonAir.velocity.set(
+                    isNonAir.velocity.x + isAir.velocity.x * weight,
+                    -isNonAir.velocity.y + isAir.velocity.y * weight
+                );
             }
 
             separateElements(isNonAir, isAir, xColl);
@@ -192,15 +205,43 @@ class World {
             elem1.deactivate();
             elem2.deactivate();
 
+            var fromActor = elem2.fromActor;
+            if (elem1.time < elem2.time) {
+                fromActor = elem1.fromActor;
+            }
+
+            final elem1Weight = elem1.time / elem2.time + elem1.time;
+            final elem2Weight = elem2.time / elem2.time + elem1.time;
+
             addElement(
                 elem1.x,
                 elem2.y,
                 elem1.type,
-                // TODO: normalize
-                new Vec2(elem1.velocity.x + elem2.velocity.x, elem1.velocity.y + elem2.velocity.y),
-                elem1.time + elem2.time,
-                null
+                new Vec2(
+                    (elem1.velocity.x * elem1Weight + elem2.velocity.x * elem2Weight) / 2,
+                    (elem1.velocity.y * elem1Weight + elem2.velocity.y * elem2Weight) / 2
+                ),
+                elem1.time + elem2.time / 1.5,
+                fromActor
             );
+            return;
+        }
+
+        if (elem1.type == Water && elem2.type == Fire || elem2.type == Water && elem1.type == Fire) {
+            var isFire:Element;
+            var isWater:Element;
+
+            if (elem1.type == Fire) {
+                isFire = elem1;
+                isWater = elem2;
+            } else {
+                isFire = elem2;
+                isWater = elem1;
+            }
+
+            final fireTime = isFire.time;
+            isFire.time -= isWater.time * 2;
+            isWater.time -= fireTime;
             return;
         }
 
