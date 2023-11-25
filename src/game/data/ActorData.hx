@@ -1,6 +1,7 @@
 package game.data;
 
 import game.data.AttackData;
+import game.data.ScaleData;
 import game.world.Element.ElementType;
 
 enum ActorType {
@@ -37,8 +38,6 @@ typedef Resistance = {
 
 // Data for visuals _and_ state
 typedef ActorData = {
-    var preAttackTime:Float;
-    var attackTime:Float;
     var color:Int;
     var animIndex:Int;
 
@@ -48,7 +47,7 @@ typedef ActorData = {
 
     var ?manageData:ManageData;
     var experience:Int;
-    var resistances: Array<Resistance>;
+    var resistances:Array<Resistance>;
 
     // ?generate elements ???
 }
@@ -71,8 +70,6 @@ typedef PlayerData = {
 
 final actorData:Map<ActorType, ActorData> = [
 PlayerActor => {
-    preAttackTime: 0.0,
-    attackTime: 0.0,
     meleeDamage: 0,
     health: 0,
     speed: 55,
@@ -82,8 +79,6 @@ PlayerActor => {
     resistances: [],
 },
 Rat => {
-    preAttackTime: 0.5,
-    attackTime: 1.0,
     meleeDamage: 10,
     health: 15,
     speed: 40,
@@ -101,8 +96,6 @@ Rat => {
     }
 },
 BigRat => {
-    preAttackTime: 0.5,
-    attackTime: 1.0,
     meleeDamage: 10,
     health: 25,
     speed: 25,
@@ -120,8 +113,6 @@ BigRat => {
     }
 },
 Snake => {
-    preAttackTime: 0.1,
-    attackTime: 0.5,
     meleeDamage: 20,
     health: 12,
     speed: 35,
@@ -139,8 +130,6 @@ Snake => {
     }
 },
 Plant => {
-    preAttackTime: 1.0,
-    attackTime: 0.5,
     meleeDamage: 33,
     health: 12,
     speed: 25,
@@ -159,8 +148,6 @@ Plant => {
     }
 },
 Butterfly => {
-    preAttackTime: 0.5,
-    attackTime: 0.5,
     meleeDamage: 0,
     health: 10,
     speed: 50,
@@ -178,8 +165,6 @@ Butterfly => {
     }
 },
 LightningMan => {
-    preAttackTime: 0.25,
-    attackTime: 0.25,
     meleeDamage: 0,
     health: 50,
     speed: 20,
@@ -197,8 +182,6 @@ LightningMan => {
     }
 },
 Unicorn => {
-    preAttackTime: 0.25,
-    attackTime: 0.25,
     meleeDamage: 20,
     health: 50,
     speed: 66,
