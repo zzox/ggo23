@@ -87,3 +87,17 @@ started off spending too much time working on "retreat" tech. might be working t
 ## day 22
 
 the more i do the more i realize i need to do
+
+## day 23
+
+happy thanksgiving
+
+## day 24
+
+happy day after thanksgiving, not much done.
+
+## day 25
+
+under a week remains. i need this to be fully playable this weekend in order to finish it by the deadline. friends are in town so we'll see.
+
+## day 27

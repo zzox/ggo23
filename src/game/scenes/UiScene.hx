@@ -6,6 +6,7 @@ import core.Tweens;
 import core.Types;
 import game.data.AttackData;
 import game.data.GameData;
+import game.data.ScaleData;
 import game.ui.Bar;
 import game.ui.Button;
 import game.ui.SpellBg;
@@ -48,7 +49,9 @@ class UiScene extends Scene {
     var spells:Array<SpellBg> = [];
     public var selectedSpell:Int = 0;
 
-    var scaleChoices:Array<ScaleChoice>;
+    var scaleChoices:Array<ScaleChoice> = [];
+    var scaleButtons:Array<Button> = [];
+    var selectedScale:Int = 0;
 
     public var buttonClicked:Bool = false;
     var state:UiState = InGame;
@@ -68,7 +71,7 @@ class UiScene extends Scene {
         addSprite(recoveryBar = new Bar(40, 24, 50, 2, [{ min: 0.0, color: 0xff5b6ee1 }, { min: 1.0, color: 0xff639bff }], 100, 100));
 
         for (i in 0...GameData.playerData.spells.length) {
-            final spellBg = new SpellBg(i, () -> {
+            final spellBg = new SpellBg(i, GameData.playerData.spells[i].imageIndex, () -> {
                 changeSpell(i);
                 buttonClicked = true;
             });
@@ -100,7 +103,7 @@ class UiScene extends Scene {
             new IntVec2(8, 8),
             new IntVec2(50, 14),
             0xffffffff,
-            'health++',
+            'hp up',
             () -> {
                 addExperience('HEALTH');
             }
@@ -153,7 +156,7 @@ class UiScene extends Scene {
             if (game.keys.justPressed(KeyCode.Four)) {
                 changeSpell(3);
             }
-        } else {}
+        }
 
         if (GameData.playerData.pointsAvailable.length > 0) {
             attButton.state = Idle;
@@ -175,6 +178,15 @@ class UiScene extends Scene {
         dexNum.text = GameData.playerData.dexterity + '';
 
         super.update(delta);
+
+        if (state == PostGame) {
+            for (i in 0...scaleButtons.length) {
+                final sb = scaleButtons[i];
+                if (selectedScale == i) {
+                    sb.setFromState(Pressed);
+                }
+            }
+        }
     }
 
     function addExperience (stat:String) {
@@ -270,22 +282,68 @@ class UiScene extends Scene {
                 0xffffffff,
                 '',
                 () -> {
-                    selectScale(scaleChoices[i]);
+                    selectScale(i);
                 }
             );
+            scaleButtons.push(scaleButton);
             addSprite(scaleButton);
+
+            final spell = GameData.playerData.spells[scaleChoices[i].spellNum];
+
+            // spell image
+            final image = new Sprite(new Vec2(80, 44 + i * 32), Assets.images.spell_image, new IntVec2(32, 32));
+            image.tileIndex = spell.imageIndex;
+            addSprite(image);
+
+            // spell name + description
+            addSprite(getText(108, 44 + i * 32, spell.name));
+            addSprite(getText(108, 54 + i * 32, scaleData[scaleChoices[i].scale]));
         }
 
-        // handle scales here
+        addSprite(new Button(
+            new Vec2(120, 140),
+            Assets.images.button_slice,
+            new IntVec2(8, 8),
+            new IntVec2(80, 24),
+            0xffffffff,
+            'Next Level',
+            () -> {
+                submitScale();
+            }
+        ));
 
         // pick 2-3 scales
-        // the further level we're on, the more likely it's what we want
+        // the further level we're on, the more likely it's what we want?
         // tie each button to a spell num _and_ a scale
             // or scales is separate from spells?
     }
 
-    function selectScale (choice:ScaleChoice) {
-        trace('choice!!', choice);
+    function selectScale (num:Int) {
+        selectedScale = num;
+        // TODO: highlight certain scale bg
+    }
+
+    function submitScale () {
+        final scale = scaleChoices[selectedScale];
+        final spell = GameData.playerData.spells[scale.spellNum];
+
+        trace('spell before', spell);
+
+        switch (scale.scale) {
+            case Power50:
+                spell.power = Math.round(spell.power * 1.5);
+            case Vel50:
+                spell.vel = Math.round(spell.vel * 1.5);
+            default:
+                throw 'Not Implemented!';
+        }
+
+        trace('spell after', spell);
+
+        GameData.playerData.scales[scale.spellNum].remove(scale.scale);
+
+        // GameData.nextRound();
+        game.switchScene(new WorldScene());
     }
 
     function tweenIn () {

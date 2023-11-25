@@ -43,9 +43,6 @@ class World {
     public var isPaused:Bool = false;
 
     public function new (onSignal:Signal, onAddElement:ElementAdd, onRemoveElement:ElementAdd) {
-        // ATTN: initializing static vars this way
-        new GameData();
-
         // TODO: bring in from singleton.
         final floorNum = GameData.floorNum;
         final data = floorData[floorNum];

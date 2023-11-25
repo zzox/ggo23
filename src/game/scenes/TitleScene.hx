@@ -11,7 +11,7 @@ class TitleScene extends Scene {
     override function create () {
         camera.scale.set(2, 2);
         camera.bgColor = 0xff222034;
-        addSprite(getText(128, 32, 'depths'));
+        addSprite(getText(142, 32, 'depths'));
 
         addSprite(new Button(
             new Vec2(124, 100),

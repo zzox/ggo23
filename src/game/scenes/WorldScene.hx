@@ -150,8 +150,22 @@ class WorldScene extends Scene {
     }
 
     function handleInput  () {
+        // ATTN: remove these
         if (game.keys.justPressed(KeyCode.P)) {
             world.isPaused = !world.isPaused;
+        }
+
+        if (game.keys.justPressed(KeyCode.B)) {
+            world.playerActor.x = world.portalPos.x;
+            world.playerActor.y = world.portalPos.y;
+            world.playerActor.currentMove = {
+                from: new IntVec2(0, 0),
+                to: new IntVec2(world.portalPos.x, world.portalPos.y),
+                elapsed: 1.0,
+                time: 1.0
+            };
+            world.playerActor.currentPath = [];
+            world.playerActor.state = Moving;
         }
 
         // ATTN: we are checking the mouse buttons here on release, in order to

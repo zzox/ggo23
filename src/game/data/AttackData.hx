@@ -17,6 +17,8 @@ typedef AttackData = {
     var ?power:Float; // how long this stays around, correlates to its damage.
     var ?element:ElementType;
     var ?shape:Shape;
+    var ?imageIndex:Int;
+    var ?name:String;
 }
 
 enum AttackName {
@@ -39,7 +41,9 @@ Fireball => {
     type: Range,
     vel: 5.0,
     power: 2.0,
-    element: Fire
+    element: Fire,
+    imageIndex: 0,
+    name: 'Fireball'
 },
 Windthrow => {
     preTime: 0.5,
@@ -47,7 +51,9 @@ Windthrow => {
     type: Range,
     vel: 2.5,
     power: 2.0,
-    element: Air
+    element: Air,
+    imageIndex: 1,
+    name: 'Windthrow'
 },
 Flamebigsquare => {
     preTime: 2.0,
@@ -67,25 +73,6 @@ Castlight => {
 }
 ];
 
-
-enum Scale {
-    Power50;
-    Vel50;
-    Power100Vel;
-    BeFlamebigsquare;
-    BeWindStorm;
-    LearnCastlight;
-    LearnFireball;
-    LearnWindthrow;
-    AllTime50;
-}
-
-// TODO: add scales when cloning, or make a separate type
-final playerScales:Map<AttackName, Array<Scale>> = [
-    Windthrow => [Power50, Vel50],
-    Fireball => [Power50, Vel50]
-];
-
 function cloneSpell (name:AttackName):AttackData {
     final data = attackData[name];
     return {
@@ -96,5 +83,7 @@ function cloneSpell (name:AttackName):AttackData {
         power: data.power,
         element: data.element,
         shape: data.shape,
+        name: data.name,
+        imageIndex: data.imageIndex
     }
 }

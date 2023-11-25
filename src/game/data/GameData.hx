@@ -2,6 +2,7 @@ package game.data;
 
 import game.data.ActorData;
 import game.data.AttackData;
+import game.data.ScaleData;
 import kha.math.Random;
 
 function getMaxExp (level:Int):Int {

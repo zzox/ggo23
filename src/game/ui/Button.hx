@@ -104,7 +104,7 @@ class Button extends Sprite {
 
     // This was a special method to force a certain state, requires calling every frame
     // _after_ update has run.
-    function setFromState (buttonState:ButtonState) {
+    public function setFromState (buttonState:ButtonState) {
         tileIndex = switch (buttonState) {
             case Idle: 0;
             case Hovered: 1;

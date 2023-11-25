@@ -5,8 +5,9 @@ import core.Input.MouseButton;
 import core.Sprite;
 import core.Types;
 import core.Util;
+import game.data.AttackData;
 import game.ui.Button;
-import game.ui.UiText.getText;
+import game.ui.UiText;
 import kha.Assets;
 import kha.graphics2.Graphics;
 
@@ -14,15 +15,20 @@ import kha.graphics2.Graphics;
 class SpellBg extends Sprite {
     public var selected:Bool;
     public var number:Sprite;
+    public var imageSprite:Sprite;
 
     var isPressed:Bool = false;
     public var state:ButtonState = Idle;
     var onClick:Void -> Void;
 
-    public function new (num:Int, callback:Void -> Void) {
-        super(new Vec2(8 + num * 32, num == 0 ? 156 : 164), Assets.images.spell_bg, new IntVec2(24, 24));
+    public function new (num:Int, imageIndex:Int, callback:Void -> Void) {
+        super(new Vec2(8 + num * 40, num == 0 ? 156 : 164), Assets.images.spell_bg, new IntVec2(32, 32));
 
         addChild(number = getText(-16, -16, '${num + 1}', 0xffeec39a));
+
+        imageSprite = new Sprite(new Vec2(-32, -32), Assets.images.spell_image, new IntVec2(32, 32));
+        imageSprite.tileIndex = imageIndex;
+        addChild(imageSprite);
 
         selected = num == 0;
         this.onClick = callback;
@@ -76,7 +82,8 @@ class SpellBg extends Sprite {
 
     // draw number and image relative to y position
     override function render (g2:Graphics, cam:Camera) {
-        number.setPosition(x + 12, y);
+        number.setPosition(x + 14, y + 1);
+        imageSprite.setPosition(x + 2, y + 8);
         super.render(g2, cam);
     }
 }
