@@ -19,12 +19,14 @@ class GameData {
     public function new () {
         random = new Random(Math.floor(Math.random() * 65536));
 
+        final shufflePts = new ShuffleRandom([7, 8, 9, 12], random);
+
         playerData = {
             maxHealth: 100,
-            speed: 40 + random.GetIn(1, 15),
-            attack: 40 + random.GetIn(1, 15),
-            defense: 40 + random.GetIn(1, 15),
-            dexterity: 40 + random.GetIn(1, 15),
+            speed: 40 + shufflePts.getNext(),
+            attack: 40 + shufflePts.getNext(),
+            defense: 40 + shufflePts.getNext(),
+            dexterity: 40 + shufflePts.getNext(),
             spells: [],
             scales: [],
             experience: 0,

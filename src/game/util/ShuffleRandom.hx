@@ -5,7 +5,7 @@ import kha.math.Random;
 class ShuffleRandom<T> {
     var items:Array<T>;
     var random:Random;
-    var index:Int;
+    var index:Int = -1;
 
     public function new (items:Array<T>, random:Random) {
         this.items = items;
@@ -31,4 +31,3 @@ class ShuffleRandom<T> {
         }        
     }
 }
-
