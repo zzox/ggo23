@@ -70,6 +70,7 @@ function calcMovePosition (move:Move, percentMoved:Float):Vec2 {
 
 class Actor extends WorldItem {
     static final MAGIC_DISTANCE:Int = 18;
+    static final PATH_DISTANCE:Int = 32;
 
     static var curId:Int = 0;
 
@@ -228,8 +229,12 @@ class Actor extends WorldItem {
             });
 
             if (items.length > 0 && (items[0].x != myPos.x || items[0].y != myPos.y)) {
-                queueMove(new IntVec2(Std.int(items[0].x), Std.int(items[0].y)));
-                retreatDone = true;
+                final pos = new IntVec2(Std.int(items[0].x), Std.int(items[0].y));
+                final path = pathfind(makeIntGridWithActors(world.grid), myPos, pos, Manhattan, true, PATH_DISTANCE);
+                if (path != null) {
+                    queueMove(new IntVec2(Std.int(items[0].x), Std.int(items[0].y)));
+                    retreatDone = true;
+                }
             }
         }
 
@@ -453,7 +458,7 @@ class Actor extends WorldItem {
     }
 
     public function move (toX:Int, toY:Int) {
-        currentPath = pathfind(makeIntGrid(world.grid), getPosition(), new IntVec2(toX, toY), Diagonal, true, 24);
+        currentPath = pathfind(makeIntGrid(world.grid), getPosition(), new IntVec2(toX, toY), Diagonal, true, PATH_DISTANCE);
 
         if (currentPath == null) {
             // throw 'Could not find path.';

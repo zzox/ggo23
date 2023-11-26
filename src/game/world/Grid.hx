@@ -58,6 +58,10 @@ function makeIntGrid (grid:Grid):IntGrid {
     return twoDMap(grid, (item, x, y) -> item.tile != null /*&& item.actor == null*/ && item.object == null ? 1 : 0);
 }
 
+function makeIntGridWithActors (grid:Grid):IntGrid {
+    return twoDMap(grid, (item, x, y) -> item.tile != null && item.actor == null && item.object == null ? 1 : 0);
+}
+
 function getGridItem (grid:Grid, x:Int, y:Int):Null<GridItem> {
     if (x < 0 || y < 0 || x >= grid.length || y >= grid[0].length) {
         return null;
