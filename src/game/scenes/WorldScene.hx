@@ -14,6 +14,7 @@ import game.ui.Numbers;
 import game.util.Utils;
 import game.world.Actor;
 import game.world.Element;
+import game.world.Grid;
 import game.world.World;
 import kha.input.KeyCode;
 
@@ -98,6 +99,9 @@ class WorldScene extends Scene {
             for (tile in player.actorState.currentPath) {
                 getTileSpriteAt(tile.x, tile.y).stepped = true;
             }
+
+            final pos = player.actorState.currentMove.to;
+            getTileSpriteAt(pos.x, pos.y).stepped = true;
         }
 
         if (player.actorState != null) {
@@ -198,6 +202,41 @@ class WorldScene extends Scene {
                     null,
                     new IntVec2(tilePos.x, tilePos.y)
                 );
+            }
+        }
+
+        if (world.playerActor.queuedMove == null && world.playerActor.state == Wait) {
+            final pos = world.playerActor.getLinkedPosition();
+            final upPressed = game.keys.anyPressed([KeyCode.W, KeyCode.Up]);
+            final downPressed = game.keys.anyPressed([KeyCode.S, KeyCode.Down]);
+            final leftPressed = game.keys.anyPressed([KeyCode.A, KeyCode.Left]);
+            final rightPressed = game.keys.anyPressed([KeyCode.D, KeyCode.Right]);
+
+            var selectedTile = null;
+            if (upPressed && leftPressed) {
+                selectedTile = new IntVec2(pos.x, pos.y - 1);
+            } else if (downPressed && rightPressed) {
+                selectedTile = new IntVec2(pos.x, pos.y + 1);
+            } else if (upPressed && rightPressed) {
+                selectedTile = new IntVec2(pos.x + 1, pos.y);
+            } else if (downPressed && leftPressed) {
+                selectedTile = new IntVec2(pos.x - 1, pos.y);
+            } else if (upPressed) {
+                selectedTile = new IntVec2(pos.x + 1, pos.y - 1);
+            } else if (downPressed) {
+                selectedTile = new IntVec2(pos.x - 1, pos.y + 1);
+            } else if (leftPressed) {
+                selectedTile = new IntVec2(pos.x - 1, pos.y - 1);
+            } else if (rightPressed) {
+                selectedTile = new IntVec2(pos.x + 1, pos.y + 1);
+            }
+
+            if (
+                selectedTile != null &&
+                getGridItem(world.grid, selectedTile.x, selectedTile.y) != null &&
+                getGridItem(world.grid, selectedTile.x, selectedTile.y).tile != null
+            ) {
+                world.playerActor.queueMove(selectedTile);
             }
         }
     }
