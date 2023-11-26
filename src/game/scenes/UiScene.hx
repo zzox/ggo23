@@ -4,7 +4,6 @@ import core.Scene;
 import core.Sprite;
 import core.Tweens;
 import core.Types;
-import game.data.AttackData;
 import game.data.GameData;
 import game.data.ScaleData;
 import game.ui.Bar;
@@ -13,6 +12,7 @@ import game.ui.SpellBg;
 import game.ui.UiText;
 import kha.Assets;
 import kha.input.KeyCode;
+import kha.input.Mouse;
 
 enum UiState {
     InGame;
@@ -26,6 +26,7 @@ typedef ScaleChoice = {
 
 class UiScene extends Scene {
     public var exText:Sprite;
+    var portrait:Sprite;
 
     public var healthBar:Bar;
     public var healthNum:Int;
@@ -54,6 +55,7 @@ class UiScene extends Scene {
     var selectedScale:Int = 0;
 
     public var buttonClicked:Bool = false;
+    var hovered:Bool = false;
     var state:UiState = InGame;
 
     var leftCurtain:Sprite;
@@ -63,7 +65,7 @@ class UiScene extends Scene {
 
     override function create () {
         camera.scale.set(2, 2);
-        addSprite(new Sprite(new Vec2(2, 2), Assets.images.portraits));
+        addSprite(portrait = new Sprite(new Vec2(2, 2), Assets.images.portraits));
 
         // bars
         addSprite(healthBar = new Bar(40, 2, 100, 8, [{ min: 0.0, color: 0xffd95763 }, { min: 0.2, color: 0xff37946e }], 100, 100));
@@ -74,6 +76,8 @@ class UiScene extends Scene {
             final spellBg = new SpellBg(i, GameData.playerData.spells[i].imageIndex, () -> {
                 changeSpell(i);
                 buttonClicked = true;
+            }, () -> {
+                hovered = true;
             });
 
             addSprite(spellBg);
@@ -106,6 +110,9 @@ class UiScene extends Scene {
             'hp up',
             () -> {
                 addExperience('HEALTH');
+            },
+            () -> {
+                hovered = true;
             }
         ));
 
@@ -177,7 +184,14 @@ class UiScene extends Scene {
         spdNum.text = GameData.playerData.speed + '';
         dexNum.text = GameData.playerData.dexterity + '';
 
+        hovered = false;
         super.update(delta);
+
+        if (hovered) {
+            Mouse.get().setSystemCursor(Pointer);
+        } else {
+            Mouse.get().setSystemCursor(MouseCursor.Default);
+        }
 
         if (state == PostGame) {
             for (i in 0...scaleButtons.length) {
@@ -242,12 +256,20 @@ class UiScene extends Scene {
             '+',
             () -> {
                 addExperience(stat);
+            },
+            () -> {
+                hovered = true;
             }
         );
     }
 
     public function setupScales () {
-        for (s in spells) s.stop();
+        // for (s in spells) s.stop();
+        for (s in sprites) {
+            if (s != portrait) {
+                s.destroy();
+            }
+        }
 
         // scalesSelected = [];
         state = PostGame;
@@ -283,6 +305,9 @@ class UiScene extends Scene {
                 '',
                 () -> {
                     selectScale(i);
+                },
+                () -> {
+                    hovered = true;
                 }
             );
             scaleButtons.push(scaleButton);
@@ -309,6 +334,9 @@ class UiScene extends Scene {
             'Next Level',
             () -> {
                 submitScale();
+            },
+            () -> {
+                hovered = true;
             }
         ));
 

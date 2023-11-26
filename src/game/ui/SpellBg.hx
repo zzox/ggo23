@@ -19,8 +19,9 @@ class SpellBg extends Sprite {
     var isPressed:Bool = false;
     public var state:ButtonState = Idle;
     var onClick:Void -> Void;
+    var onHover:Void -> Void;
 
-    public function new (num:Int, imageIndex:Int, callback:Void -> Void) {
+    public function new (num:Int, imageIndex:Int, callback:Void -> Void, onHover:Void -> Void) {
         super(new Vec2(8 + num * 40, num == 0 ? 156 : 164), Assets.images.spell_bg, new IntVec2(32, 32));
 
         addChild(number = getText(-16, -16, '${num + 1}', 0xffeec39a));
@@ -31,6 +32,7 @@ class SpellBg extends Sprite {
 
         selected = num == 0;
         this.onClick = callback;
+        this.onHover = onHover;
     }
 
     override function update (delta:Float) {
@@ -48,9 +50,9 @@ class SpellBg extends Sprite {
                 size.y
             )) {
                 state = Hovered;
-                // if (onHover != null) {
-                //     onHover();
-                // }
+                if (onHover != null) {
+                    onHover();
+                }
 
                 if (isPressed) {
                     if (scene.game.mouse.justReleased(MouseButton.Left)) {
