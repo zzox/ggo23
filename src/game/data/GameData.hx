@@ -13,7 +13,7 @@ function getMaxExp (level:Int):Int {
 class GameData {
     public static var playerData:PlayerData;
     public static var random:Random;
-    public static var floorNum:Int = 0;
+    public static var floorNum:Int;
     static var shuffleExp:ShuffleRandom<Int>;
 
     public function new () {
@@ -45,6 +45,8 @@ class GameData {
         shuffleExp = new ShuffleRandom([4, 5, 5, 6, 6, 7, 7, 8], random);
         // playerData.spells.push(cloneSpell(Fireball));
         // playerData.spells.push(cloneSpell(Windthrow));
+
+        floorNum = 0;
     }
 
     public static function addExperience (amount:Int):Bool {
@@ -67,9 +69,13 @@ class GameData {
         return leveledUp;
     }
 
-    function addSpell (spell:AttackName) {
+    static function addSpell (spell:AttackName) {
         playerData.spells.push(cloneSpell(spell));
         playerData.scales.push(playerScales[spell].copy());
+    }
+
+    public static function nextRound () {
+        floorNum++;
     }
 }
 

@@ -100,4 +100,6 @@ happy day after thanksgiving, not much done.
 
 under a week remains. i need this to be fully playable this weekend in order to finish it by the deadline. friends are in town so we'll see.
 
-## day 27
+## day 26
+
+saw some friends. don't love this game, i guess it's publishable for a jam. it came out too obtuse and hard to handle. maybe with some particles and sound it will turn out ok, i'm afraid that's going to make it more janky.

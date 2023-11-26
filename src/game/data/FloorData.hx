@@ -14,16 +14,21 @@ typedef FloorData = {
 final floorData:Array<FloorData> = [{
     minRooms: 5,
     size: new IntVec2(60, 60),
-    rooms: [mainRoom1Old, smallRoomNorthSouth, smallRoomEastWest, smallRoomNorthSouth, smallRoomEastWest],
-    enemies: [Spitter, Butterfly]
+    rooms: [mainRoom1Med, mainRoom1Med, smallRoomNorthSouth, smallRoomEastWest, smallRoomNorthSouth, smallRoomEastWest],
+    enemies: [Rat, Rat, Snake, BigRat]
 }, {
     minRooms: 5,
     size: new IntVec2(60, 60),
-    rooms: [mainRoom1Old, smallRoomNorthSouth, smallRoomEastWest, smallRoomNorthSouth, smallRoomEastWest],
-    enemies: [Rat, Unicorn, LightningMan]
+    rooms: [mainRoom1Med, mainRoom1Med, mainRoom1Med, mainRoom1Med, smallRoomNorthSouth, smallRoomEastWest, smallRoomNorthSouth, smallRoomEastWest],
+    enemies: [Rat, Snake, Snake, BigRat, BigRat]
+}, {
+    minRooms: 6,
+    size: new IntVec2(70, 70),
+    rooms: [mainRoom1Big, mainRoom1Big, mainRoom1Big, mainRoom1Med, mainRoom1Med, mainRoom1Small, smallRoomNorthSouth, smallRoomEastWest, smallRoomNorthSouth, smallRoomEastWest],
+    enemies: [BigRat, BigRat, Snake, Snake, Snake, Plant]
 }, {
     minRooms: 7,
     size: new IntVec2(70, 70),
-    rooms: [mainRoom1Old, mainRoom1, mainRoom1, mainRoom1, mainRoom1, smallRoomNorthSouth, smallRoomEastWest],
-    enemies: [BigRat, BigRat, Snake, Snake, Snake, Plant]
+    rooms: [mainRoom1Med, mainRoom1Big, mainRoom1Big, mainRoom1Big, mainRoom1Big, smallRoomNorthSouth, smallRoomEastWest],
+    enemies: [Snake, Snake, Plant, Plant, Unicorn, BigRat, BigRat, BigRat]
 }];

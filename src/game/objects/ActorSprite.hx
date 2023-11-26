@@ -103,7 +103,7 @@ class ActorSprite extends WorldItemSprite {
 
         if (outTween != null) {
             scale.set(1 - outTween.value, outTween.value * 1.5);
-            x -= outTween.value * 0.025; // not good but works
+            y -= outTween.value * 0.1; // not good but works
         }
 
         super.update(delta);

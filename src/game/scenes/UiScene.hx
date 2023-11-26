@@ -370,7 +370,7 @@ class UiScene extends Scene {
 
         GameData.playerData.scales[scale.spellNum].remove(scale.scale);
 
-        // GameData.nextRound();
+        GameData.nextRound();
         game.switchScene(new WorldScene());
     }
 

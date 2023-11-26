@@ -10,7 +10,7 @@ import game.world.World;
 import js.html.Console;
 import kha.math.Random;
 
-final mainRoom1 = "
+final mainRoom1Big = "
              X
  xxxxxxxxxxxxxxxxxx
  xxPxxxxxxxxxxxxxxx
@@ -29,7 +29,23 @@ XxxxxxxxxxxxxxxxxxxX
   X
 ";
 
-final mainRoom1Old = "
+final mainRoom1Med = "
+        X
+ xxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxx
+ xxxxxxxPxxxxxxx
+XxxxxxxxxxxxxxxxX
+ xxxxxxxxxxx1xxx
+ xxxxxxxxOxxxxxx
+ xxxx1xxxxxxxxxx
+ xxxxxxxxxxx1xxx
+ xxxxxxxxxxxxxxx
+         X
+";
+
+final mainRoom1Small = "
      X
  xxxxxxxxx
  xxPxxxxxx
@@ -372,7 +388,7 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
                     (
                         (otherRoom.connected > 0 &&
                             random.GetFloat() < (0.1 - otherRoom.connected * 0.03)) ||
-                        (otherRoom.connected == 0 && random.GetFloat() < 1.0 - room.connected * .1)
+                        (otherRoom.connected == 0 && random.GetFloat() < 1.1 - room.connected * .1)
                     )
                 ) {
                     final roomExit = getClosestExit(otherRoom.rect, room.exits);
