@@ -3,6 +3,7 @@ package game.data;
 import game.data.ActorData;
 import game.data.AttackData;
 import game.data.ScaleData;
+import game.util.ShuffleRandom;
 import kha.math.Random;
 
 function getMaxExp (level:Int):Int {
@@ -13,6 +14,7 @@ class GameData {
     public static var playerData:PlayerData;
     public static var random:Random;
     public static var floorNum:Int = 0;
+    static var shuffleExp:ShuffleRandom<Int>;
 
     public function new () {
         random = new Random(Math.floor(Math.random() * 65536));
@@ -37,6 +39,8 @@ class GameData {
             spellOptions.remove(spell);
             addSpell(spell);
         }
+
+        shuffleExp = new ShuffleRandom([4, 5, 5, 6, 6, 7, 7, 8], random);
         // playerData.spells.push(cloneSpell(Fireball));
         // playerData.spells.push(cloneSpell(Windthrow));
     }
@@ -52,7 +56,7 @@ class GameData {
                 playerData.level++;
                 playerData.maxExperience = getMaxExp(playerData.level);
                 leveledUp = true;
-                playerData.pointsAvailable.push(5);
+                playerData.pointsAvailable.push(shuffleExp.getNext());
             } else {
                 maxed = true;
             }
