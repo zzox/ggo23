@@ -103,6 +103,7 @@ class ActorSprite extends WorldItemSprite {
 
         if (outTween != null) {
             scale.set(1 - outTween.value, outTween.value * 1.5);
+            x -= outTween.value * 0.025; // not good but works
         }
 
         super.update(delta);
@@ -113,7 +114,7 @@ class ActorSprite extends WorldItemSprite {
         visible = true;
         animation.play('still');
 
-        scene.tweens.addTween(outTween = new Tween(0, 1, 1, () -> {
+        scene.tweens.addTween(outTween = new Tween(0, 1, 0.5, () -> {
             visible = false;
         }, easeOutCubic));
     }

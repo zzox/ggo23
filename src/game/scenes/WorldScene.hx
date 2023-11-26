@@ -205,6 +205,8 @@ class WorldScene extends Scene {
             }
         }
 
+        // move with keys if we have no queued move already and we're either
+        // in wait state or almost between moves. not the best but it works
         if (
             world.playerActor.queuedMove == null && (
                 world.playerActor.state == Wait ||
