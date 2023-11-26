@@ -203,17 +203,17 @@ class Actor extends WorldItem {
             var diffX = targetPos.x - myPos.x;
             var diffY = targetPos.y - myPos.y;
 
-            if (diffX > 0) diffX = -1;
-            if (diffX < 0) diffX = 1;
-            if (diffY > 0) diffY = -1;
-            if (diffY < 0) diffY = 1;
+            if (diffX > 0) diffX = 1;
+            if (diffX < 0) diffX = -1;
+            if (diffY > 0) diffY = 1;
+            if (diffY < 0) diffY = -1;
 
-            final posX = myPos.x - 4 + (diffX * 5);
-            final posY = myPos.y - 4 + (diffY * 5);
+            final posX = myPos.x - 5 + (diffX * 5);
+            final posY = myPos.y - 5 + (diffY * 5);
 
             final items = [];
-            for (x in posX...(posX + 9)) { // width
-                for (y in posY...(posY + 9)) { // height
+            for (x in posX...(posX + 5)) { // width
+                for (y in posY...(posY + 5)) { // height
                     final gridItem = getGridItem(world.grid, x, y);
                     if (gridItem != null && gridItem.tile != null) {
                         items.push(new Vec2(x, y));
@@ -224,7 +224,7 @@ class Actor extends WorldItem {
             // find the furthest item.
             final t = targetPos.toVec2();
             items.sort((pos1:Vec2, pos2:Vec2) -> {
-                return Std.int(Math.abs(distanceBetween(t, pos2)) - Math.abs(distanceBetween(t, pos1)));
+                return Std.int(Math.abs(distanceBetween(t, pos1)) - Math.abs(distanceBetween(t, pos2)));
             });
 
             if (items.length > 0) {
@@ -489,6 +489,9 @@ class Actor extends WorldItem {
                 }
 
                 die();
+
+                // lessen decision time by half when hit
+                decisionTimer *= 0.5;
             }
 
             for (onUpdate in updateListeners) onUpdate(Damage, { amount: damage, pos: new Vec2(x, y) });

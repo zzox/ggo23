@@ -35,8 +35,7 @@ class GameData {
         for (_ in 0...2) {
             final spell = spellOptions[Math.floor(random.GetFloat() * spellOptions.length)];
             spellOptions.remove(spell);
-            playerData.spells.push(cloneSpell(spell));
-            playerData.scales.push(playerScales[spell].copy());
+            addSpell(spell);
         }
         // playerData.spells.push(cloneSpell(Fireball));
         // playerData.spells.push(cloneSpell(Windthrow));
@@ -60,6 +59,11 @@ class GameData {
         }
 
         return leveledUp;
+    }
+
+    function addSpell (spell:AttackName) {
+        playerData.spells.push(cloneSpell(spell));
+        playerData.scales.push(playerScales[spell].copy());
     }
 }
 

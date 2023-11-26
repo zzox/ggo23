@@ -5,7 +5,6 @@ import core.Input.MouseButton;
 import core.Sprite;
 import core.Types;
 import core.Util;
-import game.data.AttackData;
 import game.ui.Button;
 import game.ui.UiText;
 import kha.Assets;

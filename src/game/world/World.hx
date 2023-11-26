@@ -181,7 +181,7 @@ class World {
 
             // final isAirWeight = isAir.time / isNonAir.time + isAir.time;
             // final isNonAirWeight = isNonAir.time / isNonAir.time + isAir.time;
-            final weight = isNonAir.time / isNonAir.time + isAir.time;
+            final weight = isNonAir.time / (isNonAir.time + isAir.time);
 
             final xColl = xCollides(isNonAir.x, isNonAir.y, isAir.x, isAir.y);
             if (xColl) {
@@ -201,7 +201,6 @@ class World {
         }
 
         if (elem1.type == elem2.type) {
-            trace('combine!', elem1.time + elem2.time);
             elem1.deactivate();
             elem2.deactivate();
 
@@ -210,8 +209,8 @@ class World {
                 fromActor = elem1.fromActor;
             }
 
-            final elem1Weight = elem1.time / elem2.time + elem1.time;
-            final elem2Weight = elem2.time / elem2.time + elem1.time;
+            final elem1Weight = elem1.time / (elem2.time + elem1.time);
+            final elem2Weight = elem2.time / (elem2.time + elem1.time);
 
             addElement(
                 elem1.x,
@@ -221,7 +220,7 @@ class World {
                     (elem1.velocity.x * elem1Weight + elem2.velocity.x * elem2Weight) / 2,
                     (elem1.velocity.y * elem1Weight + elem2.velocity.y * elem2Weight) / 2
                 ),
-                elem1.time + elem2.time / 1.5,
+                (elem1.time + elem2.time) * .66,
                 fromActor
             );
             return;
