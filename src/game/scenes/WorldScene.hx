@@ -205,7 +205,14 @@ class WorldScene extends Scene {
             }
         }
 
-        if (world.playerActor.queuedMove == null && world.playerActor.state == Wait) {
+        if (
+            world.playerActor.queuedMove == null && (
+                world.playerActor.state == Wait ||
+                (
+                    world.playerActor.state == Moving &&
+                    world.playerActor.currentMove.elapsed / world.playerActor.currentMove.time > 0.90
+                )
+        )) {
             final pos = world.playerActor.getLinkedPosition();
             final upPressed = game.keys.anyPressed([KeyCode.W, KeyCode.Up]);
             final downPressed = game.keys.anyPressed([KeyCode.S, KeyCode.Down]);
