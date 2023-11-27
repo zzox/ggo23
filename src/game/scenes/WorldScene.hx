@@ -8,6 +8,8 @@ import core.Types;
 import game.data.GameData;
 import game.objects.ActorSprite;
 import game.objects.ElementSprite;
+import game.objects.ParticleSprite.ParticleType;
+import game.objects.ParticleSprite;
 import game.objects.TileSprite;
 import game.scenes.UiScene;
 import game.ui.Numbers;
@@ -25,6 +27,7 @@ class WorldScene extends Scene {
     var player:ActorSprite;
     var tileSprites:Array<Null<TileSprite>> = [];
     var elementSprites:Array<ElementSprite> = [];
+    var particleSprites:Array<ParticleSprite> = [];
     var damageNumbers:Group;
     var roundOver:Bool = false;
 
@@ -58,6 +61,7 @@ class WorldScene extends Scene {
         world.playerActor.updateListeners.push(handleActorUpdate);
 
         getTileSpriteAt(world.portalPos.x, world.portalPos.y).isPortal = true;
+        handleAddParticle(new Vec2(world.portalPos.x, world.portalPos.y), Portal);
 
         for (actor in world.actors) {
             actor.updateListeners.push(handleActorUpdate);
@@ -121,6 +125,8 @@ class WorldScene extends Scene {
 
         world.update(delta);
         super.update(delta);
+
+        handleRemoveParticles();
 
         sortGroupByY(gridObjects);
 
@@ -294,6 +300,22 @@ class WorldScene extends Scene {
                 e.elementState = null;
                 e.destroy();
                 return;
+            }
+        }
+    }
+
+    function handleAddParticle (pos:Vec2, type:ParticleType) {
+        final particleSprite = new ParticleSprite(pos.clone(), type);
+        particleSprites.push(particleSprite);
+        gridObjects.addChild(particleSprite);
+    }
+
+    function handleRemoveParticles () {
+        for (p in particleSprites) {
+            if (p.done) {
+                gridObjects.removeChild(p);
+                particleSprites.remove(p);
+                p.destroy();
             }
         }
     }
