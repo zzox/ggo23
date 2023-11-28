@@ -4,7 +4,6 @@ import core.Camera;
 import core.Sprite;
 import core.Types;
 import game.util.Utils;
-import game.world.Actor;
 import kha.Assets;
 import kha.graphics2.Graphics;
 
@@ -12,6 +11,7 @@ class TileSprite extends Sprite {
     public var stepped:Bool = false;
     public var focused:Bool = false;
     public var isPortal:Bool = false;
+    public var isDithered:Bool = false;
     public var pos:IntVec2;
 
     public function new (x:Int, y:Int, index:Int) {
@@ -22,9 +22,14 @@ class TileSprite extends Sprite {
         pos = new IntVec2(x, y);
     }
 
-    override function render (g2, camera) {
+    override function render (g2:Graphics, camera:Camera) {
         final index = tileIndex;
         super.render(g2, camera);
+
+        if (isDithered) {
+            tileIndex = 6;
+            super.render(g2, camera);
+        }
 
         if (isPortal) {
             tileIndex = 5;

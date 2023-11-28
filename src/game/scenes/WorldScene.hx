@@ -25,6 +25,7 @@ class WorldScene extends Scene {
     var gridObjects:Group;
     var player:ActorSprite;
     var tileSprites:Array<Null<TileSprite>> = [];
+    var ditheredTiles:Array<TileSprite> = [];
     var elementSprites:Array<ElementSprite> = [];
     var particleSprites:Array<ParticleSprite> = [];
     var damageNumbers:Group;
@@ -146,9 +147,16 @@ class WorldScene extends Scene {
             }));
             camera.stopFollow();
         } else if (signalType == PlayerStep) {
+            for (dt in ditheredTiles) {
+                dt.isDithered = false;
+            }
             if (tileSprites.length > 0) {
+                ditheredTiles = [];
                 for (tile in signalOptions.tiles) {
-                    getTileSpriteAt(tile.x, tile.y).visible = true;
+                    final ts = getTileSpriteAt(tile.x, tile.y);
+                    ts.visible = true;
+                    ts.isDithered = true;
+                    ditheredTiles.push(ts);
                 }
             }
         }
