@@ -3,7 +3,6 @@ package game.objects;
 import core.Types;
 import game.util.Utils;
 import kha.Assets;
-import kha.Image;
 
 enum ParticleType {
     Portal;
@@ -35,8 +34,8 @@ class ParticleSprite extends WorldItemSprite {
         super(translateWorldPos(pos.x, pos.y), Assets.images.particles, new IntVec2(16, 32), color);
 
         animation.add('cont', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 0.1);
-        animation.add('explode-down', [10, 11, 12, 13, 14, 15, 16], 0.05);
-        animation.add('explode-up', [17, 18, 19, 20, 21, 22, 23], 0.05);
+        animation.add('explode-down', [10, 11, 12, 13, 14, 15, 16], 0.05, false);
+        animation.add('explode-up', [17, 18, 19, 20, 21, 22, 23], 0.05, false);
 
         animation.play(particleColors[type].anim);
 

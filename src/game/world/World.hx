@@ -42,6 +42,7 @@ class World {
     var step:Int = 0; // used for debugging
 
     public var playerActor:Actor;
+    var prevActorLevel:Int;
 
     var onSignal:Signal;
     var onAddElement:ElementAdd;
@@ -79,6 +80,8 @@ class World {
 
         // force the first set of tiles to be seen.
         seeTiles(Std.int(playerActor.x), Std.int(playerActor.y), true);
+
+        prevActorLevel = GameData.playerData.level;
     }
 
     public function update (delta:Float) {
@@ -153,6 +156,11 @@ class World {
                 actor.manage(delta);
             }
             actor.update(delta);
+        }
+
+        if (prevActorLevel != GameData.playerData.level) {
+            final pos = playerActor.getLinkedPosition();
+            seeTiles(pos.x, pos.y, false);
         }
     }
 
