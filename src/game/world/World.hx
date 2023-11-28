@@ -1,6 +1,7 @@
 package game.world;
 
 import core.Types;
+import game.data.ActorData;
 import game.data.FloorData;
 import game.data.GameData;
 import game.data.RoomData;
@@ -15,12 +16,17 @@ enum TileType {
 
 enum SignalType {
     PlayerPortal;
+    PlayerStep;
+}
+
+typedef SignalOptions = {
+    var ?tiles:Array<GridItem>;
 }
 
 class Object {}
 
 typedef ElementAdd = (e:Element) -> Void;
-typedef Signal = (signal:SignalType) -> Void;
+typedef Signal = (signal:SignalType, ?o:SignalOptions) -> Void;
 
 class World {
     public static inline final HIT_DISTANCE:Float = 0.75;
@@ -70,6 +76,9 @@ class World {
         this.onAddElement = onAddElement;
         this.onRemoveElement = onRemoveElement;
         this.onSignal = onSignal;
+
+        // force the first set of tiles to be seen.
+        seeTiles(Std.int(playerActor.x), Std.int(playerActor.y), true);
     }
 
     public function update (delta:Float) {
@@ -148,19 +157,54 @@ class World {
     }
 
     public function onFinishedStep (actor:Actor) {
-        if (actor == playerActor && actor.x == portalPos.x && actor.y == portalPos.y) {
-            isPaused = true;
-            onSignal(PlayerPortal);
+        if (actor == playerActor) {
+            if (actor.x == portalPos.x && actor.y == portalPos.y) {
+                isPaused = true;
+                onSignal(PlayerPortal);
+            }
+
+            seeTiles(Std.int(actor.x), Std.int(actor.y), false);
         }
+    }
+
+    function seeTiles (x:Int, y:Int, force:Bool) {
+        var tiles = [];
+
+        var index = GameData.playerData.level - 5;
+        if (index >= seeDiffs.length) {
+            index = seeDiffs.length - 1;
+        }
+
+        final diffArray = seeDiffs[index];
+
+        for (diff in diffArray) {
+            final gi = getGridItem(grid, x + diff.x, y + diff.y);
+            if (gi != null && gi.tile != null && !gi.seen) {
+                // if any of the 4 adjacted tiles are seen, we can see them.
+                final adjacentItems = get4AdjacentItems(grid, x + diff.x, y + diff.y);
+                final res = Lambda.fold(adjacentItems, (item:GridItem, res:Bool) -> {
+                    if (res || item.seen) {
+                        return true;
+                    }
+                    return false;
+                }, false);
+
+                if (force || res) {
+                    gi.seen = true;
+                    if (gi.actor != null) {
+                        gi.actor.seen = true;
+                    }
+                    tiles.push(gi);
+                }
+            }
+        }
+        onSignal(PlayerStep, { tiles: tiles });
     }
 
     function handleElementInteraction (elem1:Element, elem2:Element) {
         if (elem1.type == Lightning || elem2.type == Lightning) {
-            // ATTN: delete this
-            if (elem1.type == Lightning && elem2.type == Lightning) {
-                // lightning never moves.
-                throw 'Shoudlnt be here!';
-            }
+            // lightning never moves, but can be here if two ppl cast to the same spot
+            if (elem1.type == Lightning && elem2.type == Lightning) {}
 
             return;
         }

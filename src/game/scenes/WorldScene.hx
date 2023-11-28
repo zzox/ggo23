@@ -8,7 +8,6 @@ import core.Types;
 import game.data.GameData;
 import game.objects.ActorSprite;
 import game.objects.ElementSprite;
-import game.objects.ParticleSprite.ParticleType;
 import game.objects.ParticleSprite;
 import game.objects.TileSprite;
 import game.scenes.UiScene;
@@ -42,6 +41,9 @@ class WorldScene extends Scene {
                 if (item.tile != null) {
                     final gridTile = new TileSprite(item.x, item.y, Math.random() < 0.1 ? 1 : 0);
                     tileSprites.push(gridTile);
+                    if (!item.seen) {
+                        gridTile.visible = false;
+                    }
                 } else {
                     tileSprites.push(null);
                 }
@@ -135,7 +137,7 @@ class WorldScene extends Scene {
         }
     }
 
-    function handleWorldSignal (signalType:SignalType) {
+    function handleWorldSignal (signalType:SignalType, ?signalOptions:SignalOptions) {
         if (signalType == PlayerPortal) {
             player.tweenOut();
             timers.addTimer(new Timer(1.0, () -> {
@@ -143,6 +145,12 @@ class WorldScene extends Scene {
                 uiScene.setupScales();
             }));
             camera.stopFollow();
+        } else if (signalType == PlayerStep) {
+            if (tileSprites.length > 0) {
+                for (tile in signalOptions.tiles) {
+                    getTileSpriteAt(tile.x, tile.y).visible = true;
+                }
+            }
         }
     }
 
@@ -195,7 +203,7 @@ class WorldScene extends Scene {
 
             // highlight tile
             final clicked = game.mouse.justReleased(MouseButton.Left);
-            if (clicked && tilePos.tile != null) {
+            if (clicked && tilePos.tile != null && tilePos.seen) {
                 world.playerActor.queueMove(new IntVec2(tilePos.x, tilePos.y));
             }
 

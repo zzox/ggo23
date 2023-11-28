@@ -37,6 +37,8 @@ class ActorSprite extends WorldItemSprite {
 
     override function update (delta:Float) {
         if (actorState != null) {
+            visible = actorState.seen;
+
             final pos = translateWorldPos(actorState.x, actorState.y);
             var diffX = 0.0;
             var diffY = 0.0;

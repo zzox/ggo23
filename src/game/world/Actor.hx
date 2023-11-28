@@ -91,6 +91,7 @@ class Actor extends WorldItem {
     public var isManaged:Bool;
     public var queuedMove:Null<QueuedMove> = null;
     public var target:Null<Actor>;
+    public var seen:Bool = false;
 
     var decisionTimer:Float = 0.0;
     var decideTime:Float = 0.0; // set by manageData, final
@@ -146,6 +147,7 @@ class Actor extends WorldItem {
             handleCurrentMove(delta);
 
             if (currentMove == null) {
+                seen = getGridItem(world.grid, Std.int(x), Std.int(y)).seen;
                 world.onFinishedStep(this);
                 // do the next move if a step is available and not waiting for a queued move
                 if (queuedMove == null) {
@@ -541,7 +543,7 @@ class Actor extends WorldItem {
         return getPosition();
     }
 
-    function getDiminishedValue (alterStat:Int, value:Float) {
+    function getDiminishedValue (alterStat:Int, value:Float):Float {
         trace('dim', alterStat, value);
         if (alterStat <= 50) {
             trace((2 - (alterStat / 50)) * value);
@@ -552,7 +554,7 @@ class Actor extends WorldItem {
         return value * 0.5 + value * ((100 - alterStat) / 100);
     }
 
-    function getIncreasedValue (alterStat:Int, value:Float) {
+    function getIncreasedValue (alterStat:Int, value:Float):Float {
         trace('inc', alterStat, value);
         if (alterStat <= 50) {
             trace(value * (alterStat / 50));

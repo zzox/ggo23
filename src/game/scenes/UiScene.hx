@@ -107,7 +107,7 @@ class UiScene extends Scene {
             new IntVec2(8, 8),
             new IntVec2(50, 14),
             0xffffffff,
-            'hp up',
+            'max hp+',
             () -> {
                 addExperience('HEALTH');
             },

@@ -173,8 +173,8 @@ function makeMap (rows:PreGrid):Grid {
             // TODO: switch for tiletype
             column.push(
                 rows[x][y] == null || rows[x][y] == Exit ?
-                    { x: x, y: y, tile: null, object: null, actor: null, element: null } :
-                    { x: x, y: y, tile: Tile, object: null, actor: null, element: null }
+                    { x: x, y: y, tile: null, object: null, actor: null, element: null, seen: false } :
+                    { x: x, y: y, tile: Tile, object: null, actor: null, element: null, seen: false }
             );
         }
         items.push(column);
@@ -198,7 +198,7 @@ function getClosestExit (room:IntRect, exits:Array<IntVec2>):Null<IntVec2> {
     return exit;
 }
 
-function getAdjacentItems <T>(grid:Array<Array<T>>, x:Int, y:Int) {
+function getAdjacentItems <T>(grid:Array<Array<T>>, x:Int, y:Int):Array<T> {
     final items = [];
 
     items.push(grid[x + 1] != null ? grid[x + 1][y] : null);
@@ -209,6 +209,17 @@ function getAdjacentItems <T>(grid:Array<Array<T>>, x:Int, y:Int) {
     items.push(grid[x - 1] != null ? grid[x - 1][y + 1] : null);
     items.push(grid[x + 1] != null ? grid[x + 1][y - 1] : null);
     items.push(grid[x - 1] != null ? grid[x - 1][y - 1] : null);
+
+    return items.filter((item) -> item != null);
+}
+
+function get4AdjacentItems <T>(grid:Array<Array<T>>, x:Int, y:Int):Array<T>  {
+    final items = [];
+
+    items.push(grid[x + 1] != null ? grid[x + 1][y] : null);
+    items.push(grid[x] != null ? grid[x][y + 1] : null);
+    items.push(grid[x - 1] != null ? grid[x - 1][y] : null);
+    items.push(grid[x] != null ? grid[x][y - 1] : null);
 
     return items.filter((item) -> item != null);
 }

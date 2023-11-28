@@ -1,15 +1,13 @@
 package game.objects;
 
-import core.Camera;
-import core.Sprite;
 import core.Types;
-import game.util.Utils.translateWorldPos;
+import game.util.Utils;
 import kha.Assets;
 import kha.Image;
-import kha.graphics2.Graphics;
 
 enum ParticleType {
     Portal;
+    LevelUp;
 }
 
 typedef ParticleData = {
@@ -21,12 +19,16 @@ final particleColors:Map<ParticleType, ParticleData> = [
     Portal => {
         color: 0xfffbf236,
         anim: 'cont'
+    },
+    LevelUp => {
+        color: 0xfffbf236,
+        anim: 'explode-up'
     }
 ];
 
 class ParticleSprite extends WorldItemSprite {
     var pType:ParticleType;
-    var time:Float;
+    // var time:Float;
     public var done:Bool = false;
 
     public function new (pos:Vec2, type:ParticleType) {
@@ -38,17 +40,23 @@ class ParticleSprite extends WorldItemSprite {
 
         animation.play(particleColors[type].anim);
 
+        animation.onComplete = (anim:String) -> {
+            if (anim == 'explode-up' || anim == 'explode-down') {
+                done = true;
+            }
+        }
+
         this.pType = type;
         this.color = particleColors[type].color;
     }
 
     override function update (delta:Float) {
-        if (pType != Portal) {
-            time -= delta;
-            if (time < 0) {
-                done = true;
-            }
-        }
+        // if (pType != Portal) {
+        //     time -= delta;
+        //     if (time < 0) {
+        //         done = true;
+        //     }
+        // }
 
         super.update(delta);
     }
