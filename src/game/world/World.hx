@@ -163,6 +163,8 @@ class World {
             final pos = playerActor.getLinkedPosition();
             seeTiles(pos.x, pos.y, false);
         }
+
+        prevActorLevel = GameData.playerData.level;
     }
 
     public function onFinishedStep (actor:Actor) {

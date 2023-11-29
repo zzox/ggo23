@@ -42,7 +42,7 @@ final waterFall:Shape = [
 ];
 
 final movingBox:Shape = [
-    [{ vel: new Vec2(-5, -5), time: 0.25 }, { vel: new Vec2(0, -5), time: 0.25 }, { vel: new Vec2(5, -5), time: 0.25 }],
-    [{ vel: new Vec2(-5, 0), time: 0.25 }, { vel: new Vec2(0, 0), time: 0.0 }, { vel: new Vec2(5, 0), time: 0.25 }],
-    [{ vel: new Vec2(-5, 5), time: 0.25 }, { vel: new Vec2(0, 5), time: 0.25 }, { vel: new Vec2(5, 5), time: 0.25 }]
+    [{ vel: new Vec2(-3, -3), time: 0.0 }, { vel: new Vec2(0, -5), time: 0.0 }, { vel: new Vec2(3, -3), time: 0.0 }],
+    [{ vel: new Vec2(-5, 0), time: 0.0 }, { vel: new Vec2(0, 0), time: 0.0 }, { vel: new Vec2(5, 0), time: 0.0 }],
+    [{ vel: new Vec2(-3, 3), time: 0.0 }, { vel: new Vec2(0, 5), time: 0.0 }, { vel: new Vec2(3, 3), time: 0.0 }]
 ];

@@ -61,22 +61,6 @@ class ActorSprite extends WorldItemSprite {
                 animation.play('preattack');
             } else if (actorState.state == Attack) {
                 animation.play('attack');
-
-                if (
-                    actorState.currentAttack.dir == East ||
-                    actorState.currentAttack.dir == SouthEast ||
-                    actorState.currentAttack.dir == South
-                ) {
-                    flipX = true;
-                }
-
-                if (
-                    actorState.currentAttack.dir == North ||
-                    actorState.currentAttack.dir == NorthWest ||
-                    actorState.currentAttack.dir == West
-                ) {
-                    flipX = false;
-                }
             } else if (actorState.state == Moving) {
                 animation.play('walk');
                 if (flipX && prevX > x) {
@@ -88,6 +72,29 @@ class ActorSprite extends WorldItemSprite {
                 }
             } else {
                 animation.play('still');
+            }
+
+            if (actorState.state == PreAttack || actorState.state == Attack) {
+                if (actorState.currentAttack.type == Melee) {
+                    if (
+                        actorState.currentAttack.dir == East ||
+                        actorState.currentAttack.dir == SouthEast ||
+                        actorState.currentAttack.dir == South
+                    ) {
+                        flipX = true;
+                    }
+
+                    if (
+                        actorState.currentAttack.dir == North ||
+                        actorState.currentAttack.dir == NorthWest ||
+                        actorState.currentAttack.dir == West
+                    ) {
+                        flipX = false;
+                    }
+                } else {
+                    final targetPos = translateWorldPos(actorState.currentAttack.startPos.x, actorState.currentAttack.startPos.y);
+                    flipX = targetPos.x > x;
+                }
             }
 
             if (prevHurt && !isHurt) {

@@ -99,6 +99,15 @@ Windstorm => {
     shape: movingBox,
     imageIndex: 5
 },
+Lightstorm => {
+    preTime: 3.0,
+    time: 3.0,
+    type: Magic,
+    power: 3.0,
+    element: Lightning,
+    shape: bigX,
+    imageIndex: 6
+},
 Rainstorm => {
     preTime: 2.0,
     time: 2.0,
@@ -107,15 +116,6 @@ Rainstorm => {
     power: 2.0,
     element: Water,
     shape: waterFall,
-    imageIndex: 6
-},
-Lightstorm => {
-    preTime: 3.0,
-    time: 3.0,
-    type: Magic,
-    power: 3.0,
-    element: Lightning,
-    shape: bigX,
     imageIndex: 7
 }];
 
