@@ -61,6 +61,7 @@ typedef PlayerData = {
     var dexterity:Int;
     var spells:Array<AttackData>;
     var scales:Array<Array<Scale>>;
+    var otherScales:Array<Scale>;
 
     var level:Int;
     var experience:Int;
@@ -136,7 +137,7 @@ Plant => {
     speed: 25,
     experience: 15,
     color: 0xff37946e,
-    resistances: [{ type: Fire, amount: 2.0 }],
+    resistances: [{ type: Fire, amount: 2.0 }, { type: Water, amount: 0.66 }],
     animIndex: 30,
     // add neg fire resistance
     manageData: {

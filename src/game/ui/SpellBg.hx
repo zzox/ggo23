@@ -84,7 +84,7 @@ class SpellBg extends Sprite {
     // draw number and image relative to y position
     override function render (g2:Graphics, cam:Camera) {
         number.setPosition(x + 14, y + 1);
-        imageSprite.setPosition(x + 2, y + 8);
+        imageSprite.setPosition(x + 2, y + 10);
         super.render(g2, cam);
     }
 }

@@ -284,6 +284,7 @@ class UiScene extends Scene {
         );
     }
 
+    // ugly
     public function setupScales () {
         state = PostGame;
         // for (s in spells) s.stop();
@@ -311,11 +312,15 @@ class UiScene extends Scene {
             i++;
         }
 
-        // TODO: mix it up. occasionally add in others.
-        // scaleChoices = scaleList.slice(0, 3);
+        for (o in GameData.playerData.otherScales) {
+            scaleList.push({ spellNum: -1, scale: o });
+        }
+
+        scaleList.sort((s1, s2) -> scaleData[s1.scale].level - scaleData[s2.scale].level);
+
         scaleChoices = scaleList.slice(0, 2);
         if (scaleList.length > 2) {
-            final index = intClamp(2 + Math.floor(GameData.random.GetFloat() * GameData.floorNum), 0, scaleList.length - 2);
+            final index = intClamp(2 + Math.floor(GameData.random.GetFloat() * GameData.floorNum), 2, scaleList.length);
             scaleChoices.push(scaleList[index]);
         }
 
@@ -342,12 +347,16 @@ class UiScene extends Scene {
 
             // spell image
             final image = new Sprite(new Vec2(80, 44 + i * 32), Assets.images.spell_image, new IntVec2(32, 32));
-            image.tileIndex = spell.imageIndex;
+            image.tileIndex = spell != null && spell.imageIndex != null ? spell.imageIndex : scaleData[scaleChoices[i].scale].index;
             addSprite(image);
 
             // spell name + description
-            addSprite(getText(108, 44 + i * 32, spell.name));
-            addSprite(getText(108, 54 + i * 32, scaleData[scaleChoices[i].scale]));
+            if (scaleChoices[i].spellNum == -1) {
+                addSprite(getText(108, 46 + i * 32, scaleData[scaleChoices[i].scale].text));
+            } else {
+                addSprite(getText(108, 42 + i * 32, spell.name));
+                addSprite(getText(108, 52 + i * 32, scaleData[scaleChoices[i].scale].text));
+            }
         }
 
         addSprite(new Button(
@@ -387,13 +396,52 @@ class UiScene extends Scene {
                 spell.power = Math.round(spell.power * 1.5);
             case Vel50:
                 spell.vel = Math.round(spell.vel * 1.5);
+            case LearnCastlight:
+                GameData.addSpell(Castlight);
+            case LearnFireball:
+                GameData.addSpell(Fireball);
+            case UpgradeWindstorm:
+                GameData.replaceSpell(scale.spellNum, Windstorm);
+            case UpgradeRainstorm:
+                GameData.replaceSpell(scale.spellNum, Rainstorm);
+            case UpgradeFirestorm:
+                GameData.replaceSpell(scale.spellNum, Firestorm);
+            case UpgradeLightstorm:
+                GameData.replaceSpell(scale.spellNum, Lightstorm);
+            case AllTimesLess25:
+                for (s in GameData.playerData.spells) {
+                    s.preTime *= .75;
+                    s.time *= .75;
+                }
+            case Dex15:
+                GameData.playerData.dexterity += 15;
+                if (GameData.playerData.dexterity > 100) {
+                    GameData.playerData.dexterity = 99;
+                }
+            case Def15:
+                GameData.playerData.defense += 15;
+                if (GameData.playerData.defense > 100) {
+                    GameData.playerData.defense = 99;
+                }
+            case Spd10:
+                GameData.playerData.speed += 10;
+                if (GameData.playerData.speed > 100) {
+                    GameData.playerData.speed = 99;
+                }
+            case Att10:
+                GameData.playerData.attack += 10;
+                if (GameData.playerData.attack > 100) {
+                    GameData.playerData.attack = 99;
+                }
             default:
                 throw 'Not Implemented!';
         }
 
-        trace('spell after', spell);
-
-        GameData.playerData.scales[scale.spellNum].remove(scale.scale);
+        if (scale.spellNum == -1) {
+            GameData.playerData.otherScales.remove(scale.scale);
+        } else {
+            GameData.playerData.scales[scale.spellNum].remove(scale.scale);
+        }
 
         GameData.nextRound();
         game.switchScene(new WorldScene());

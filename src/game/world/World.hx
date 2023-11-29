@@ -96,6 +96,7 @@ class World {
             for (actor in actors) {
                 if (
                     !actor.isHurt &&
+                    element.active &&
                     Math.abs(element.x - actor.x) < HIT_DISTANCE &&
                     Math.abs(element.y - actor.y) < HIT_DISTANCE
                 ) {

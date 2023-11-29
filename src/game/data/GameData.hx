@@ -29,22 +29,17 @@ class GameData {
             dexterity: 40 + shufflePts.getNext(),
             spells: [],
             scales: [],
+            otherScales: otherScales.copy(),
             experience: 0,
             level: 5,
             maxExperience: getMaxExp(5),
             pointsAvailable: []
         }
 
-        final spellOptions = attackOptions.copy();
-        for (_ in 0...2) {
-            final spell = spellOptions[Math.floor(random.GetFloat() * spellOptions.length)];
-            spellOptions.remove(spell);
-            addSpell(spell);
-        }
+        addSpell(attackOptions[0]);
+        addSpell(attackOptions[1]);
 
         shuffleExp = new ShuffleRandom([4, 5, 5, 6, 6, 7, 7, 8], random);
-        // playerData.spells.push(cloneSpell(Fireball));
-        // playerData.spells.push(cloneSpell(Windthrow));
 
         floorNum = 0;
     }
@@ -69,9 +64,16 @@ class GameData {
         return leveledUp;
     }
 
-    static function addSpell (spell:AttackName) {
+    public static function addSpell (spell:AttackName) {
         playerData.spells.push(cloneSpell(spell));
         playerData.scales.push(playerScales[spell].copy());
+    }
+
+    public static function replaceSpell (index:Int, spell:AttackName) {
+        playerData.spells[index] = cloneSpell(spell);
+        // playerData.scales[index] = playerScales[spell].copy();
+        // for now, spells that can be replaced cannot be upgraded.
+        playerData.scales[index] = [];
     }
 
     public static function nextRound () {
@@ -80,7 +82,5 @@ class GameData {
 }
 
 final attackOptions:Array<AttackName> = [
-    // Fireball, Windthrow
-    // Windthrow, Raincast // use these two always to start?
-    Fireball, Raincast
+    Raincast, Windthrow // use these two always to start?
 ];

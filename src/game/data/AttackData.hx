@@ -26,8 +26,11 @@ enum AttackName {
     Fireball;
     Windthrow;
     Raincast;
-    Flamebigsquare;
     Castlight;
+    Firestorm;
+    Windstorm;
+    Rainstorm;
+    Lightstorm;
 }
 
 final attackData:Map<AttackName, AttackData> = [
@@ -56,6 +59,16 @@ Windthrow => {
     imageIndex: 1,
     name: 'Windthrow'
 },
+Castlight => {
+    preTime: 2.0,
+    time: 2.0,
+    type: Magic,
+    power: 2.0,
+    element: Lightning,
+    shape: single,
+    imageIndex: 2,
+    name: 'Castlight'
+},
 Raincast => {
     preTime: 0.5,
     time: 0.5,
@@ -66,23 +79,45 @@ Raincast => {
     imageIndex: 3,
     name: 'Raincast'
 },
-Flamebigsquare => {
-    preTime: 2.0,
-    time: 2.0,
+Firestorm => {
+    preTime: 3.0,
+    time: 3.0,
     type: Magic,
-    power: 2.0,
-    element: Fire,
-    shape: bigSquare
+    vel: 0.0,
+    power: 3.0,
+    element: Air,
+    shape: bigSquare,
+    imageIndex: 4
 },
-Castlight => {
+Windstorm => {
     preTime: 2.0,
     time: 2.0,
     type: Magic,
+    vel: 0.0,
     power: 2.0,
+    element: Air,
+    shape: movingBox,
+    imageIndex: 5
+},
+Rainstorm => {
+    preTime: 2.0,
+    time: 2.0,
+    type: Magic,
+    vel: 0.0,
+    power: 2.0,
+    element: Water,
+    shape: waterFall,
+    imageIndex: 6
+},
+Lightstorm => {
+    preTime: 3.0,
+    time: 3.0,
+    type: Magic,
+    power: 3.0,
     element: Lightning,
-    shape: single
-}
-];
+    shape: bigX,
+    imageIndex: 7
+}];
 
 function cloneSpell (name:AttackName):AttackData {
     final data = attackData[name];
