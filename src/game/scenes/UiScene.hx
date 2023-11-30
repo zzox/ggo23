@@ -2,6 +2,7 @@ package game.scenes;
 
 import core.Scene;
 import core.Sprite;
+import core.Timers;
 import core.Tweens;
 import core.Types;
 import core.Util;
@@ -28,7 +29,7 @@ typedef ScaleChoice = {
 
 class UiScene extends Scene {
     public var exText:Sprite;
-    var portrait:Sprite;
+    public var portrait:Sprite;
 
     public var healthBar:Bar;
     public var healthNum:Int;
@@ -60,6 +61,7 @@ class UiScene extends Scene {
     public var buttonClicked:Bool = false;
     var hovered:Bool = false;
     var state:UiState = InGame;
+    var submitButton:Button;
 
     var updateReadyText:Sprite;
     var tooFarText:Sprite;
@@ -135,7 +137,7 @@ class UiScene extends Scene {
         addSprite(tooFarText = getText(124, 100, 'Too Far'));
         tooFarText.visible = false;
 
-        addSprite(getText(270, 2, 'Floor ${GameData.floorNum}', 0xff9badb7));
+        addSprite(getText(282, 2, 'Floor ${GameData.floorNum + 1}', 0xff9badb7));
 
         leftCurtain = new Sprite(new Vec2(0, 0));
         rightCurtain = new Sprite(new Vec2(180, 0));
@@ -160,8 +162,8 @@ class UiScene extends Scene {
         }
 
         if (outTween != null) {
-            leftCurtain.setPosition(inTween.value * 160, 0);
-            rightCurtain.setPosition(160 - inTween.value * 160, 0);
+            leftCurtain.setPosition(outTween.value * 160 - 160, 0);
+            rightCurtain.setPosition(320 + -outTween.value * 160, 0);
         }
 
         if (state == InGame) {
@@ -301,15 +303,17 @@ class UiScene extends Scene {
         );
     }
 
-    // ugly
-    public function setupScales () {
-        state = PostGame;
-        // for (s in spells) s.stop();
+    public function destroyUi () {
         for (s in sprites) {
             if (s != portrait) {
                 s.destroy();
             }
         }
+    }
+
+    // ugly
+    public function setupScales () {
+        state = PostGame;
 
         // scalesSelected = [];
         final scaleList = [];
@@ -376,7 +380,7 @@ class UiScene extends Scene {
             }
         }
 
-        addSprite(new Button(
+        addSprite(submitButton = new Button(
             new Vec2(120, 140),
             Assets.images.button_slice,
             new IntVec2(8, 8),
@@ -451,7 +455,7 @@ class UiScene extends Scene {
                     GameData.playerData.attack = 99;
                 }
             default:
-                throw 'Not Implemented!';
+                // throw 'Not Implemented!';
         }
 
         if (scale.spellNum == -1) {
@@ -461,7 +465,12 @@ class UiScene extends Scene {
         }
 
         GameData.nextRound();
-        game.switchScene(new WorldScene());
+
+        timers.addTimer(new Timer(1.0, () -> {
+            game.switchScene(new WorldScene());
+        }));
+        submitButton.destroy();
+        tweenOut();
     }
 
     function tweenIn () {
@@ -469,6 +478,23 @@ class UiScene extends Scene {
             inTween = null;
             leftCurtain.setPosition(-160, 0);
             rightCurtain.setPosition(320, 0);
+        }));
+    }
+
+    function tweenOut () {
+        leftCurtain = new Sprite(new Vec2(-160, 0));
+        rightCurtain = new Sprite(new Vec2(320, 0));
+
+        leftCurtain.makeRect(0xff222034, new IntVec2(160, 180));
+        rightCurtain.makeRect(0xff222034, new IntVec2(160, 180));
+
+        addSprite(leftCurtain);
+        addSprite(rightCurtain);
+
+        tweens.addTween(outTween = new Tween(0.0, 1.0, 0.5, () -> {
+            outTween = null;
+            leftCurtain.setPosition(0, 0);
+            rightCurtain.setPosition(160, 0);
         }));
     }
 

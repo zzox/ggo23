@@ -17,6 +17,7 @@ enum TileType {
 enum SignalType {
     PlayerPortal;
     PlayerStep;
+    PlayerDead;
     BossDead;
 }
 
@@ -66,6 +67,7 @@ class World {
 
         playerActor = new Actor(generatedWorld.playerPos.x, generatedWorld.playerPos.y, this, PlayerActor);
         addActor(playerActor);
+        playerActor.seen = true;
 
         final randomEnemy = new ShuffleRandom(data.enemies, GameData.random);
         for (enemySpawner in generatedWorld.spawners) {
@@ -74,6 +76,7 @@ class World {
             if (enemy.attitude != Nonchalant) {
                 enemy.target = playerActor;
             }
+            enemy.seen = isBossLevel;
         }
 
         this.size = data.size;
@@ -332,7 +335,10 @@ class World {
         final gridItem = getGridItem(grid, pos.x, pos.y);
         gridItem.actor = null;
         actors.remove(actor);
-        if (actors.length == 1 && isBossLevel && actor != playerActor) {
+
+        if (actor == playerActor) {
+            onSignal(PlayerDead);
+        } else if (actors.length == 1 && isBossLevel && actor != playerActor) {
             onSignal(BossDead);
             isBossDead = true;
         }

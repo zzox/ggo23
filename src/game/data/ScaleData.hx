@@ -5,8 +5,6 @@ import game.data.AttackData;
 enum Scale {
     Power50;
     Vel50;
-    // Power100Vel;
-    // BeFlamebigsquare;
     UpgradeWindstorm;
     UpgradeRainstorm;
     UpgradeFirestorm;
@@ -43,16 +41,15 @@ final scaleData:Map<Scale, ScaleData> = [
     Att10 => { text: 'Increase Attatck by 10', index: 0, level: 3 },
 ];
 
-// TODO: add scales when cloning, or make a separate type
 final playerScales:Map<AttackName, Array<Scale>> = [
-    // Windthrow => [Power50, Vel50, UpgradeWindstorm],
-    // Raincast => [Power50, Vel50, UpgradeRainstorm],
-    // Fireball => [Power50, Vel50, UpgradeFirestorm],
-    // Castlight => [Power50, Vel50, UpgradeLightstorm]
-    Windthrow => [UpgradeWindstorm],
-    Raincast => [UpgradeRainstorm],
-    Fireball => [UpgradeFirestorm],
-    Castlight => [UpgradeLightstorm]
+    Windthrow => [Vel50, Power50, UpgradeWindstorm],
+    Raincast => [Power50, Vel50, UpgradeRainstorm],
+    Fireball => [Vel50, UpgradeFirestorm],
+    Castlight => [Power50, UpgradeLightstorm]
+    // Windthrow => [UpgradeWindstorm],
+    // Raincast => [UpgradeRainstorm],
+    // Fireball => [UpgradeFirestorm],
+    // Castlight => [UpgradeLightstorm]
 ];
 
 final otherScales:Array<Scale> = [

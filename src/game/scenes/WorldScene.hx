@@ -147,6 +147,7 @@ class WorldScene extends Scene {
                 roundOver = true;
                 uiScene.setupScales();
             }));
+            uiScene.destroyUi();
             camera.stopFollow();
         } else if (signalType == PlayerStep) {
             for (dt in ditheredTiles) {
@@ -161,6 +162,17 @@ class WorldScene extends Scene {
                     ditheredTiles.push(ts);
                 }
             }
+        } else if (signalType == PlayerDead) {
+            for (c in gridObjects._children) {
+                if (c != player) {
+                    c.destroy();
+                }
+            }
+            for (ts in tileSprites) {
+                if (ts != null) ts.destroy();
+            }
+            uiScene.destroyUi();
+            uiScene.portrait.color = 0xff847e87;
         } else if (signalType == BossDead) {
             addExitParticle();
         }
@@ -174,9 +186,6 @@ class WorldScene extends Scene {
             num.text = updateOptions.amount + '';
             num.color = 0xffd95763;
             num.start();
-
-            // show blood particles
-
         } else if (updateType == Experience) {
             final num = damageNumbers.getNext();
             final worldPos = translateWorldPos(updateOptions.pos.x, updateOptions.pos.y);

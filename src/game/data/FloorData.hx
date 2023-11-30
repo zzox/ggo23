@@ -13,12 +13,6 @@ typedef FloorData = {
 }
 
 final floorData:Array<FloorData> = [{
-    minRooms: 1,
-    size: new IntVec2(70, 70),
-    rooms: [bossRoom1],
-    enemies: [LightningMan],
-    isBoss: true
-}, {
     minRooms: 5,
     size: new IntVec2(60, 60),
     rooms: [mainRoom1Med, mainRoom1Med, smallRoomNorthSouth, smallRoomEastWest, smallRoomNorthSouth, smallRoomEastWest],
@@ -36,6 +30,12 @@ final floorData:Array<FloorData> = [{
     rooms: [mainRoom1Big, mainRoom1Big, mainRoom1Big, mainRoom1Med, mainRoom1Med, mainRoom1Small, smallRoomNorthSouth, smallRoomEastWest, smallRoomNorthSouth, smallRoomEastWest],
     enemies: [BigRat, BigRat, Snake, Snake, Snake, Plant],
     isBoss: false
+}, {
+    minRooms: 1,
+    size: new IntVec2(70, 70),
+    rooms: [bossRoom1],
+    enemies: [LightningMan],
+    isBoss: true
 }, {
     minRooms: 7,
     size: new IntVec2(70, 70),

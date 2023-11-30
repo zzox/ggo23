@@ -133,7 +133,7 @@ Snake => {
 },
 Plant => {
     meleeDamage: 33,
-    health: 12,
+    health: 24,
     speed: 25,
     experience: 15,
     color: 0xff37946e,

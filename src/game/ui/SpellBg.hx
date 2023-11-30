@@ -36,7 +36,7 @@ class SpellBg extends Sprite {
     }
 
     override function update (delta:Float) {
-        y = fuzzyLerp(selected ? 156 : 164, y, 0.25, 0.1);
+        y = fuzzyLerp(selected ? 150 : 164, y, 0.25, 0.1);
 
         if (state != Disabled) {
             state = Idle;
