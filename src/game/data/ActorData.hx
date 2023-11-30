@@ -139,7 +139,6 @@ Plant => {
     color: 0xff37946e,
     resistances: [{ type: Fire, amount: 2.0 }, { type: Water, amount: 0.66 }],
     animIndex: 30,
-    // add neg fire resistance
     manageData: {
         retreatDist: 0,
         attackDist: Math.sqrt(2),

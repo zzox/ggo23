@@ -54,6 +54,7 @@ enum UpdateType {
     Death;
     Damage;
     Experience;
+    TooFar;
 }
 
 typedef UpdateOptions = {
@@ -380,7 +381,9 @@ class Actor extends WorldItem {
             final path = pathfind(makeIntGrid(world.grid), getPosition(), pos.clone(), Diagonal, true, MAGIC_DISTANCE);
             if (path == null) {
                 // TODO: use raycast to handle this.
-                trace('too far');
+                if (actorType == PlayerActor) {
+                    for (onUpdate in updateListeners) onUpdate(TooFar);
+                }
                 state = Wait;
                 return;
             }
@@ -465,6 +468,9 @@ class Actor extends WorldItem {
         if (currentPath == null) {
             // throw 'Could not find path.';
             trace('Could not find path.');
+            if (actorType == PlayerActor) {
+                for (onUpdate in updateListeners) onUpdate(TooFar);
+            }
             state = Wait;
         } else {
             state = Moving;

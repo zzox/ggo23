@@ -85,7 +85,7 @@ Firestorm => {
     type: Magic,
     vel: 0.0,
     power: 3.0,
-    element: Air,
+    element: Fire,
     shape: bigSquare,
     imageIndex: 4
 },

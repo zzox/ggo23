@@ -61,6 +61,10 @@ class UiScene extends Scene {
     var hovered:Bool = false;
     var state:UiState = InGame;
 
+    var updateReadyText:Sprite;
+    var tooFarText:Sprite;
+    var tooFarTime:Float = 0.0;
+
     var leftCurtain:Sprite;
     var rightCurtain:Sprite;
     var inTween:Tween;
@@ -125,6 +129,14 @@ class UiScene extends Scene {
             }
         ));
 
+        addSprite(updateReadyText = getText(3, 117, 'Update Ready'));
+        updateReadyText.visible = false;
+
+        addSprite(tooFarText = getText(124, 100, 'Too Far'));
+        tooFarText.visible = false;
+
+        addSprite(getText(270, 2, 'Floor ${GameData.floorNum}', 0xff9badb7));
+
         leftCurtain = new Sprite(new Vec2(0, 0));
         rightCurtain = new Sprite(new Vec2(180, 0));
 
@@ -180,26 +192,31 @@ class UiScene extends Scene {
             }
 
             prevLevel = GameData.playerData.level;
-        }
 
-        if (GameData.playerData.pointsAvailable.length > 0) {
-            attButton.state = Idle;
-            defButton.state = Idle;
-            spdButton.state = Idle;
-            dexButton.state = Idle;
-            healthButton.state = Idle;
-        } else {
-            attButton.state = Disabled;
-            defButton.state = Disabled;
-            spdButton.state = Disabled;
-            dexButton.state = Disabled;
-            healthButton.state = Disabled;
-        }
+            if (GameData.playerData.pointsAvailable.length > 0) {
+                attButton.state = Idle;
+                defButton.state = Idle;
+                spdButton.state = Idle;
+                dexButton.state = Idle;
+                healthButton.state = Idle;
+                updateReadyText.visible = true;
+            } else {
+                attButton.state = Disabled;
+                defButton.state = Disabled;
+                spdButton.state = Disabled;
+                dexButton.state = Disabled;
+                healthButton.state = Disabled;
+                updateReadyText.visible = false;
+            }
 
-        attNum.text = GameData.playerData.attack + '';
-        defNum.text = GameData.playerData.defense + '';
-        spdNum.text = GameData.playerData.speed + '';
-        dexNum.text = GameData.playerData.dexterity + '';
+            attNum.text = GameData.playerData.attack + '';
+            defNum.text = GameData.playerData.defense + '';
+            spdNum.text = GameData.playerData.speed + '';
+            dexNum.text = GameData.playerData.dexterity + '';
+
+            tooFarTime -= delta;
+            tooFarText.visible = tooFarTime > 0.0;
+        }
 
         hovered = false;
         super.update(delta);
@@ -459,5 +476,9 @@ class UiScene extends Scene {
         particleSprite.animation.play('explode-up', true);
         particleSprite.done = false;
         particleSprite.visible = true;
+    }
+
+    public function tooFar () {
+        tooFarTime = 1.0;
     }
 }

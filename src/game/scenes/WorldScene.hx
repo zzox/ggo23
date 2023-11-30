@@ -64,7 +64,9 @@ class WorldScene extends Scene {
         world.playerActor.updateListeners.push(handleActorUpdate);
 
         getTileSpriteAt(world.portalPos.x, world.portalPos.y).isPortal = true;
-        handleAddParticle(new Vec2(world.portalPos.x, world.portalPos.y), Portal);
+        if (!world.isBossLevel) {
+            addExitParticle();
+        }
 
         for (actor in world.actors) {
             actor.updateListeners.push(handleActorUpdate);
@@ -159,6 +161,8 @@ class WorldScene extends Scene {
                     ditheredTiles.push(ts);
                 }
             }
+        } else if (signalType == BossDead) {
+            addExitParticle();
         }
     }
 
@@ -170,6 +174,9 @@ class WorldScene extends Scene {
             num.text = updateOptions.amount + '';
             num.color = 0xffd95763;
             num.start();
+
+            // show blood particles
+
         } else if (updateType == Experience) {
             final num = damageNumbers.getNext();
             final worldPos = translateWorldPos(updateOptions.pos.x, updateOptions.pos.y);
@@ -177,6 +184,8 @@ class WorldScene extends Scene {
             num.text = updateOptions.amount + '';
             num.color = 0xfffbf236;
             num.start();
+        } else if (updateType == TooFar) {
+            uiScene.tooFar();
         }
     }
 
@@ -299,6 +308,10 @@ class WorldScene extends Scene {
         if (game.keys.pressed(KeyCode.Down)) {
             camera.scroll.y += speedup * 2 / camera.scale.x;
         }
+    }
+
+    function addExitParticle () {
+        handleAddParticle(new Vec2(world.portalPos.x, world.portalPos.y), Portal);
     }
 
     function handleAddElement (element:Element) {

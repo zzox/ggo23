@@ -103,3 +103,15 @@ under a week remains. i need this to be fully playable this weekend in order to 
 ## day 26
 
 saw some friends. don't love this game, i guess it's publishable for a jam. it came out too obtuse and hard to handle. maybe with some particles and sound it will turn out ok, i'm afraid that's going to make it more janky.
+
+# day 27
+
+back to work. goin thru it.
+
+## day 28
+
+gonna be close.
+
+## day 29
+
+what a slog. but i just might make it.

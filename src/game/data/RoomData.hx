@@ -19,7 +19,7 @@ final mainRoom1Big = "
 XxxxxxxxxxxxxxxxxxxX
  xxxxxxxxxxxxxxxxxx
  xxxxxxxxxxxxxx1xxx
- xxxxxxxxOxxxxxxxx
+ xxxxxxxxOxxxxxxxxx
  xxxxxxxxxxxxxxxxxx
  xxxxxxxxxxxxxx1xxx
  xxxxxxxxxxxxxxxxxx
@@ -80,6 +80,75 @@ XxxxxxxxxxX
  xxxxxxxxx
  xxxxOx1xx
  xxxxxxxxx
+";
+
+final mainRoom2Big = "
+             X
+ xxxxxxxxxxxxxxxxxx
+ xxP1xxxxx1xxxxxxxx
+ xxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxxx
+Xxx1xxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxx1xxx
+ xxxxxxxxOxxxxxxxxx
+ xxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxx1xxx
+ xxxxxxxxxxxxxxxxxxX
+ xxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxx1xxx
+ xxxxxxxxxxxxxxxxxx
+       X
+";
+
+final mainRoom2Med = "
+        X
+ xxxxxxxxxxxxxxx
+ xxxxxxxxxx1xxxx
+ xxx1xxxxxxxxxxx
+ xxxxxxxxxxxxxxx
+ xxxxxxxPxxxxxxx
+XxxxxxxxxxxxxxxxX
+ xxxxxxxxxxx1xxx
+ xxxxxxxxOxxxxxx
+ xxxx1xxxxxxxxxx
+ xxxxxxxxxxx1xxx
+ xxxxxxxxxxxxxxx
+         X
+";
+
+final mainRoom2Small = "
+     X
+ xxxxxxxxx
+ xxPxxxxxx
+ xxxxxxxxx
+ xxxxxxxxx
+XxxxxOxxxxX
+ xx1xxxxxx
+ xxxxxx1xx
+ xxxxxxxxx
+     X
+";
+
+final bossRoom1 = "
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxPxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxOxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxx1xxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
 ";
 
 enum TileType {
@@ -165,7 +234,7 @@ function makeEmptyPregrid<T>(width:Int, height:Int):Array<Array<T>> {
     return map;
 }
 
-function makeMap (rows:PreGrid):Grid {
+function makeMap (rows:PreGrid, seen:Bool):Grid {
     final items = [];
     for (x in 0...rows.length) {
         final column = [];
@@ -173,8 +242,8 @@ function makeMap (rows:PreGrid):Grid {
             // TODO: switch for tiletype
             column.push(
                 rows[x][y] == null || rows[x][y] == Exit ?
-                    { x: x, y: y, tile: null, object: null, actor: null, element: null, seen: false } :
-                    { x: x, y: y, tile: Tile, object: null, actor: null, element: null, seen: false }
+                    { x: x, y: y, tile: null, object: null, actor: null, element: null, seen: seen } :
+                    { x: x, y: y, tile: Tile, object: null, actor: null, element: null, seen: seen }
             );
         }
         items.push(column);
@@ -247,6 +316,7 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
     final data = floorData[floorNum];
     final width = data.size.x;
     final height = data.size.y;
+    final isBoss = floorData[floorNum].isBoss;
 
     // increase this
     final GEN_ATTEMPTS:Int = 100;
@@ -296,7 +366,7 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
                         exits.push(new IntVec2(randomX + x, randomY + y));
                     } else if (item == PlayerSpawn) {
                         pSpawn = new IntVec2(x + randomX, y + randomY);
-                    } else if (item == EnemySpawn1 && !initialConnected) {
+                    } else if (item == EnemySpawn1 && (isBoss || !initialConnected)) {
                         spawners.push(new IntVec2(x + randomX, y + randomY));
                     } else if (item == Portal) {
                         portal = new IntVec2(x + randomX, y + randomY);
@@ -325,7 +395,10 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
 
                 initialConnected = false;
 
-                if (placedRooms.length == Math.floor(data.minRooms * 1.5)) {
+                if (
+                    (placedRooms.length == Math.floor(data.minRooms * 1.5)) ||
+                    (isBoss && placedRooms.length == 1)
+                ) {
                     break;
                 }
             }
@@ -434,7 +507,7 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
     }
 
     for (room in placedRooms) {
-        if (room.connected > 0) {
+        if (room.connected > 0 || isBoss) {
             for (s in room.spawners) {
                 enemySpawners.push(s);
             }
@@ -471,7 +544,7 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
     trace('num paths tried', numPaths, enemySpawners.length);
     Console.timeEnd('generation');
     return {
-        grid: makeMap(pregrid),
+        grid: makeMap(pregrid, isBoss),
         playerPos: playerPos,
         spawners: enemySpawners,
         portal: portalPos 

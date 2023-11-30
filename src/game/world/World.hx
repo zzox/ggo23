@@ -17,6 +17,7 @@ enum TileType {
 enum SignalType {
     PlayerPortal;
     PlayerStep;
+    BossDead;
 }
 
 typedef SignalOptions = {
@@ -40,6 +41,8 @@ class World {
     public var elements:Array<Element> = [];
     public var portalPos:IntVec2;
     var step:Int = 0; // used for debugging
+    public var isBossLevel:Bool;
+    public var isBossDead:Bool = false;
 
     public var playerActor:Actor;
     var prevActorLevel:Int;
@@ -55,6 +58,7 @@ class World {
         final floorNum = GameData.floorNum;
         final data = floorData[floorNum];
         final generatedWorld = generate(floorNum, GameData.random);
+        isBossLevel = data.isBoss;
         grid = generatedWorld.grid;
 
         portalPos = generatedWorld.portal;
@@ -169,7 +173,7 @@ class World {
 
     public function onFinishedStep (actor:Actor) {
         if (actor == playerActor) {
-            if (actor.x == portalPos.x && actor.y == portalPos.y) {
+            if (actor.x == portalPos.x && actor.y == portalPos.y && (!isBossLevel || isBossDead)) {
                 isPaused = true;
                 onSignal(PlayerPortal);
             }
@@ -328,6 +332,10 @@ class World {
         final gridItem = getGridItem(grid, pos.x, pos.y);
         gridItem.actor = null;
         actors.remove(actor);
+        if (actors.length == 1 && isBossLevel && actor != playerActor) {
+            onSignal(BossDead);
+            isBossDead = true;
+        }
     }
 
     public function addElement (x:Float, y:Float, type:ElementType, vel:Vec2, time:Float, fromActor:Actor, preTime:Float = 0.0) {
