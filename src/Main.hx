@@ -51,6 +51,10 @@ class Main {
             canvas.height = Std.int(h);
         }
         window.onresize = resize;
+        canvas.oncontextmenu = (e) -> {
+            e.stopPropagation();
+            e.preventDefault();
+        }
         resize();
         #end
     }
