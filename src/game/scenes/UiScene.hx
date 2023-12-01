@@ -55,7 +55,7 @@ class UiScene extends Scene {
     var healthButton:Button;
 
     var spells:Array<SpellBg> = [];
-    public var selectedSpell:Int = 0;
+    public var selectedSpell:Int;
 
     var scaleChoices:Array<ScaleChoice> = [];
     var scaleButtons:Array<Button> = [];
@@ -140,7 +140,7 @@ class UiScene extends Scene {
         addSprite(tooFarText = getText(124, 100, 'Too Far'));
         tooFarText.visible = false;
 
-        addSprite(getText(282, 2, 'Floor ${GameData.floorNum + 1}', 0xff9badb7));
+        addSprite(getText(276, 2, 'Floor ${GameData.floorNum + 1}', 0xff9badb7));
 
         leftCurtain = new Sprite(new Vec2(0, 0));
         rightCurtain = new Sprite(new Vec2(180, 0));
@@ -154,6 +154,7 @@ class UiScene extends Scene {
         tweenIn();
 
         prevLevel = GameData.playerData.level;
+        selectedSpell = GameData.selectedSpell;
     }
 
     override function update (delta:Float) {}
@@ -257,7 +258,6 @@ class UiScene extends Scene {
             case 'SPD': GameData.playerData.speed += amount;
             case 'DEX': GameData.playerData.dexterity += amount;
             case 'HEALTH': {
-                // TODO: increase player health by ???
                 GameData.playerData.maxHealth += amount * 2;
                 healthBar.destroy();
                 healthBar = new Bar(
@@ -286,6 +286,7 @@ class UiScene extends Scene {
                 spell.selected = false;
             }
             spells[num].selected = true;
+            GameData.selectedSpell = selectedSpell;
         }
     }
 
@@ -538,7 +539,7 @@ class UiScene extends Scene {
             );
 
             if (isVictory) {
-                addSprite(getText(144, 50, 'Victory!'));
+                addSprite(getText(142, 50, 'Victory!'));
 
                 timers.addTimer(new Timer(2.5, () -> {
                     addSprite(getText(88, 72, 'Thank you so much for playing.'));

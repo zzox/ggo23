@@ -14,6 +14,7 @@ class GameData {
     public static var playerData:PlayerData;
     public static var random:Random;
     public static var floorNum:Int;
+    public static var selectedSpell:Int; // used to store val between levels
     static var shuffleExp:ShuffleRandom<Int>;
 
     public function new () {
@@ -41,6 +42,7 @@ class GameData {
 
         shuffleExp = new ShuffleRandom([4, 5, 5, 6, 6, 7, 7, 8], random);
 
+        selectedSpell = 0;
         floorNum = 0;
     }
 

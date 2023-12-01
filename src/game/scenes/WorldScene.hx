@@ -238,7 +238,7 @@ class WorldScene extends Scene {
             } else if (updateOptions.type == Rainstorm || updateOptions.type == BFRainstorm) {
                 Sound.play(Assets.sounds.depths_sfx_rain2, 0.5);
             } else if (updateOptions.type == Lightstorm) {
-                Sound.play(Assets.sounds.depths_sfx_lightning2, 0.5);
+                Sound.play(Assets.sounds.depths_sfx_lightning2, 0.8);
             }
         } else if (updateType == PreAttack) {
             Sound.play(Assets.sounds.depths_sfx_preattack, 0.1);
@@ -277,7 +277,6 @@ class WorldScene extends Scene {
             final clicked = game.mouse.justReleased(MouseButton.Left);
             final rightClicked = game.mouse.justReleased(MouseButton.Right) || (clicked && game.keys.pressed(KeyCode.Control));
             if (rightClicked) {
-                // TODO: This should be called from the player's Actor object
                 world.playerActor.queueAttack(
                     GameData.playerData.spells[uiScene.selectedSpell],
                     null,
