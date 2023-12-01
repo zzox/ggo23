@@ -230,7 +230,7 @@ class WorldScene extends Scene {
             } else if (updateOptions.type == Raincast) {
                 Sound.play(Assets.sounds.depths_sfx_rain, 0.5);
             } else if (updateOptions.type == Castlight) {
-                Sound.play(Assets.sounds.depths_sfx_lightning, 0.5);
+                Sound.play(Assets.sounds.depths_sfx_lightning, 0.8);
             } else if (updateOptions.type == Firestorm || updateOptions.type == DragonFirestorm) {
                 Sound.play(Assets.sounds.depths_sfx_flame2, 0.5);
             } else if (updateOptions.type == Windstorm) {

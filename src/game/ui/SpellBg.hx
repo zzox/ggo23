@@ -5,6 +5,7 @@ import core.Input.MouseButton;
 import core.Sprite;
 import core.Types;
 import core.Util;
+import game.data.GameData;
 import game.ui.Button;
 import game.ui.UiText;
 import kha.Assets;
@@ -22,7 +23,7 @@ class SpellBg extends Sprite {
     var onHover:Void -> Void;
 
     public function new (num:Int, imageIndex:Int, callback:Void -> Void, onHover:Void -> Void) {
-        super(new Vec2(8 + num * 40, num == 0 ? 156 : 164), Assets.images.spell_bg, new IntVec2(32, 32));
+        super(new Vec2(8 + num * 40, num == GameData.selectedSpell ? 156 : 164), Assets.images.spell_bg, new IntVec2(32, 32));
 
         addChild(number = getText(-16, -16, '${num + 1}', 0xffeec39a));
 
@@ -30,7 +31,8 @@ class SpellBg extends Sprite {
         imageSprite.tileIndex = imageIndex;
         addChild(imageSprite);
 
-        selected = num == 0;
+        selected = num == GameData.selectedSpell;
+
         this.onClick = callback;
         this.onHover = onHover;
     }

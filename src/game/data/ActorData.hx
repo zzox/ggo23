@@ -174,7 +174,7 @@ Moth => {
     experience: 20,
     color: 0xff9badb7,
     animIndex: 54,
-    resistances: [{ type: Fire, amount: 1.5 }, { type: Air, amount: 0.0 }],
+    resistances: [{ type: Fire, amount: 1.5 }, { type: Air, amount: 0.0 }, { type: Lightning, amount: 0.0 }],
     manageData: {
         retreatDist: 5,
         attackDist: 10,
@@ -191,7 +191,7 @@ LightningMan => {
     experience: 40,
     color: 0xffcbdbfc,
     animIndex: 42,
-    resistances: [],
+    resistances: [{ type: Lightning, amount: 0.0 }],
     manageData: {
         retreatDist: 0,
         attackDist: 10,
@@ -225,7 +225,7 @@ Spitter => {
     experience: 30,
     color: 0xff76428a,
     animIndex: 66,
-    resistances: [{ type: Fire, amount: 0.75 }],
+    resistances: [{ type: Fire, amount: 0.75 }, { type: Lightning, amount: 0.0 }],
     manageData: {
         retreatDist: 5,
         attackDist: 10,
@@ -242,7 +242,7 @@ Butterfly => {
     experience: 40,
     color: 0xfffbf236,
     animIndex: 36,
-    resistances: [{ type: Fire, amount: 1.5 }, { type: Water, amount: 0.0 }, { type: Air, amount: 0.0 }],
+    resistances: [{ type: Fire, amount: 1.5 }, { type: Water, amount: 0.0 }, { type: Air, amount: 0.0 }, { type: Lightning, amount: 0.0 }],
     manageData: {
         retreatDist: 7,
         attackDist: 14,
@@ -259,7 +259,7 @@ Dragon => {
     experience: 80,
     color: 0xff37946e,
     animIndex: 60,
-    resistances: [{ type: Fire, amount: 0.25 }],
+    resistances: [{ type: Fire, amount: 0.25 }, { type: Lightning, amount: 0.25 }],
     manageData: {
         retreatDist: 7,
         attackDist: 14,
