@@ -152,9 +152,9 @@ class WorldScene extends Scene {
 
         sortGroupByY(gridObjects);
 
-        if (game.keys.justPressed(KeyCode.R)) {
-            game.switchScene(new WorldScene());
-        }
+        // if (game.keys.justPressed(KeyCode.R)) {
+        //     game.switchScene(new WorldScene());
+        // }
     }
 
     function handleWorldSignal (signalType:SignalType, ?signalOptions:SignalOptions) {
@@ -246,23 +246,23 @@ class WorldScene extends Scene {
     }
 
     function handleInput  () {
-        // ATTN: remove these
-        if (game.keys.justPressed(KeyCode.P)) {
-            world.isPaused = !world.isPaused;
-        }
+        // // ATTN: remove these
+        // if (game.keys.justPressed(KeyCode.P)) {
+        //     world.isPaused = !world.isPaused;
+        // }
 
-        if (game.keys.justPressed(KeyCode.B)) {
-            world.playerActor.x = world.portalPos.x;
-            world.playerActor.y = world.portalPos.y;
-            world.playerActor.currentMove = {
-                from: new IntVec2(0, 0),
-                to: new IntVec2(world.portalPos.x, world.portalPos.y),
-                elapsed: 1.0,
-                time: 1.0
-            };
-            world.playerActor.currentPath = [];
-            world.playerActor.state = Moving;
-        }
+        // if (game.keys.justPressed(KeyCode.B)) {
+        //     world.playerActor.x = world.portalPos.x;
+        //     world.playerActor.y = world.portalPos.y;
+        //     world.playerActor.currentMove = {
+        //         from: new IntVec2(0, 0),
+        //         to: new IntVec2(world.portalPos.x, world.portalPos.y),
+        //         elapsed: 1.0,
+        //         time: 1.0
+        //     };
+        //     world.playerActor.currentPath = [];
+        //     world.playerActor.state = Moving;
+        // }
 
         // ATTN: we are checking the mouse buttons here on release, in order to
         // be in sync with the uiScene's button release.
@@ -353,31 +353,31 @@ class WorldScene extends Scene {
 
     function handleCamera () {
         // TODO: remove these?
-        if (game.keys.justPressed(KeyCode.Equals)) {
-            camera.scale.set(2.0, 2.0);
-        }
+        // if (game.keys.justPressed(KeyCode.Equals)) {
+        //     camera.scale.set(2.0, 2.0);
+        // }
 
-        if (game.keys.justPressed(KeyCode.HyphenMinus)) {
-            camera.scale.set(1.0, 1.0);
-        }
+        // if (game.keys.justPressed(KeyCode.HyphenMinus)) {
+        //     camera.scale.set(1.0, 1.0);
+        // }
 
-        // DEBUG camera; won't work if camera follow is set
-        final speedup = game.keys.pressed(KeyCode.Shift) ? 4.0 : 1.0;
-        if (game.keys.pressed(KeyCode.Left)) {
-            camera.scroll.x -= speedup * 2 / camera.scale.x;
-        }
+        // // DEBUG camera; won't work if camera follow is set
+        // final speedup = game.keys.pressed(KeyCode.Shift) ? 4.0 : 1.0;
+        // if (game.keys.pressed(KeyCode.Left)) {
+        //     camera.scroll.x -= speedup * 2 / camera.scale.x;
+        // }
 
-        if (game.keys.pressed(KeyCode.Right)) {
-            camera.scroll.x += speedup * 2 / camera.scale.x;
-        }
+        // if (game.keys.pressed(KeyCode.Right)) {
+        //     camera.scroll.x += speedup * 2 / camera.scale.x;
+        // }
 
-        if (game.keys.pressed(KeyCode.Up)) {
-            camera.scroll.y -= speedup * 2 / camera.scale.x;
-        }
+        // if (game.keys.pressed(KeyCode.Up)) {
+        //     camera.scroll.y -= speedup * 2 / camera.scale.x;
+        // }
 
-        if (game.keys.pressed(KeyCode.Down)) {
-            camera.scroll.y += speedup * 2 / camera.scale.x;
-        }
+        // if (game.keys.pressed(KeyCode.Down)) {
+        //     camera.scroll.y += speedup * 2 / camera.scale.x;
+        // }
     }
 
     function addExitParticle () {
