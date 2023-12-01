@@ -8,6 +8,7 @@ import core.Timers;
 import core.Types;
 import game.data.GameData;
 import game.data.MusicData;
+import game.data.RoomData.get4AdjacentItems;
 import game.objects.ActorSprite;
 import game.objects.ElementSprite;
 import game.objects.ParticleSprite;
@@ -163,7 +164,6 @@ class WorldScene extends Scene {
                 roundOver = true;
                 uiScene.setupScales();
             }));
-            uiScene.destroyUi();
             camera.stopFollow();
             Sound.play(Assets.sounds.depths_sfx_portal, 0.5);
         } else if (signalType == PlayerStep) {
@@ -189,13 +189,7 @@ class WorldScene extends Scene {
             for (ts in tileSprites) {
                 if (ts != null) ts.destroy();
             }
-            uiScene.destroyUi();
-            uiScene.portrait.color = 0xff847e87;
-            Sound.play(Assets.sounds.depths_sfx_die1, 0.75);
-
-            timers.addTimer(new Timer(1.0, () -> {
-                MusicData.playMusic();
-            }));
+            uiScene.gameOver(false);
         } else if (signalType == BossDead) {
             addExitParticle();
         } else if (signalType == SteamParticle) {
@@ -293,8 +287,25 @@ class WorldScene extends Scene {
                 );
             }
 
-            if (clicked && !rightClicked && tilePos.tile != null && tilePos.seen) {
-                world.playerActor.queueMove(new IntVec2(tilePos.x, tilePos.y));
+            if (clicked && !rightClicked) {
+                var p = new IntVec2(tilePos.x, tilePos.y);
+
+                // check the 4 tiles around the tile for a good tile,
+                // ugly way to prevent a misclick or assist a near-click
+                if (tilePos.tile == null) {
+                    final adjTiles = get4AdjacentItems(world.grid, tilePos.x, tilePos.y);
+                    for (at in adjTiles) {
+                        if (at.tile != null && at.seen) {
+                            p.set(at.x, at.y);
+                            break;
+                        }
+                    }
+                }
+
+                final gi = getGridItem(world.grid, p.x, p.y);
+                if (gi.tile != null && gi.seen) {
+                    world.playerActor.queueMove(new IntVec2(p.x, p.y));
+                }
             }
         }
 

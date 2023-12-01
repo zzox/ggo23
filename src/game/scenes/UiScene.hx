@@ -7,7 +7,9 @@ import core.Timers;
 import core.Tweens;
 import core.Types;
 import core.Util;
+import game.data.FloorData;
 import game.data.GameData;
+import game.data.MusicData;
 import game.data.ScaleData;
 import game.objects.ParticleSprite;
 import game.ui.Bar;
@@ -314,7 +316,12 @@ class UiScene extends Scene {
 
     // ugly
     public function setupScales () {
+        if (GameData.floorNum == NUM_FLOORS) {
+            gameOver(true);
+            return;
+        }
         state = PostGame;
+        destroyUi();
 
         // scalesSelected = [];
         final scaleList = [];
@@ -504,6 +511,51 @@ class UiScene extends Scene {
         particleSprite.animation.play('explode-up', true);
         particleSprite.done = false;
         particleSprite.visible = true;
+    }
+
+    public function gameOver (isVictory:Bool) {
+        destroyUi();
+
+        Sound.play(Assets.sounds.depths_sfx_die1, 0.75);
+        portrait.color = 0xff847e87;
+        timers.addTimer(new Timer(1.0, () -> {
+            MusicData.playMusic();
+
+            var quitButton:Button;
+            quitButton = new Button(
+                new Vec2(isVictory ? 136 : 64, 132),
+                Assets.images.button_slice,
+                new IntVec2(8, 8),
+                new IntVec2(48, 16),
+                0xffffffff,
+                'Quit',
+                () -> {
+                    quitButton.destroy();
+                    tweenOut();
+                    game.switchScene(new TitleScene());
+                },
+                () -> {
+                    hovered = true;
+                }
+            );
+
+            if (isVictory) {
+                addSprite(getText(144, 50, 'Victory!'));
+
+                timers.addTimer(new Timer(2.5, () -> {
+                    addSprite(getText(88, 72, 'Thank you so much for playing.'));
+                }));
+
+                timers.addTimer(new Timer(5.0, () -> {
+                    addSprite(quitButton);
+                }));
+            } else {
+                addSprite(getText(64, 50, 'Game Over'));
+                timers.addTimer(new Timer(1.0, () -> {
+                    addSprite(quitButton);
+                }));
+            }
+        }));
     }
 
     public function tooFar () {

@@ -9,15 +9,15 @@ class MusicData {
     static var music:AudioChannel;
 
     public function new () {
-        stopMusic();
+        MusicData.stopMusic();
         if (noise == null) {
             noise = Sound.stream(Assets.sounds.get('depths_music_noise'), 1.0, true);
         }
     }
 
     public static function playMusic () {
-        stopMusic();
-        music = Sound.stream(Assets.sounds.get('depths_music_gameover'), 0.25, true);
+        MusicData.stopMusic();
+        music = Sound.stream(Assets.sounds.get('depths_music_gameover'), 0.5, true);
     }
 
     public static function stopMusic () {
