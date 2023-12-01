@@ -151,6 +151,26 @@ xxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxx
 ";
 
+final bossRoom2 = "
+      xxxxxxxxxxxxxx
+   xxxxxxxxxxxxxxxxxxx
+  xxxxxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxxxxxxxx
+ xxxxPxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxOxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxx1xxxxx
+  xxxxxxxxxxxxxxxxxxxxx
+   xxxxxxxxxxxxxxxxxxx
+     xxxxxxxxxxxxxxx
+";
+
 enum TileType {
     Ground;
     PlayerSpawn;
@@ -347,7 +367,6 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
             for (r in placedRooms) {
                 if (rectOverlap(randomX, randomY, room.width, room.height, r.rect.x, r.rect.y, r.rect.width, r.rect.height)) {
                     roomCollided = true;
-                    trace('collided');
                     break;
                 }
             }
@@ -493,7 +512,6 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
                             connectedMap[room.id].push(otherRoom.id);
 
                             // only mark as connected if one of the two are connected.
-                            trace(room.connected, otherRoom.connected);
                             if (room.connected > 0 || otherRoom.connected > 0) {
                                 room.connected++;
                                 otherRoom.connected++;
@@ -541,7 +559,6 @@ function generate (floorNum:Int, random:Random):GeneratedWorld {
 
     final portalPos = rooms[rooms.length - 1].portal;
 
-    trace('num paths tried', numPaths, enemySpawners.length);
     Console.timeEnd('generation');
     return {
         grid: makeMap(pregrid, isBoss),

@@ -213,7 +213,6 @@ class Actor extends WorldItem {
         // try to retreat. If cant, attack.
         var retreatDone = false;
         if (distance <= retreatDist) {
-            trace('retreat!');
             // get a group of tiles away from the target.
             var diffX = targetPos.x - myPos.x;
             var diffY = targetPos.y - myPos.y;
@@ -260,8 +259,6 @@ class Actor extends WorldItem {
                 final dir = getDirFromDiff(diffX, diffY);
                 if (dir != null) {
                     queueAttack(attackData[chosenAttack], dir, targetPos);
-                } else {
-                    trace('missed', distance, diffX, diffY);
                 }
             } else {
                 queueAttack(att, null, targetPos.clone());
@@ -316,7 +313,6 @@ class Actor extends WorldItem {
             final nextItem = getGridItem(world.grid, nextPos.x, nextPos.y);
             if (nextItem.actor != null) {
                 // TODO: do something about this, maybe retrying the move
-                trace('actor in the way!!');
                 currentPath.unshift(nextPos);
                 endMove();
             } else {
@@ -436,7 +432,6 @@ class Actor extends WorldItem {
 
     function attack () {
         state = Attack;
-        // trace('attack', currentAttack);
 
         if (currentAttack.type == Melee) {
             // TODO: consider storing position on currentAttack
@@ -479,8 +474,6 @@ class Actor extends WorldItem {
         currentPath = pathfind(makeIntGrid(world.grid), getPosition(), new IntVec2(toX, toY), Diagonal, true, PATH_DISTANCE);
 
         if (currentPath == null) {
-            // throw 'Could not find path.';
-            trace('Could not find path.');
             if (actorType == PlayerActor) {
                 for (onUpdate in updateListeners) onUpdate(TooFar);
             }
@@ -502,7 +495,6 @@ class Actor extends WorldItem {
             final pre = damage;
             damage = Math.ceil(getDiminishedValue(GameData.playerData.defense, damage));
             // damage = Math.ceil((2 - (GameData.playerData.defense / 50)) * damage);
-            trace(damage, pre);
         }
 
         if (damage >= 1) {
@@ -563,24 +555,18 @@ class Actor extends WorldItem {
     }
 
     function getDiminishedValue (alterStat:Int, value:Float):Float {
-        trace('dim', alterStat, value);
         if (alterStat <= 50) {
-            trace((2 - (alterStat / 50)) * value);
             return (2 - (alterStat / 50)) * value;
         }
 
-        trace(value * 0.5 + value * ((100 - alterStat) / 100));
         return value * 0.5 + value * ((100 - alterStat) / 100);
     }
 
     function getIncreasedValue (alterStat:Int, value:Float):Float {
-        trace('inc', alterStat, value);
         if (alterStat <= 50) {
-            trace(value * (alterStat / 50));
             return value * (alterStat / 50);
         }
 
-        trace(value + value * 0.5 * ((alterStat - 50) / 50));
         return value + value * 0.5 * ((alterStat - 50) / 50);
     }
 

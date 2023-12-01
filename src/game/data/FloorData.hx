@@ -57,9 +57,21 @@ final floorData:Array<FloorData> = [{
     enemies: [LightningMan, Snake, Plant, Unicorn, Moth],
     isBoss: false
 }, {
+    minRooms: 1,
+    size: new IntVec2(70, 70),
+    rooms: [bossRoom2],
+    enemies: [Dragon],
+    isBoss: true
+}, {
     minRooms: 8,
     size: new IntVec2(80, 80),
     rooms: [mainRoom1Med, mainRoom1Big, mainRoom1Big, mainRoom1Big, mainRoom1Big, smallRoomNorthSouth, smallRoomEastWest],
     enemies: [Cobra, LightningMan, Unicorn, Moth, Butterfly],
+    isBoss: false
+}, {
+    minRooms: 9,
+    size: new IntVec2(100, 100),
+    rooms: [mainRoom1Med, mainRoom1Big, mainRoom1Big, mainRoom1Big, mainRoom1Big, smallRoomNorthSouth, smallRoomEastWest],
+    enemies: [Cobra, LightningMan, Unicorn, Moth, Butterfly, Dragon],
     isBoss: false
 }];

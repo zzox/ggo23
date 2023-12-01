@@ -418,8 +418,6 @@ class UiScene extends Scene {
         final scale = scaleChoices[selectedScale];
         final spell = GameData.playerData.spells[scale.spellNum];
 
-        trace('spell before', spell);
-
         switch (scale.scale) {
             case Power50:
                 spell.power = Math.round(spell.power * 1.5);

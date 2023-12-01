@@ -312,7 +312,7 @@ class World {
             return;
         }
 
-        throw 'unhandled interaction ${elem1.type} and ${elem2.type}';
+        trace('unhandled interaction ${elem1.type} and ${elem2.type}');
     }
 
     public function meleeAttack (x:Int, y:Int, fromActor:Actor) {

@@ -221,7 +221,6 @@ class WorldScene extends Scene {
         } else if (updateType == TooFar) {
             uiScene.tooFar();
         } else if (updateType == AttackDone) {
-            // trace(updateOptions.attack);
             if (updateOptions.type == Bite) {
                 Sound.play(Assets.sounds.depths_sfx_melee, 0.5);
             } else if (updateOptions.type == Fireball) {
@@ -279,7 +278,6 @@ class WorldScene extends Scene {
             final rightClicked = game.mouse.justReleased(MouseButton.Right) || (clicked && game.keys.pressed(KeyCode.Control));
             if (rightClicked) {
                 // TODO: This should be called from the player's Actor object
-                // world.addElement(tilePos.x, tilePos.y, Fire);
                 world.playerActor.queueAttack(
                     GameData.playerData.spells[uiScene.selectedSpell],
                     null,

@@ -24,7 +24,6 @@ class Main {
                 throw e;
             },
             (item:Dynamic) -> {
-                trace(item, item.type == 'sound' && StringTools.contains(item.files[0], 'depths-music'));
                 return !(item.type == 'sound' && StringTools.contains(item.files[0], 'depths-music'));
             }
         );
