@@ -104,15 +104,6 @@ class WorldScene extends Scene {
             }
         }
 
-        if (player.actorState != null && player.actorState.state == Moving && player.actorState.currentPath != null) {
-            for (tile in player.actorState.currentPath) {
-                getTileSpriteAt(tile.x, tile.y).stepped = true;
-            }
-
-            final pos = player.actorState.currentMove.to;
-            getTileSpriteAt(pos.x, pos.y).stepped = true;
-        }
-
         if (player.actorState != null) {
             uiScene.healthNum = player.actorState.health;
             uiScene.recoveryNum = player.actorState.currentAttack != null ?
@@ -120,6 +111,26 @@ class WorldScene extends Scene {
                 : 100;
             uiScene.experienceNum = GameData.playerData.experience;
             uiScene.experienceMaxNum = GameData.playerData.maxExperience;
+
+            if (player.actorState.state == Moving && player.actorState.currentPath != null) {
+                for (tile in player.actorState.currentPath) {
+                    getTileSpriteAt(tile.x, tile.y).stepped = true;
+                }
+
+                final pos = player.actorState.currentMove.to;
+                getTileSpriteAt(pos.x, pos.y).stepped = true;
+            }
+
+            if (player.actorState.currentAttack != null) {
+                final ts = getTileSpriteAt(
+                    Math.round(player.actorState.currentAttack.targetPos.x),
+                    Math.round(player.actorState.currentAttack.targetPos.y)
+                );
+
+                if (ts != null) {
+                    ts.isTarget = true;
+                }
+            }
         } else {
             uiScene.healthNum = 0;
         }
@@ -175,6 +186,8 @@ class WorldScene extends Scene {
             uiScene.portrait.color = 0xff847e87;
         } else if (signalType == BossDead) {
             addExitParticle();
+        } else if (signalType == SteamParticle) {
+            handleAddParticle(signalOptions.pos.clone(), Steam);
         }
     }
 
@@ -186,6 +199,8 @@ class WorldScene extends Scene {
             num.text = updateOptions.amount + '';
             num.color = 0xffd95763;
             num.start();
+
+            handleAddParticle(updateOptions.pos.clone(), Blood);
         } else if (updateType == Experience) {
             final num = damageNumbers.getNext();
             final worldPos = translateWorldPos(updateOptions.pos.x, updateOptions.pos.y);
@@ -195,6 +210,8 @@ class WorldScene extends Scene {
             num.start();
         } else if (updateType == TooFar) {
             uiScene.tooFar();
+        } else if (updateType == AttackDone) {
+            // trace(updateOptions.attack);
         }
     }
 
@@ -227,13 +244,8 @@ class WorldScene extends Scene {
                 tile.focused = true;
             }
 
-            // highlight tile
             final clicked = game.mouse.justReleased(MouseButton.Left);
-            if (clicked && tilePos.tile != null && tilePos.seen) {
-                world.playerActor.queueMove(new IntVec2(tilePos.x, tilePos.y));
-            }
-
-            final rightClicked = game.mouse.justReleased(MouseButton.Right);
+            final rightClicked = game.mouse.justReleased(MouseButton.Right) || (clicked && game.keys.pressed(KeyCode.Control));
             if (rightClicked) {
                 // TODO: This should be called from the player's Actor object
                 // world.addElement(tilePos.x, tilePos.y, Fire);
@@ -242,6 +254,10 @@ class WorldScene extends Scene {
                     null,
                     new IntVec2(tilePos.x, tilePos.y)
                 );
+            }
+
+            if (clicked && !rightClicked && tilePos.tile != null && tilePos.seen) {
+                world.playerActor.queueMove(new IntVec2(tilePos.x, tilePos.y));
             }
         }
 

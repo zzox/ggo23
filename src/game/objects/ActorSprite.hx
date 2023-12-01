@@ -1,13 +1,17 @@
 package game.objects;
 
+import core.Camera;
 import core.Tweens;
 import core.Types;
 import game.data.ActorData;
 import game.util.Utils;
 import game.world.Actor;
 import kha.Assets;
+import kha.graphics2.Graphics;
 
 class ActorSprite extends WorldItemSprite {
+    static final SHADOW_INDEX:Int = 78;
+
     public var actorState:Null<Actor>;
 
     var prevX:Float;
@@ -136,5 +140,14 @@ class ActorSprite extends WorldItemSprite {
             actorState = null;
             animation.play('die');
         }
+    }
+
+    // render shadow frame before actor sprite
+    override function render (g2:Graphics, cam:Camera) {
+        final index = tileIndex;
+        tileIndex = SHADOW_INDEX;
+        super.render(g2, cam);
+        tileIndex = index;
+        super.render(g2, cam);
     }
 }

@@ -19,10 +19,12 @@ enum SignalType {
     PlayerStep;
     PlayerDead;
     BossDead;
+    SteamParticle;
 }
 
 typedef SignalOptions = {
     var ?tiles:Array<GridItem>;
+    var ?pos:Vec2;
 }
 
 class Object {}
@@ -188,7 +190,7 @@ class World {
     function seeTiles (x:Int, y:Int, force:Bool) {
         var tiles = [];
 
-        var index = GameData.playerData.level - 5;
+        var index = GameData.playerData.level - 1;
         if (index >= seeDiffs.length) {
             index = seeDiffs.length - 1;
         }
@@ -303,6 +305,8 @@ class World {
             final fireTime = isFire.time;
             isFire.time -= isWater.time * 2;
             isWater.time -= fireTime;
+
+            onSignal(SteamParticle, { pos: new Vec2((isFire.x + isWater.x) / 2, (isFire.y + isWater.y) / 2) });
             return;
         }
 

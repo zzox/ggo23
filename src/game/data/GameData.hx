@@ -7,7 +7,7 @@ import game.util.ShuffleRandom;
 import kha.math.Random;
 
 function getMaxExp (level:Int):Int {
-    return Std.int(Math.pow(level, 2)) + level * 2;
+    return Std.int(Math.pow(level, 2)) + level * 2 + 20;
 }
 
 class GameData {
@@ -31,8 +31,8 @@ class GameData {
             scales: [],
             otherScales: otherScales.copy(),
             experience: 0,
-            level: 5,
-            maxExperience: getMaxExp(5),
+            level: 1,
+            maxExperience: getMaxExp(1),
             pointsAvailable: []
         }
 

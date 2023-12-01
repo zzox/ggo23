@@ -7,6 +7,8 @@ import kha.Assets;
 enum ParticleType {
     Portal;
     LevelUp;
+    Blood;
+    Steam;
 }
 
 typedef ParticleData = {
@@ -21,6 +23,14 @@ final particleColors:Map<ParticleType, ParticleData> = [
     },
     LevelUp => {
         color: 0xfffbf236,
+        anim: 'explode-up'
+    },
+    Blood => {
+        color: 0xffd95763,
+        anim: 'explode-down'
+    },
+    Steam => {
+        color: 0xff9badb7,
         anim: 'explode-up'
     }
 ];
@@ -38,6 +48,11 @@ class ParticleSprite extends WorldItemSprite {
         animation.add('explode-up', [17, 18, 19, 20, 21, 22, 23], 0.05, false);
 
         animation.play(particleColors[type].anim);
+
+        // HACK:
+        if (particleColors[type].anim == 'explode-down') {
+            y += 2;
+        }
 
         animation.onComplete = (anim:String) -> {
             if (anim == 'explode-up' || anim == 'explode-down') {

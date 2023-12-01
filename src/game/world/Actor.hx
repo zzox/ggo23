@@ -1,5 +1,6 @@
 package game.world;
 
+import core.Sprite;
 import core.Types;
 import core.Util;
 import game.data.ActorData;
@@ -35,6 +36,7 @@ typedef Attack = {
     var ?vel:Vec2;
     var ?power:Float;
     var ?startPos:Vec2;
+    var ?targetPos:IntVec2; // only used for ui right now
     var ?shape:Shape;
 }
 
@@ -55,6 +57,7 @@ enum UpdateType {
     Damage;
     Experience;
     TooFar;
+    AttackDone;
 }
 
 typedef UpdateOptions = {
@@ -184,6 +187,11 @@ class Actor extends WorldItem {
             target = null;
         }
 
+        // force target as player when target is killed.
+        if (target == null && !world.playerActor.isDead && attitude != Nonchalant) {
+            target = world.playerActor;
+        }
+
         if (target != null) {
             decisionTimer -= delta;
 
@@ -260,10 +268,6 @@ class Actor extends WorldItem {
         }
 
         decisionTimer = Math.random() * decideTime + decideTime;
-
-        if (target == null && !world.playerActor.isDead && attitude != Nonchalant) {
-            target = world.playerActor;
-        }
     }
 
     public function queueMove (pos:IntVec2) {
@@ -416,8 +420,11 @@ class Actor extends WorldItem {
             elementType: attack.type == Range || attack.type == Magic ? attack.element : null,
             power: attackPower,
             shape: attack.type == Magic ? attack.shape : null,
-            startPos: attack.type == Range || attack.type == Magic ? startPos : null
+            startPos: attack.type == Range || attack.type == Magic ? startPos : null,
+            targetPos: pos.clone()
         }
+
+        // for (onUpdate in updateListeners) onUpdate(PreAttack, { pos: new Vec2(x, y) });
 
         state = PreAttack;
         preAttackTimer = preAttackTime;
@@ -432,7 +439,9 @@ class Actor extends WorldItem {
             final diff = getDiffFromDir(currentAttack.dir);
             final pos = getPosition();
             world.meleeAttack(pos.x + diff.x, pos.y + diff.y, this);
+            // for (onUpdate in updateListeners) onUpdate(MeleeAttack, { pos: new Vec2(x, y) });
         } else if (currentAttack.type == Range) {
+            // for (onUpdate in updateListeners) onUpdate(ElementAttack, { type: currentAttack., pos: new Vec2(x, y) });
             world.addElement(currentAttack.startPos.x, currentAttack.startPos.y, currentAttack.elementType, currentAttack.vel.clone(), currentAttack.power, this);
         } else if (currentAttack.type == Magic) {
             final shapeSize = Math.floor(currentAttack.shape.length / 2);

@@ -3,6 +3,7 @@ package game.scenes;
 import core.Scene;
 import core.Types;
 import game.data.GameData;
+import game.data.MusicData;
 import game.ui.Button;
 import game.ui.UiText;
 import kha.Assets;
@@ -26,6 +27,7 @@ class TitleScene extends Scene {
 
     function startGame () {
         new GameData();
+        new MusicData();
         game.switchScene(new WorldScene());
     }
 }

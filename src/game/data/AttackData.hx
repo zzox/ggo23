@@ -31,6 +31,9 @@ enum AttackName {
     Windstorm;
     Rainstorm;
     Lightstorm;
+    // for enemies
+    BFRainstorm;
+    DragonFirestorm;
 }
 
 final attackData:Map<AttackName, AttackData> = [
@@ -117,6 +120,22 @@ Rainstorm => {
     element: Water,
     shape: waterFall,
     imageIndex: 7
+}, BFRainstorm => { // just for butterfly
+    preTime: 1.5,
+    time: 1.5,
+    type: Magic,
+    vel: 0.0,
+    power: 2.0,
+    element: Water,
+    shape: waterFall
+}, DragonFirestorm => {
+    preTime: 1.5,
+    time: 1.5,
+    type: Magic,
+    vel: 0.0,
+    power: 3.0,
+    element: Fire,
+    shape: bigSquare
 }];
 
 function cloneSpell (name:AttackName):AttackData {

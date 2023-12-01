@@ -10,12 +10,14 @@ enum ActorType {
     Rat;
     BigRat;
     Snake;
-    // Cobra;
     Plant;
-    Butterfly;
+    Moth;
     LightningMan;
     Unicorn;
     Spitter;
+    Cobra;
+    Butterfly;
+    Dragon;
 }
 
 enum Attitude {
@@ -81,7 +83,7 @@ PlayerActor => {
     resistances: [],
 },
 Rat => {
-    meleeDamage: 10,
+    meleeDamage: 5,
     health: 15,
     speed: 40,
     experience: 3,
@@ -98,7 +100,7 @@ Rat => {
     }
 },
 BigRat => {
-    meleeDamage: 10,
+    meleeDamage: 8,
     health: 25,
     speed: 25,
     experience: 10,
@@ -115,7 +117,7 @@ BigRat => {
     }
 },
 Snake => {
-    meleeDamage: 20,
+    meleeDamage: 12,
     health: 12,
     speed: 35,
     experience: 10,
@@ -131,8 +133,25 @@ Snake => {
         attitude: Aggro
     }
 },
+Cobra => {
+    meleeDamage: 18,
+    health: 24,
+    speed: 50,
+    experience: 10,
+    color: 0xffac3232,
+    animIndex: 24,
+    resistances: [],
+    manageData: {
+        retreatDist: 0,
+        attackDist: Math.sqrt(2),
+        approachDist: 18,
+        decideTime: 0.5,
+        attack: Bite,
+        attitude: Aggro
+    }
+},
 Plant => {
-    meleeDamage: 33,
+    meleeDamage: 17,
     health: 24,
     speed: 25,
     experience: 15,
@@ -148,13 +167,13 @@ Plant => {
         attitude: Aggro
     }
 },
-Butterfly => {
+Moth => {
     meleeDamage: 0,
     health: 10,
     speed: 50,
     experience: 20,
-    color: 0xfffbf236,
-    animIndex: 36,
+    color: 0xff9badb7,
+    animIndex: 54,
     resistances: [{ type: Fire, amount: 1.5 }, { type: Air, amount: 0.0 }],
     manageData: {
         retreatDist: 5,
@@ -215,8 +234,41 @@ Spitter => {
         attack: Fireball,
         attitude: Aggro
     }
-}
-];
+},
+Butterfly => {
+    meleeDamage: 0,
+    health: 20,
+    speed: 75,
+    experience: 40,
+    color: 0xfffbf236,
+    animIndex: 36,
+    resistances: [{ type: Fire, amount: 1.5 }, { type: Water, amount: 0.0 }, { type: Air, amount: 0.0 }],
+    manageData: {
+        retreatDist: 7,
+        attackDist: 14,
+        approachDist: 21,
+        decideTime: 0.25,
+        attack: BFRainstorm,
+        attitude: Aggro
+    }
+},
+Dragon => {
+    meleeDamage: 0,
+    health: 200,
+    speed: 50,
+    experience: 80,
+    color: 0xff37946e,
+    animIndex: 60,
+    resistances: [{ type: Fire, amount: 0.25 }],
+    manageData: {
+        retreatDist: 7,
+        attackDist: 14,
+        approachDist: 21,
+        decideTime: 0.1,
+        attack: DragonFirestorm,
+        attitude: Nonchalant
+    }
+}];
 
 final seeDiffs = [
     [new IntVec2(-6, -2), new IntVec2(-6, -1), new IntVec2(-6, 0), new IntVec2(-6, 1), new IntVec2(-6, 2), new IntVec2(-5, -4), new IntVec2(-5, -3), new IntVec2(-5, -2), new IntVec2(-5, -1), new IntVec2(-5, 0), new IntVec2(-5, 1), new IntVec2(-5, 2), new IntVec2(-5, 3), new IntVec2(-5, 4), new IntVec2(-4, -5), new IntVec2(-4, -4), new IntVec2(-4, -3), new IntVec2(-4, -2), new IntVec2(-4, -1), new IntVec2(-4, 0), new IntVec2(-4, 1), new IntVec2(-4, 2), new IntVec2(-4, 3), new IntVec2(-4, 4), new IntVec2(-4, 5), new IntVec2(-3, -5), new IntVec2(-3, -4), new IntVec2(-3, -3), new IntVec2(-3, -2), new IntVec2(-3, -1), new IntVec2(-3, 0), new IntVec2(-3, 1), new IntVec2(-3, 2), new IntVec2(-3, 3), new IntVec2(-3, 4), new IntVec2(-3, 5), new IntVec2(-2, -6), new IntVec2(-2, -5), new IntVec2(-2, -4), new IntVec2(-2, -3), new IntVec2(-2, -2), new IntVec2(-2, -1), new IntVec2(-2, 0), new IntVec2(-2, 1), new IntVec2(-2, 2), new IntVec2(-2, 3), new IntVec2(-2, 4), new IntVec2(-2, 5), new IntVec2(-2, 6), new IntVec2(-1, -6), new IntVec2(-1, -5), new IntVec2(-1, -4), new IntVec2(-1, -3), new IntVec2(-1, -2), new IntVec2(-1, -1), new IntVec2(-1, 0), new IntVec2(-1, 1), new IntVec2(-1, 2), new IntVec2(-1, 3), new IntVec2(-1, 4), new IntVec2(-1, 5), new IntVec2(-1, 6), new IntVec2(0, -6), new IntVec2(0, -5), new IntVec2(0, -4), new IntVec2(0, -3), new IntVec2(0, -2), new IntVec2(0, -1), new IntVec2(0, 0), new IntVec2(0, 1), new IntVec2(0, 2), new IntVec2(0, 3), new IntVec2(0, 4), new IntVec2(0, 5), new IntVec2(0, 6), new IntVec2(1, -6), new IntVec2(1, -5), new IntVec2(1, -4), new IntVec2(1, -3), new IntVec2(1, -2), new IntVec2(1, -1), new IntVec2(1, 0), new IntVec2(1, 1), new IntVec2(1, 2), new IntVec2(1, 3), new IntVec2(1, 4), new IntVec2(1, 5), new IntVec2(1, 6), new IntVec2(2, -6), new IntVec2(2, -5), new IntVec2(2, -4), new IntVec2(2, -3), new IntVec2(2, -2), new IntVec2(2, -1), new IntVec2(2, 0), new IntVec2(2, 1), new IntVec2(2, 2), new IntVec2(2, 3), new IntVec2(2, 4), new IntVec2(2, 5), new IntVec2(2, 6), new IntVec2(3, -5), new IntVec2(3, -4), new IntVec2(3, -3), new IntVec2(3, -2), new IntVec2(3, -1), new IntVec2(3, 0), new IntVec2(3, 1), new IntVec2(3, 2), new IntVec2(3, 3), new IntVec2(3, 4), new IntVec2(3, 5), new IntVec2(4, -5), new IntVec2(4, -4), new IntVec2(4, -3), new IntVec2(4, -2), new IntVec2(4, -1), new IntVec2(4, 0), new IntVec2(4, 1), new IntVec2(4, 2), new IntVec2(4, 3), new IntVec2(4, 4), new IntVec2(4, 5), new IntVec2(5, -4), new IntVec2(5, -3), new IntVec2(5, -2), new IntVec2(5, -1), new IntVec2(5, 0), new IntVec2(5, 1), new IntVec2(5, 2), new IntVec2(5, 3), new IntVec2(5, 4), new IntVec2(6, -2), new IntVec2(6, -1), new IntVec2(6, 0), new IntVec2(6, 1), new IntVec2(6, 2)],

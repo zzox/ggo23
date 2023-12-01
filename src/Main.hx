@@ -24,10 +24,8 @@ class Main {
                 throw e;
             },
             (item:Dynamic) -> {
-                if (item.type == 'sound' && StringTools.contains(item.files[0], 'random-string-here')) {
-                    return false;
-                }
-                return true;
+                trace(item, item.type == 'sound' && StringTools.contains(item.files[0], 'depths-music'));
+                return !(item.type == 'sound' && StringTools.contains(item.files[0], 'depths-music'));
             }
         );
 	}
