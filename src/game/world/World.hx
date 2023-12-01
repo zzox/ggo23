@@ -20,6 +20,7 @@ enum SignalType {
     PlayerDead;
     BossDead;
     SteamParticle;
+    WindDeflect;
 }
 
 typedef SignalOptions = {
@@ -261,6 +262,7 @@ class World {
             }
 
             separateElements(isNonAir, isAir, xColl);
+            onSignal(WindDeflect);
             return;
         }
 

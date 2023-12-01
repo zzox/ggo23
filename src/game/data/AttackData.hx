@@ -13,6 +13,7 @@ typedef AttackData = {
     var preTime:Float; // wind-up time
     var time:Float; // How long it takes to execute. (post-time)
     var type:AttackType;
+    var enumName:AttackName; // dumb
     var ?vel:Float;
     var ?power:Float; // how long this stays around, correlates to its damage.
     var ?element:ElementType;
@@ -38,11 +39,13 @@ enum AttackName {
 
 final attackData:Map<AttackName, AttackData> = [
 Bite => {
+    enumName: Bite,
     preTime: 0.5,
     time: 0.5,
     type: Melee
 },
 Fireball => {
+    enumName: Fireball,
     preTime: 0.5,
     time: 0.5,
     type: Range,
@@ -53,6 +56,7 @@ Fireball => {
     name: 'Fireball'
 },
 Windthrow => {
+    enumName: Windthrow,
     preTime: 0.5,
     time: 0.5,
     type: Range,
@@ -63,6 +67,7 @@ Windthrow => {
     name: 'Windthrow'
 },
 Castlight => {
+    enumName: Castlight,
     preTime: 2.0,
     time: 2.0,
     type: Magic,
@@ -73,6 +78,7 @@ Castlight => {
     name: 'Castlight'
 },
 Raincast => {
+    enumName: Raincast,
     preTime: 0.5,
     time: 0.5,
     type: Range,
@@ -83,6 +89,7 @@ Raincast => {
     name: 'Raincast'
 },
 Firestorm => {
+    enumName: Firestorm,
     preTime: 3.0,
     time: 3.0,
     type: Magic,
@@ -93,6 +100,7 @@ Firestorm => {
     imageIndex: 4
 },
 Windstorm => {
+    enumName: Windstorm,
     preTime: 2.0,
     time: 2.0,
     type: Magic,
@@ -103,6 +111,7 @@ Windstorm => {
     imageIndex: 5
 },
 Lightstorm => {
+    enumName: Lightstorm,
     preTime: 3.0,
     time: 3.0,
     type: Magic,
@@ -112,6 +121,7 @@ Lightstorm => {
     imageIndex: 6
 },
 Rainstorm => {
+    enumName: Rainstorm,
     preTime: 2.0,
     time: 2.0,
     type: Magic,
@@ -121,6 +131,7 @@ Rainstorm => {
     shape: waterFall,
     imageIndex: 7
 }, BFRainstorm => { // just for butterfly
+    enumName: BFRainstorm,
     preTime: 1.5,
     time: 1.5,
     type: Magic,
@@ -129,6 +140,7 @@ Rainstorm => {
     element: Water,
     shape: waterFall
 }, DragonFirestorm => {
+    enumName: DragonFirestorm,
     preTime: 1.5,
     time: 1.5,
     type: Magic,
@@ -142,6 +154,7 @@ function cloneSpell (name:AttackName):AttackData {
     final data = attackData[name];
     return {
         preTime: data.preTime,
+        enumName: data.enumName,
         time: data.time,
         type: data.type,
         vel: data.vel,

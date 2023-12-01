@@ -1,6 +1,7 @@
 package game.scenes;
 
 import core.Scene;
+import core.Sound;
 import core.Sprite;
 import core.Timers;
 import core.Tweens;
@@ -499,12 +500,14 @@ class UiScene extends Scene {
     }
 
     public function levelUp () {
+        Sound.play(Assets.sounds.depths_sfx_levelup, 0.5);
         particleSprite.animation.play('explode-up', true);
         particleSprite.done = false;
         particleSprite.visible = true;
     }
 
     public function tooFar () {
+        Sound.play(Assets.sounds.depths_sfx_toofar, 0.5);
         tooFarTime = 1.0;
     }
 }

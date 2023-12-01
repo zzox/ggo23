@@ -3,9 +3,11 @@ package game.scenes;
 import core.Group;
 import core.Input;
 import core.Scene;
+import core.Sound;
 import core.Timers;
 import core.Types;
 import game.data.GameData;
+import game.data.MusicData;
 import game.objects.ActorSprite;
 import game.objects.ElementSprite;
 import game.objects.ParticleSprite;
@@ -17,6 +19,7 @@ import game.world.Actor;
 import game.world.Element;
 import game.world.Grid;
 import game.world.World;
+import kha.Assets;
 import kha.input.KeyCode;
 
 class WorldScene extends Scene {
@@ -34,6 +37,8 @@ class WorldScene extends Scene {
     var uiScene:UiScene;
 
     override function create () {
+        MusicData.stopMusic();
+
         world = new World(handleWorldSignal, handleAddElement, handleRemoveElement);
         world.isPaused = true;
 
@@ -160,6 +165,7 @@ class WorldScene extends Scene {
             }));
             uiScene.destroyUi();
             camera.stopFollow();
+            Sound.play(Assets.sounds.depths_sfx_portal, 0.5);
         } else if (signalType == PlayerStep) {
             for (dt in ditheredTiles) {
                 dt.isDithered = false;
@@ -173,6 +179,7 @@ class WorldScene extends Scene {
                     ditheredTiles.push(ts);
                 }
             }
+            Sound.play(Assets.sounds.depths_sfx_step, 0.25);
         } else if (signalType == PlayerDead) {
             for (c in gridObjects._children) {
                 if (c != player) {
@@ -184,10 +191,18 @@ class WorldScene extends Scene {
             }
             uiScene.destroyUi();
             uiScene.portrait.color = 0xff847e87;
+            Sound.play(Assets.sounds.depths_sfx_die1, 0.75);
+
+            timers.addTimer(new Timer(1.0, () -> {
+                MusicData.playMusic();
+            }));
         } else if (signalType == BossDead) {
             addExitParticle();
         } else if (signalType == SteamParticle) {
             handleAddParticle(signalOptions.pos.clone(), Steam);
+            Sound.play(Assets.sounds.depths_sfx_rain, 0.5);
+        } else if (signalType == WindDeflect) {
+            Sound.play(Assets.sounds.depths_sfx_wind, 0.25);
         }
     }
 
@@ -201,6 +216,7 @@ class WorldScene extends Scene {
             num.start();
 
             handleAddParticle(updateOptions.pos.clone(), Blood);
+            Sound.play(Assets.sounds.depths_sfx_hurt, 0.5);
         } else if (updateType == Experience) {
             final num = damageNumbers.getNext();
             final worldPos = translateWorldPos(updateOptions.pos.x, updateOptions.pos.y);
@@ -212,6 +228,27 @@ class WorldScene extends Scene {
             uiScene.tooFar();
         } else if (updateType == AttackDone) {
             // trace(updateOptions.attack);
+            if (updateOptions.type == Bite) {
+                Sound.play(Assets.sounds.depths_sfx_melee, 0.5);
+            } else if (updateOptions.type == Fireball) {
+                Sound.play(Assets.sounds.depths_sfx_flame1, 0.5);
+            } else if (updateOptions.type == Windthrow) {
+                Sound.play(Assets.sounds.depths_sfx_wind, 0.5);
+            } else if (updateOptions.type == Raincast) {
+                Sound.play(Assets.sounds.depths_sfx_rain, 0.5);
+            } else if (updateOptions.type == Castlight) {
+                Sound.play(Assets.sounds.depths_sfx_lightning, 0.5);
+            } else if (updateOptions.type == Firestorm || updateOptions.type == DragonFirestorm) {
+                Sound.play(Assets.sounds.depths_sfx_flame2, 0.5);
+            } else if (updateOptions.type == Windstorm) {
+                Sound.play(Assets.sounds.depths_sfx_wind2, 0.5);
+            } else if (updateOptions.type == Rainstorm || updateOptions.type == BFRainstorm) {
+                Sound.play(Assets.sounds.depths_sfx_rain2, 0.5);
+            } else if (updateOptions.type == Lightstorm) {
+                Sound.play(Assets.sounds.depths_sfx_lightning2, 0.5);
+            }
+        } else if (updateType == PreAttack) {
+            Sound.play(Assets.sounds.depths_sfx_preattack, 0.1);
         }
     }
 

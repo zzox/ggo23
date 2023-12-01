@@ -31,6 +31,7 @@ typedef Attack = {
     var time:Float;
     var elapsed:Float;
     var type:AttackType;
+    var enumName:AttackName;
     var ?elementType:ElementType;
     var ?dir:GridDir;
     var ?vel:Vec2;
@@ -57,12 +58,14 @@ enum UpdateType {
     Damage;
     Experience;
     TooFar;
+    PreAttack;
     AttackDone;
 }
 
 typedef UpdateOptions = {
-    var amount:Int;
-    var pos:Vec2;
+    var ?amount:Int;
+    var ?pos:Vec2;
+    var ?type:AttackName;
 }
 
 function calcMovePosition (move:Move, percentMoved:Float):Vec2 {
@@ -413,6 +416,7 @@ class Actor extends WorldItem {
 
         currentAttack = {
             time: attackTime,
+            enumName: attack.enumName,
             elapsed: 0,
             type: attack.type,
             dir: attack.type == Melee ? dir : null,
@@ -424,7 +428,7 @@ class Actor extends WorldItem {
             targetPos: pos.clone()
         }
 
-        // for (onUpdate in updateListeners) onUpdate(PreAttack, { pos: new Vec2(x, y) });
+        for (onUpdate in updateListeners) onUpdate(PreAttack);
 
         state = PreAttack;
         preAttackTimer = preAttackTime;
@@ -439,9 +443,7 @@ class Actor extends WorldItem {
             final diff = getDiffFromDir(currentAttack.dir);
             final pos = getPosition();
             world.meleeAttack(pos.x + diff.x, pos.y + diff.y, this);
-            // for (onUpdate in updateListeners) onUpdate(MeleeAttack, { pos: new Vec2(x, y) });
         } else if (currentAttack.type == Range) {
-            // for (onUpdate in updateListeners) onUpdate(ElementAttack, { type: currentAttack., pos: new Vec2(x, y) });
             world.addElement(currentAttack.startPos.x, currentAttack.startPos.y, currentAttack.elementType, currentAttack.vel.clone(), currentAttack.power, this);
         } else if (currentAttack.type == Magic) {
             final shapeSize = Math.floor(currentAttack.shape.length / 2);
@@ -464,6 +466,8 @@ class Actor extends WorldItem {
                 }
             });
         }
+
+        for (onUpdate in updateListeners) onUpdate(AttackDone, { type: currentAttack.enumName });
     }
 
     function finishAttack () {

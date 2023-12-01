@@ -34,11 +34,11 @@ final scaleData:Map<Scale, ScaleData> = [
     UpgradeRainstorm => { text: 'Upgrade to Rainstorm', index: 5, level: 2 },
     UpgradeFirestorm => { text: 'Upgrade to Firestorm', index: 4, level: 2 },
     UpgradeLightstorm => { text: 'Upgrade to Lightstorm', index: 2, level: 2 },
-    AllTimesLess25 => { text: 'All spells 25% faster', index: 0, level: 3 },
-    Dex15 => { text: 'Increase Dexterity by 15', index: 0, level: 3 },
-    Def15 => { text: 'Increase Defense by 15', index: 0, level: 3 },
-    Spd10 => { text: 'Increase Speed by 10', index: 0, level: 3 },
-    Att10 => { text: 'Increase Attatck by 10', index: 0, level: 3 },
+    AllTimesLess25 => { text: 'All spells 25% faster', index: 8, level: 3 },
+    Dex15 => { text: 'Increase Dexterity by 15', index: 8, level: 3 },
+    Def15 => { text: 'Increase Defense by 15', index: 8, level: 3 },
+    Spd10 => { text: 'Increase Speed by 10', index: 8, level: 3 },
+    Att10 => { text: 'Increase Attatck by 10', index: 8, level: 3 },
 ];
 
 final playerScales:Map<AttackName, Array<Scale>> = [

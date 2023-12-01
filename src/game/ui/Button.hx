@@ -1,10 +1,12 @@
 package game.ui;
 
 import core.Input.MouseButton;
+import core.Sound;
 import core.Sprite;
 import core.Types;
 import core.Util;
 import game.ui.UiText;
+import kha.Assets;
 import kha.Image;
 
 enum ButtonState {
@@ -79,6 +81,7 @@ class Button extends Sprite {
                     if (scene.game.mouse.justReleased(MouseButton.Left)) {
                         if (onClick != null) {
                             onClick();
+                            Sound.play(Assets.sounds.depths_sfx_select, 0.5);
                         }
                     }
                 }

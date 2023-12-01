@@ -13,12 +13,6 @@ typedef FloorData = {
 }
 
 final floorData:Array<FloorData> = [{
-//     minRooms: 3, // delete this floor
-//     size: new IntVec2(60, 60),
-//     rooms: [mainRoom1Med, mainRoom1Med, smallRoomNorthSouth, smallRoomEastWest, smallRoomNorthSouth, smallRoomEastWest],
-//     enemies: [Moth, Cobra, Butterfly, Dragon],
-//     isBoss: false
-// }, {
     minRooms: 3,
     size: new IntVec2(60, 60),
     rooms: [mainRoom1Med, mainRoom1Med, smallRoomNorthSouth, smallRoomEastWest, smallRoomNorthSouth, smallRoomEastWest],
@@ -52,18 +46,18 @@ final floorData:Array<FloorData> = [{
     minRooms: 8,
     size: new IntVec2(80, 80),
     rooms: [mainRoom1Med, mainRoom1Med, mainRoom2Med, mainRoom2Med, smallRoomNorthSouth, smallRoomEastWest],
-    enemies: [Snake, Snake, Plant, Plant, Unicorn, BigRat, BigRat, Butterfly],
+    enemies: [Snake, Snake, Plant, Plant, Unicorn, BigRat, BigRat, Moth],
     isBoss: false
 }, {
     minRooms: 8,
     size: new IntVec2(80, 80),
     rooms: [mainRoom1Med, mainRoom1Big, mainRoom1Big, mainRoom1Big, mainRoom1Big, smallRoomNorthSouth, smallRoomEastWest],
-    enemies: [LightningMan, Snake, Plant, Unicorn, Butterfly],
+    enemies: [LightningMan, Snake, Plant, Unicorn, Moth],
     isBoss: false
 }, {
     minRooms: 8,
     size: new IntVec2(80, 80),
     rooms: [mainRoom1Med, mainRoom1Big, mainRoom1Big, mainRoom1Big, mainRoom1Big, smallRoomNorthSouth, smallRoomEastWest],
-    enemies: [/*Cobra,*/ LightningMan, Unicorn, Butterfly],
+    enemies: [Cobra, LightningMan, Unicorn, Moth, Butterfly],
     isBoss: false
 }];
