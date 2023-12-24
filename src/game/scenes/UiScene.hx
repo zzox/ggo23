@@ -355,6 +355,10 @@ class UiScene extends Scene {
         }
 
         for (i in 0...scaleChoices.length) {
+            if (scaleChoices[i] == null) {
+                continue;
+            }
+
             // TODO: description title and image
             final scaleButton = new Button(
                 new Vec2(80, 40 + i * 32),
@@ -417,58 +421,61 @@ class UiScene extends Scene {
 
     function submitScale () {
         final scale = scaleChoices[selectedScale];
-        final spell = GameData.playerData.spells[scale.spellNum];
 
-        switch (scale.scale) {
-            case Power50:
-                spell.power = Math.round(spell.power * 1.5);
-            case Vel50:
-                spell.vel = Math.round(spell.vel * 1.5);
-            case LearnCastlight:
-                GameData.addSpell(Castlight);
-            case LearnFireball:
-                GameData.addSpell(Fireball);
-            case UpgradeWindstorm:
-                GameData.replaceSpell(scale.spellNum, Windstorm);
-            case UpgradeRainstorm:
-                GameData.replaceSpell(scale.spellNum, Rainstorm);
-            case UpgradeFirestorm:
-                GameData.replaceSpell(scale.spellNum, Firestorm);
-            case UpgradeLightstorm:
-                GameData.replaceSpell(scale.spellNum, Lightstorm);
-            case AllTimesLess25:
-                for (s in GameData.playerData.spells) {
-                    s.preTime *= .75;
-                    s.time *= .75;
-                }
-            case Dex15:
-                GameData.playerData.dexterity += 15;
-                if (GameData.playerData.dexterity > 100) {
-                    GameData.playerData.dexterity = 99;
-                }
-            case Def15:
-                GameData.playerData.defense += 15;
-                if (GameData.playerData.defense > 100) {
-                    GameData.playerData.defense = 99;
-                }
-            case Spd10:
-                GameData.playerData.speed += 10;
-                if (GameData.playerData.speed > 100) {
-                    GameData.playerData.speed = 99;
-                }
-            case Att10:
-                GameData.playerData.attack += 10;
-                if (GameData.playerData.attack > 100) {
-                    GameData.playerData.attack = 99;
-                }
-            default:
-                // throw 'Not Implemented!';
-        }
+        if (scale != null) {
+            final spell = GameData.playerData.spells[scale.spellNum];
 
-        if (scale.spellNum == -1) {
-            GameData.playerData.otherScales.remove(scale.scale);
-        } else {
-            GameData.playerData.scales[scale.spellNum].remove(scale.scale);
+            switch (scale.scale) {
+                case Power50:
+                    spell.power = Math.round(spell.power * 1.5);
+                case Vel50:
+                    spell.vel = Math.round(spell.vel * 1.5);
+                case LearnCastlight:
+                    GameData.addSpell(Castlight);
+                case LearnFireball:
+                    GameData.addSpell(Fireball);
+                case UpgradeWindstorm:
+                    GameData.replaceSpell(scale.spellNum, Windstorm);
+                case UpgradeRainstorm:
+                    GameData.replaceSpell(scale.spellNum, Rainstorm);
+                case UpgradeFirestorm:
+                    GameData.replaceSpell(scale.spellNum, Firestorm);
+                case UpgradeLightstorm:
+                    GameData.replaceSpell(scale.spellNum, Lightstorm);
+                case AllTimesLess25:
+                    for (s in GameData.playerData.spells) {
+                        s.preTime *= .75;
+                        s.time *= .75;
+                    }
+                case Dex15:
+                    GameData.playerData.dexterity += 15;
+                    if (GameData.playerData.dexterity > 100) {
+                        GameData.playerData.dexterity = 99;
+                    }
+                case Def15:
+                    GameData.playerData.defense += 15;
+                    if (GameData.playerData.defense > 100) {
+                        GameData.playerData.defense = 99;
+                    }
+                case Spd10:
+                    GameData.playerData.speed += 10;
+                    if (GameData.playerData.speed > 100) {
+                        GameData.playerData.speed = 99;
+                    }
+                case Att10:
+                    GameData.playerData.attack += 10;
+                    if (GameData.playerData.attack > 100) {
+                        GameData.playerData.attack = 99;
+                    }
+                default:
+                    // throw 'Not Implemented!';
+            }
+
+            if (scale.spellNum == -1) {
+                GameData.playerData.otherScales.remove(scale.scale);
+            } else {
+                GameData.playerData.scales[scale.spellNum].remove(scale.scale);
+            }
         }
 
         GameData.nextRound();
