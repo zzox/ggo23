@@ -18,6 +18,8 @@ enum ActorType {
     Cobra;
     Butterfly;
     Dragon;
+    Tentacle;
+    Wizard;
 }
 
 enum Attitude {
@@ -267,6 +269,40 @@ Dragon => {
         decideTime: 0.1,
         attack: DragonFirestorm,
         attitude: Nonchalant
+    },
+},
+Tentacle => {
+    meleeDamage: 0,
+    health: 50,
+    speed: 35,
+    experience: 50,
+    color: 0xffd77bba,
+    animIndex: 72,
+    resistances: [{ type: Fire, amount: 1.25 }],
+    manageData: {
+        retreatDist: 5,
+        attackDist: 12,
+        approachDist: 18,
+        decideTime: 0.25,
+        attack: Raincast,
+        attitude: Aggro
+    }
+},
+Wizard => {
+    meleeDamage: 0,
+    health: 250,
+    speed: 15,
+    experience: 150,
+    color: 0xffd9a066,
+    animIndex: 78,
+    resistances: [],
+    manageData: {
+        retreatDist: 0,
+        attackDist: 18,
+        approachDist: 20,
+        decideTime: 0.1,
+        attack: WizardLightstorm,
+        attitude: Aggro
     }
 }];
 

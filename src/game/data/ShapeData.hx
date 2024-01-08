@@ -17,6 +17,12 @@ function noVel (time:Float):ShapeData {
 // warning: mutable
 final single:Shape = [[noVel(0.0)]];
 
+final smallX:Shape = [
+    [noVel(0.125), null, noVel(0.125)],
+    [null, noVel(0.0), null],
+    [noVel(0.125), null, noVel(0.125)],
+];
+
 final bigX:Shape = [
     [noVel(0.25), null, null, null, noVel(0.25)],
     [null, noVel(0.125), null, noVel(0.125), null],

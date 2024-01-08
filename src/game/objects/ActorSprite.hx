@@ -10,7 +10,7 @@ import kha.Assets;
 import kha.graphics2.Graphics;
 
 class ActorSprite extends WorldItemSprite {
-    static final SHADOW_INDEX:Int = 78;
+    static final SHADOW_INDEX:Int = 84;
 
     public var actorState:Null<Actor>;
 

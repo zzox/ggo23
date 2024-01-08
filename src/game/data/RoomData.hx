@@ -155,8 +155,8 @@ final bossRoom2 = "
       xxxxxxxxxxxxxx
    xxxxxxxxxxxxxxxxxxx
   xxxxxxxxxxxxxxxxxxxxx
+ xxxPxxxxxxxxxxxxxxxxxxx
  xxxxxxxxxxxxxxxxxxxxxxx
- xxxxPxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxx
@@ -168,6 +168,38 @@ xxxxxxxxxxxxxxxxxxxxxxxxx
  xxxxxxxxxxxxxxxxx1xxxxx
   xxxxxxxxxxxxxxxxxxxxx
    xxxxxxxxxxxxxxxxxxx
+     xxxxxxxxxxxxxxx
+";
+
+final bossRoom3 = "
+           xxx
+           xPx
+           xxx
+           xxx
+           xxx
+           xxx
+           xxx
+           xxx
+           xxx
+           xxx
+           xxx
+           xxx
+      xxxxxxxxxxxxxx
+   xxxxxxxxxxxxxxxxxxx
+  xxxxxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxOxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxxxxxxxx
+  xxxxxxxxxxxxxxxxxxxxx
+   xxxx1xxxx1xxxx1xxxx
      xxxxxxxxxxxxxxx
 ";
 
