@@ -317,6 +317,7 @@ class UiScene extends Scene {
 
     // ugly
     public function setupScales () {
+        GameData.finishedFloor();
         if (GameData.floorNum == NUM_FLOORS) {
             gameOver(true);
             return;

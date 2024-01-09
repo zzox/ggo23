@@ -8,7 +8,7 @@ import core.Timers;
 import core.Types;
 import game.data.GameData;
 import game.data.MusicData;
-import game.data.RoomData.get4AdjacentItems;
+import game.data.RoomData;
 import game.objects.ActorSprite;
 import game.objects.ElementSprite;
 import game.objects.ParticleSprite;
@@ -262,6 +262,10 @@ class WorldScene extends Scene {
         //     };
         //     world.playerActor.currentPath = [];
         //     world.playerActor.state = Moving;
+        // }
+
+        // if (game.keys.justPressed(KeyCode.L)) {
+        //     GameData.addExperience(200);
         // }
 
         // ATTN: we are checking the mouse buttons here on release, in order to

@@ -4,7 +4,7 @@ import core.Types;
 import game.data.ActorData;
 import game.data.RoomData;
 
-final NUM_FLOORS = 9;
+final NUM_FLOORS = 10;
 
 typedef FloorData = {
     var size:IntVec2;
